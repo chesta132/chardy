@@ -1,0 +1,6 @@
+@theme inline {
+  --font-inter: var(--font-inter);
+  --font-neue-montreal: var(--font-neue-montreal);
+  --font-supply-sans: var(--font-pp-supply-sans);
+  --font-supply-mono: var(--font-pp-supply-mono);
+}
