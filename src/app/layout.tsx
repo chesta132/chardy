@@ -3,8 +3,9 @@ import "../assets/styles/main.css";
 import { inter } from "@/fonts/inter";
 import { neueMontreal } from "@/fonts/neueMontreal";
 import { PPSuplyMono, PPSuplySans } from "@/fonts/ppSupply";
-import SmoothScroll from "@/components/SmoothScroll";
+import SmoothScroll from "@/contexts/SmoothScroll";
 import { cn } from "@/libs/utils";
+import { Topbar } from "@/components/layouts/Topbar";
 
 // TODO: better metadata
 export const metadata: Metadata = {
@@ -20,7 +21,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn("h-full", "antialiased", inter.variable, neueMontreal.variable, PPSuplySans.variable, PPSuplyMono.variable)}>
       <body className="min-h-full flex flex-col bg-background">
-        <SmoothScroll>{children}</SmoothScroll>
+        <SmoothScroll>
+          <Topbar />
+          {children}
+        </SmoothScroll>
       </body>
     </html>
   );

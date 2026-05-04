@@ -1,5 +1,6 @@
 import { cn } from "@/libs/utils";
 import { Arrow } from "./Arrow";
+import { RollingLabel } from "./Label";
 
 export const Button = ({ children, className }: React.ComponentProps<"button">) => {
   return (
@@ -9,14 +10,7 @@ export const Button = ({ children, className }: React.ComponentProps<"button">) 
         className,
       )}
     >
-      <span className="relative overflow-hidden flex">
-        <span className="translate-y-0 group-hover:-translate-y-full transition-transform duration-700 ease-[cubic-bezier(0.87,0,0.13,1)] font-supply-mono">
-          {children}
-        </span>
-        <span className="absolute inset-0 translate-y-full group-hover:translate-y-0 transition-transform duration-700 ease-[cubic-bezier(0.87,0,0.13,1)] font-supply-mono">
-          {children}
-        </span>
-      </span>
+      <RollingLabel>{children}</RollingLabel>
       <Arrow className="group-hover:-rotate-45 group-hover:fill-text-light transition-all duration-700 ease-[cubic-bezier(0.87,0,0.13,1)]" />
     </button>
   );
