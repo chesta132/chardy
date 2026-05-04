@@ -3,6 +3,8 @@ import "../assets/styles/main.css";
 import { inter } from "@/fonts/inter";
 import { neueMontreal } from "@/fonts/neueMontreal";
 import { PPSuplyMono, PPSuplySans } from "@/fonts/ppSupply";
+import SmoothScroll from "@/components/SmoothScroll";
+import { cn } from "@/libs/utils";
 
 // TODO: better metadata
 export const metadata: Metadata = {
@@ -16,8 +18,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${neueMontreal.variable} ${PPSuplySans.variable} ${PPSuplyMono.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="en" className={cn("h-full", "antialiased", inter.variable, neueMontreal.variable, PPSuplySans.variable, PPSuplyMono.variable)}>
+      <body className="min-h-full flex flex-col bg-background">
+        <SmoothScroll>{children}</SmoothScroll>
+      </body>
     </html>
   );
 }

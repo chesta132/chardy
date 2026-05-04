@@ -2,4 +2,13 @@
   * {
     font-family: var(--font-inter), sans-serif;
   }
+
+  /* hide scrollbar */
+  html {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  html::-webkit-scrollbar {
+    display: none;
+  }
 }

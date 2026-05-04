@@ -3,4 +3,13 @@
   --font-neue-montreal: var(--font-neue-montreal);
   --font-supply-sans: var(--font-pp-supply-sans);
   --font-supply-mono: var(--font-pp-supply-mono);
+
+  --color-background: #f5f0e9;
+  --color-foreground: #0a0a0a;
+
+  --color-primary: #ede7df;
+  --color-secondary: #ff4d1d;
+
+  --color-text-light: #f0f0f0;
+  --color-text-dark: #0a0a0a;
 }

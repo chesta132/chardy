@@ -1,10 +1,10 @@
-import Image from "next/image";
-import Logo from "@/assets/images/logo-1k.svg";
+import { Hero } from "@/components/home/Hero";
 
 export default function Home() {
   return (
-    <main className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <Image className="invert dark:invert-0" src={Logo} alt="Chardy logo" width={100} height={20} priority />
+    <main className="flex flex-col flex-1 items-center justify-center overflow-x-hidden">
+      <Hero />
+      <div className="h-screen w-screen" />
     </main>
   );
 }
