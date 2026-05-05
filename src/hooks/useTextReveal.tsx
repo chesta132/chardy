@@ -6,11 +6,12 @@ import { useGSAP } from "@gsap/react";
 type UseTextRevealOptions = {
   dependencies?: any[];
   direction?: "left" | "right" | "up" | "down";
+  on?: "enter-view" | "load";
 };
 
 /** use `reveal-text` class to trigger text reveal animation in scope */
 export const useTextReveal = (scope: React.RefObject<HTMLElement | null>, options: UseTextRevealOptions = {}) => {
-  const { dependencies = [], direction = "left" } = options;
+  const { dependencies = [], direction = "left", on = "load" } = options;
   const toMap = {
     left: { "--cover-x": "-101%" },
     right: { "--cover-x": "101%" },
@@ -21,13 +22,29 @@ export const useTextReveal = (scope: React.RefObject<HTMLElement | null>, option
   useGSAP(
     () => {
       const textElements = scope.current?.querySelectorAll(".reveal-text");
-      if (textElements) {
-        gsap.to(textElements, {
-          ...toMap[direction],
-          duration: 1,
-          ease: "power3.inOut",
-          stagger: 0.15,
-        });
+      if (!textElements) return;
+
+      switch (on) {
+        case "load":
+          gsap.to(textElements, {
+            ...toMap[direction],
+            duration: 1,
+            ease: "power3.inOut",
+            stagger: 0.15,
+          });
+          break;
+        case "enter-view":
+          gsap.to(textElements, {
+            ...toMap[direction],
+            duration: 1,
+            ease: "power3.inOut",
+            stagger: 0.15,
+            scrollTrigger: {
+              trigger: scope.current,
+              start: "top 85%",
+            },
+          });
+          break;
       }
     },
     { scope, dependencies },
