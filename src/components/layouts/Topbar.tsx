@@ -86,7 +86,7 @@ export const Topbar = () => {
             }
           }}
         >
-          <ChardyLogo className="h-10" />
+          <ChardyLogo className="h-10" animateOnHover />
         </Link>
         <button className="mr-2 lg:hidden" onClick={() => setOpen((prev) => !prev)}>
           <Hamburger open={open} />
