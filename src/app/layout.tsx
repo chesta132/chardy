@@ -19,7 +19,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("h-full", "antialiased", inter.variable, neueMontreal.variable, PPSuplySans.variable, PPSuplyMono.variable)}>
+    <html
+      lang="en"
+      className={cn("h-full", "antialiased", inter.variable, neueMontreal.variable, PPSuplySans.variable, PPSuplyMono.variable)}
+      suppressHydrationWarning
+    >
       <body className="min-h-full flex flex-col bg-background">
         <SmoothScroll>
           <Topbar />
