@@ -1,16 +1,35 @@
 import { cn } from "@/libs/utils";
 import { Arrow } from "../ui/Arrow";
-import { GitHubCalendar } from "react-github-calendar";
 import { Globe, WEST_JAVA } from "../ui/Globe";
-import { FaGithub } from "react-icons/fa";
 import { ChardyLogo } from "../ui/Logo";
 import { Button } from "../ui/Button";
 import { GithubCalendar } from "../about-me/GithubCalendar";
+import { Marquee } from "../about-me/ToolsMarquee";
+import Image from "next/image";
 
 const STATS = [
   { name: "Years of Experience", value: "1+" },
   { name: "Projects Completed", value: "10+" },
   { name: "Technologies Used", value: "10+" },
+];
+
+type Tool = { name: string; href?: string; imgUrl: string };
+
+// TODO: theese image should put in payload cms and get from img url
+const TOOLS: Tool[] = [
+  { name: "Git", imgUrl: "/placeholder.jpg" },
+  { name: "Figma", imgUrl: "/placeholder.jpg" },
+  { name: "VSCode", imgUrl: "/placeholder.jpg" },
+  { name: "TypeScript", imgUrl: "/placeholder.jpg" },
+  { name: "Golang", imgUrl: "/placeholder.jpg" },
+  { name: "Rust", imgUrl: "/placeholder.jpg" },
+  { name: "Express", imgUrl: "/placeholder.jpg" },
+  { name: "Docker", imgUrl: "/placeholder.jpg" },
+  { name: "React", imgUrl: "/placeholder.jpg" },
+  { name: "Next", imgUrl: "/placeholder.jpg" },
+  { name: "pnpm", imgUrl: "/placeholder.jpg" },
+  { name: "Linux", imgUrl: "/placeholder.jpg" },
+  // ...
 ];
 
 export const AboutMe = () => {
@@ -71,6 +90,32 @@ export const AboutMe = () => {
                 dictum dui est, vel fermentum quam tincidunt in.
               </p>
               <Button className="w-fit">Contact Me</Button>
+            </div>
+          </div>
+        </div>
+        <div className="p-px rounded-xl overflow-hidden bg-linear-to-br from-background/0 to-background/70">
+          <div className="border px-6 py-10 flex flex-col lg:flex-row items-center gap-6 border-background/10 rounded-xl bg-foreground">
+            <div className="shrink-0">
+              <h2 className="text-[clamp(0.3rem,5vw,1rem)]">Everyday's Tools</h2>
+              <p className="text-[clamp(0.2rem,3vw,0.6rem)] text-background/65">Mastered for any projects</p>
+            </div>
+
+            <div className="relative overflow-hidden flex-1 w-full">
+              <div className="absolute left-0 top-0 h-full w-26 bg-linear-to-r from-foreground to-transparent z-10 pointer-events-none" />
+              <div className="absolute right-0 top-0 h-full w-26 bg-linear-to-l from-foreground to-transparent z-10 pointer-events-none" />
+
+              <Marquee speed={20}>
+                <div className="flex gap-4 pr-4 pointer-events-none">
+                  {TOOLS.map((tool) => (
+                    <div
+                      key={tool.name}
+                      className="flex items-center justify-center size-20 rounded-xl border border-background/10 bg-background/5 shrink-0"
+                    >
+                      <Image src={tool.imgUrl} alt={tool.name} width={600} height={600} className="size-14 object-contain" />
+                    </div>
+                  ))}
+                </div>
+              </Marquee>
             </div>
           </div>
         </div>
