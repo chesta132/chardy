@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ChardyLogo } from "../ui/Logo";
 import { usePathname } from "next/navigation";
 import { useSmoothScroll } from "@/contexts/SmoothScroll";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { gsap } from "@/libs/gsap/register";
 import { FaGithub, FaLinkedin, FaRegEnvelope } from "react-icons/fa";
 import { useGSAP } from "@gsap/react";
@@ -29,11 +29,25 @@ export const Topbar = () => {
   const lenis = useSmoothScroll();
   const direction = useScrollDirection({ threshold: 10 });
   const [open, setOpen] = useState(false);
+  const [initialed, setInitialed] = useState(false);
 
   const navRef = useRef<HTMLElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const itemsRef = useRef<HTMLDivElement[]>([]);
 
+  // gsap for initial load animation
+  useGSAP(
+    () => {
+      const nav = navRef.current;
+      if (!nav) return;
+
+      gsap.set(nav, { y: "-150%" });
+      gsap.to(nav, { y: "0%", duration: 1.3, ease: "power3.inOut", onComplete: () => setInitialed(true) });
+    },
+    { scope: navRef, dependencies: [] },
+  );
+
+  // gsap for menu animation
   useGSAP(
     () => {
       const menu = menuRef.current;
@@ -56,10 +70,12 @@ export const Topbar = () => {
     { dependencies: [open], scope: menuRef },
   );
 
+  // gsap for hide/show on scroll
   useGSAP(
     () => {
       const nav = navRef.current;
       if (!nav) return;
+      if (!initialed) return;
 
       if (direction === "down") {
         gsap.to(nav, { y: "-150%", duration: 0.6, ease: "power3.inOut" });
@@ -68,7 +84,7 @@ export const Topbar = () => {
         gsap.to(nav, { y: "0%", duration: 0.6, ease: "power3.inOut" });
       }
     },
-    { dependencies: [direction], scope: navRef },
+    { dependencies: [direction, initialed], scope: navRef },
   );
 
   return (
