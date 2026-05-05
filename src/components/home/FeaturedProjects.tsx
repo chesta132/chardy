@@ -44,7 +44,7 @@ const FEATURED_PROJECTS: FeaturedProject[] = [
 
 export const FeaturedProjects = () => {
   return (
-    <section className="flex flex-col gap-8 py-16 px-2 md:px-4 w-full">
+    <section id="featured-projects" className="flex flex-col gap-8 py-16 px-2 md:px-4 w-full">
       {/* Header */}
       <div className="flex justify-between w-full items-center">
         <h2 className="text-[clamp(2rem,5vw,3.75rem)] leading-[1.1] font-neue-montreal">Featured Projects</h2>

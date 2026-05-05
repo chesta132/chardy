@@ -8,10 +8,13 @@ import { gsap } from "@/libs/gsap/register";
 import { Arrow } from "../ui/Arrow";
 import { Button } from "../ui/Button";
 import { useTextReveal } from "@/hooks/useTextReveal";
+import { useSmoothScroll } from "@/contexts/SmoothScroll";
+import Link from "next/link";
 
 export const Hero = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
+  const lenis = useSmoothScroll();
 
   // gsap
   useTextReveal(containerRef);
@@ -43,12 +46,20 @@ export const Hero = () => {
           yPercent: 0,
           xPercent: 0,
           ease: "power1.inOut",
-          duration: 1.3
+          duration: 1.3,
         },
       );
     },
     { scope: containerRef, dependencies: [] },
   );
+
+  const handleViewProjects = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const projectsSection = document.getElementById("featured-projects");
+    if (projectsSection) {
+      lenis.scrollTo(projectsSection, { duration: 1.2 });
+    }
+  };
 
   return (
     <section className="flex flex-col flex-1 items-center justify-center overflow-x-hidden">
@@ -66,7 +77,9 @@ export const Hero = () => {
             <p className="reveal-text text-[clamp(0.875rem,1.5vw,1.25rem)]/[clamp(1.1rem,2vw,1.1875rem)] text-neutral-200 max-w-lg font-neue-montreal">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis maximus augue sapien, at commodo massa imperdiet in.
             </p>
-            <Button className="reveal-text mt-8">View Projects</Button>
+            <Link href={"#featured-projects"} onClick={handleViewProjects}>
+              <Button className="reveal-text mt-8">View Projects</Button>
+            </Link>
           </div>
 
           <div className="absolute inset-0 xl:flex flex-col hidden xl:justify-end p-8 text-[#d4d4d4]">
