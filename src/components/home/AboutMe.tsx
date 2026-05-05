@@ -5,6 +5,7 @@ import { Globe, WEST_JAVA } from "../ui/Globe";
 import { FaGithub } from "react-icons/fa";
 import { ChardyLogo } from "../ui/Logo";
 import { Button } from "../ui/Button";
+import { GithubCalendar } from "../about-me/GithubCalendar";
 
 const STATS = [
   { name: "Years of Experience", value: "1+" },
@@ -41,7 +42,7 @@ export const AboutMe = () => {
           <div className="flex flex-col-reverse lg:flex-col gap-5 justify-start items-center lg:items-start w-full">
             {/* TODO: use Payload CMS */}
             {/* TODO: add year selection, from 5 year before now */}
-            <GitHubCalendar username="chesta132" />
+            <GithubCalendar username="chesta132" />
             <div className="flex justify-center flex-col lg:flex-row-reverse gap-2 w-full items-center">
               <div className="text-center lg:text-start">
                 <h2 className="font-neue-montreal text-[clamp(1rem,5vw,2.25rem)] lg:leading-10 leading-6.5">
