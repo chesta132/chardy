@@ -53,8 +53,8 @@ export const AboutMe = () => {
             </div>
           </div>
         </div>
-        <div className="p-px rounded-2xl overflow-hidden bg-linear-to-tl from-background/0 to-background/70">
-          <div className="flex flex-col lg:flex-row gap-10 p-4 border border-background/10 rounded-2xl bg-foreground">
+        <div className="p-px rounded-xl overflow-hidden bg-linear-to-tl from-background/0 to-background/70">
+          <div className="flex flex-col lg:flex-row gap-10 p-4 border border-background/10 rounded-xl bg-foreground">
             <div className="aspect-square w-full h-auto max-w-125 lg:size-125 bg-linear-to-tr from-[#f8a271] to-[#FF652F] rounded-lg">
               <ChardyLogo className="size-full" />
             </div>
