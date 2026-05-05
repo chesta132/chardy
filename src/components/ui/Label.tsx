@@ -1,5 +1,6 @@
 import { cn } from "@/libs/utils";
 
+export const rollingLabelGroupClass = "group duration-700 ease-[cubic-bezier(0.87,0,0.13,1)]";
 export const RollingLabel = ({
   children,
   className,

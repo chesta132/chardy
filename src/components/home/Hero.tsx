@@ -51,7 +51,7 @@ export const Hero = () => {
   );
 
   return (
-    <div className="flex flex-col flex-1 items-center justify-center overflow-x-hidden">
+    <section className="flex flex-col flex-1 items-center justify-center overflow-x-hidden">
       <div className="h-dvh w-screen p-2 md:p-4">
         <div ref={containerRef} className="relative h-full w-full rounded-2xl overflow-hidden">
           {/* bg — static */}
@@ -85,6 +85,6 @@ export const Hero = () => {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
