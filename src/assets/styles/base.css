@@ -11,4 +11,18 @@
   html::-webkit-scrollbar {
     display: none;
   }
+
+  .reveal-text {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .reveal-text::before {
+    content: "";
+    position: absolute;
+    z-index: 50;
+    inset: 0;
+    background: var(--color-secondary);
+    transform: translateX(var(--cover-x, 0%)) translateY(var(--cover-y, 0%));
+  }
 }
