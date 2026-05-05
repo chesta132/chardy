@@ -12,6 +12,24 @@
     display: none;
   }
 
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--color-foreground);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: color-mix(in oklab, var(--color-background) 40%, transparent);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in oklab, var(--color-background) 60%, transparent);
+  }
+
   .reveal-text {
     position: relative;
     overflow: hidden;

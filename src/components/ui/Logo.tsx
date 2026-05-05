@@ -11,9 +11,9 @@ type LogProps = Omit<React.ComponentProps<typeof Image>, "src" | "alt">;
 
 type ChardyLogoProps<T> = {
   animateOnHover?: T;
-} & (T extends true ? LogoAnimatedProps : LogProps);
+} & ([T] extends [true] ? LogoAnimatedProps : LogProps);
 
-export const ChardyLogo = <T,>({ className, animateOnHover, ...props }: ChardyLogoProps<T>) => {
+export const ChardyLogo = <T extends boolean>({ className, animateOnHover, ...props }: ChardyLogoProps<T>) => {
   const [dotLottie, setDotLottie] = useState<DotLottie | null>(null);
 
   if (animateOnHover) {

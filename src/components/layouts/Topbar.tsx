@@ -13,9 +13,9 @@ import { RollingLabel } from "../ui/Label";
 import { Button } from "../ui/Button";
 
 const NAV_ITEMS = [
-  { label: "Home", href: "/" },
+  { label: "Home", href: "/#" },
   { label: "Projects", href: "/projects" },
-  { label: "About Me", href: "/about" },
+  { label: "About Me", href: "/#about-me" },
 ];
 
 const SOCIAL_ITEMS = [
@@ -115,6 +115,15 @@ export const Topbar = () => {
           <Link
             key={item.href}
             href={item.href}
+            onClick={(e) => {
+              if (item.href.startsWith("/#") && pathname === "/") {
+                e.preventDefault();
+                lenis.scrollTo(item.href.substring(1), { duration: 1.2 });
+              } else if (item.href === pathname) {
+                e.preventDefault();
+                lenis.scrollTo(0, { duration: 1.2 });
+              }
+            }}
             className="group gap-2 uppercase leading-4 cursor-pointer text-primary hover:text-secondary transition-all duration-700 ease-[cubic-bezier(0.87,0,0.13,1)]"
           >
             <RollingLabel>{item.label}</RollingLabel>

@@ -1,3 +1,4 @@
+import { AboutMe } from "@/components/home/AboutMe";
 import { FeaturedProjects } from "@/components/home/FeaturedProjects";
 import { Hero } from "@/components/home/Hero";
 
@@ -6,6 +7,7 @@ export default function Home() {
     <main className="flex flex-col flex-1 items-center justify-center overflow-x-hidden">
       <Hero />
       <FeaturedProjects />
+      <AboutMe />
     </main>
   );
 }
