@@ -8,6 +8,7 @@ import { Button } from "../ui/Button";
 import { FaGithub, FaLinkedin, FaRegEnvelope } from "react-icons/fa";
 import { RollingLabel, rollingLabelGroupClass } from "../ui/Label";
 import { ContactMeForm } from "../contact-me/Form";
+import { Footer } from "../layouts/Footer";
 
 const SOCIAL_ITEMS = [
   { label: "GitHub", href: "https://github.com/chesta132", icon: FaGithub },
@@ -34,7 +35,7 @@ export const ContactMe = () => {
         </Link>
       </div>
       <div className="flex flex-col lg:flex-row justify-between gap-10 px-2 lg:px-5">
-        <div ref={leftRef}>
+        <div ref={leftRef} className="flex flex-col justify-between">
           <div className="flex flex-col gap-4">
             {SOCIAL_ITEMS.map((item, i) => (
               <a
@@ -52,7 +53,7 @@ export const ContactMe = () => {
               </a>
             ))}
           </div>
-          {/* TODO: FOOTER ON XL */}
+          <Footer className="hidden xl:flex mt-10 px-0 border-none" asChild />
         </div>
         <div ref={rightRef}>
           <ContactMeForm />

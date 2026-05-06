@@ -6,6 +6,7 @@ import { PPSuplyMono, PPSuplySans } from "@/fonts/ppSupply";
 import SmoothScroll from "@/contexts/SmoothScroll";
 import { cn } from "@/libs/utils";
 import { Topbar } from "@/components/layouts/Topbar";
+import { Footer } from "@/components/layouts/Footer";
 import { GlobalErrorProvider, ViewGlobalError } from "@/contexts/GlobalError";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -31,6 +32,7 @@ export default function RootLayout({
           <SmoothScroll>
             <Topbar />
             {children}
+            <Footer className="xl:hidden" />
           </SmoothScroll>
           <ViewGlobalError />
           <Toaster />
