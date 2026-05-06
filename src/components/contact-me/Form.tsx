@@ -8,6 +8,7 @@ import { ContactPayload } from "@/payloads/contact";
 import { useState } from "react";
 import { api } from "@/libs/api/apiClient";
 import { toast } from "sonner";
+import { Loading } from "../ui/Loading";
 
 export const ContactMeForm = () => {
   const formGroup = useForm({ email: "", fullName: "", message: "", subject: "" }, ContactPayload.sendMessage.body);
@@ -77,13 +78,16 @@ export const ContactMeForm = () => {
           className="w-full outline-none border-b transition-all p-2 lg:pl-0 leading-5"
         />
       </div>
-      <div className="flex gap-2 justify-center lg:justify-start">
-        <Button disabled={loading} type="submit">
-          Send
-        </Button>
-        <Button disabled={loading} onClick={resetForm} type="button">
-          Reset
-        </Button>
+      <div className="flex flex-col lg:flex-row gap-2">
+        <div className="flex gap-2 justify-center lg:justify-start">
+          <Button disabled={loading} type="submit">
+            Send
+          </Button>
+          <Button disabled={loading} onClick={resetForm} type="button">
+            Reset
+          </Button>
+        </div>
+        <div className="flex justify-center lg:justify-start">{loading && <Loading className="invert-50 h-10" />}</div>
       </div>
     </FormLayout>
   );

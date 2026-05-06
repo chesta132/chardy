@@ -37,7 +37,7 @@ export const ContactMe = () => {
       <div className="flex flex-col lg:flex-row justify-between gap-10 px-2 lg:px-5">
         <div ref={leftRef} className="flex flex-col justify-between">
           <div className="flex flex-col gap-4">
-            {SOCIAL_ITEMS.map((item, i) => (
+            {SOCIAL_ITEMS.map((item) => (
               <a
                 key={item.href}
                 href={item.href}

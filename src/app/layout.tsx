@@ -8,7 +8,7 @@ import { cn } from "@/libs/utils";
 import { Topbar } from "@/components/layouts/Topbar";
 import { Footer } from "@/components/layouts/Footer";
 import { GlobalErrorProvider, ViewGlobalError } from "@/contexts/GlobalError";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/Toaster";
 import { APP_URL } from "@/config";
 
 export async function generateMetadata(): Promise<Metadata> {
