@@ -27,7 +27,7 @@ export default function RootLayout({
       className={cn("h-full", "antialiased", inter.variable, neueMontreal.variable, PPSuplySans.variable, PPSuplyMono.variable)}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-background">
+      <body className="min-h-full flex flex-col bg-background" suppressHydrationWarning>
         <GlobalErrorProvider>
           <SmoothScroll>
             <Topbar />
