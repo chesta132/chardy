@@ -6,7 +6,8 @@ import { PPSuplyMono, PPSuplySans } from "@/fonts/ppSupply";
 import SmoothScroll from "@/contexts/SmoothScroll";
 import { cn } from "@/libs/utils";
 import { Topbar } from "@/components/layouts/Topbar";
-import { GlobalErrorProvider } from "@/contexts/GlobalError";
+import { GlobalErrorProvider, ViewGlobalError } from "@/contexts/GlobalError";
+import { Toaster } from "@/components/ui/toaster";
 
 // TODO: better metadata
 export const metadata: Metadata = {
@@ -31,6 +32,8 @@ export default function RootLayout({
             <Topbar />
             {children}
           </SmoothScroll>
+          <ViewGlobalError />
+          <Toaster />
         </GlobalErrorProvider>
       </body>
     </html>

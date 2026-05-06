@@ -1,5 +1,6 @@
 import z, { ZodOptional, ZodType, type ZodObject, type infer as ZodInfer } from "zod";
 import { deepMergeAll } from "@/libs/manipulate/object";
+import { ContactEndpoints } from "./contact";
 
 export type Method = "POST" | "GET" | "PUT" | "PATCH" | "DELETE";
 export type Response = ZodType;
@@ -20,7 +21,7 @@ export type EndpointPaths = Partial<Record<Method, Record<string, EndpointPath>>
 
 export abstract class Endpoints {
   private static readonly DEFAULT_PATH = { DELETE: {}, GET: {}, PATCH: {}, POST: {}, PUT: {} } as EndpointPaths;
-  static readonly PATHS = deepMergeAll(this.DEFAULT_PATH) satisfies EndpointPaths;
+  static readonly PATHS = deepMergeAll(this.DEFAULT_PATH, ContactEndpoints.PATHS) satisfies EndpointPaths;
 }
 
 export type InferEndpointPath<T extends EndpointPath> = {

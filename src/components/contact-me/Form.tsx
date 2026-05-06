@@ -3,19 +3,15 @@
 import { useAutosizeTextarea } from "@/hooks/useAutosizeTextarea";
 import { FormLayout } from "../form/FormLayout";
 import { useForm } from "@/hooks/useForm";
-import z from "zod";
 import { Button } from "../ui/Button";
-
-// TODO: send to server
-const contactValidator = z.object({
-  fullName: z.string().min(1, "Full name is required"),
-  email: z.email(),
-  subject: z.string().min(1, "Subject is required"),
-  message: z.string().min(1, "Message is required"),
-});
+import { ContactPayload } from "@/payloads/contact";
+import { useState } from "react";
+import { api } from "@/libs/api/apiClient";
+import { toast } from "sonner";
 
 export const ContactMeForm = () => {
-  const formGroup = useForm({ email: "", fullName: "", message: "", subject: "" }, contactValidator);
+  const formGroup = useForm({ email: "", fullName: "", message: "", subject: "" }, ContactPayload.sendMessage.body);
+  const [loading, setLoading] = useState(false);
   const {
     form: [form],
     resetForm,
@@ -23,8 +19,18 @@ export const ContactMeForm = () => {
 
   const { textAreaRef } = useAutosizeTextarea(form.message);
 
+  const handleSendMessage = async (_: unknown, form: ContactPayload.SendMessageBody) => {
+    try {
+      setLoading(true);
+      await api.post("/contact", { data: form });
+      toast.info("Message sent successfully!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <FormLayout form={formGroup} className="space-y-4 w-full lg:w-2xl p-5 font-neue-montreal">
+    <FormLayout form={formGroup} onFormSubmit={handleSendMessage} className="space-y-4 w-full lg:w-2xl p-5 font-neue-montreal">
       <div className="flex flex-col">
         <label htmlFor="fullName" className="font-neue-montreal reveal-text">
           Your Full Name
@@ -72,8 +78,10 @@ export const ContactMeForm = () => {
         />
       </div>
       <div className="flex gap-2 justify-center lg:justify-start">
-        <Button type="submit">Send</Button>
-        <Button onClick={resetForm} type="button">
+        <Button disabled={loading} type="submit">
+          Send
+        </Button>
+        <Button disabled={loading} onClick={resetForm} type="button">
           Reset
         </Button>
       </div>

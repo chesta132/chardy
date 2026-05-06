@@ -1,6 +1,7 @@
 "use client";
 
-import { createContext, useContext, useState, Component, ReactNode } from "react";
+import { toastError } from "@/components/ui/toaster";
+import { createContext, useContext, useState, Component, ReactNode, useEffect } from "react";
 
 // context
 
@@ -37,7 +38,13 @@ export const useGlobalError = () => {
 export const ViewGlobalError = () => {
   const { error } = useGlobalError();
 
-  // TODO:
+  useEffect(() => {
+    if (error) {
+      toastError(error);
+    }
+  }, [error]);
+
+  return null;
 };
 
 // silent boundary

@@ -19,7 +19,6 @@ export const ContactMe = () => {
   const leftRef = useRef<HTMLDivElement>(null);
   const rightRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
-  const socialsRef = useRef<HTMLAnchorElement[]>(null);
 
   useTextReveal(headerRef, { on: "enter-view", direction: "up" });
   useTextReveal(leftRef, { on: "enter-view", direction: "left" });
@@ -43,9 +42,6 @@ export const ContactMe = () => {
                 href={item.href}
                 target="_blank"
                 rel="noreferrer"
-                ref={(el) => {
-                  if (el) socialsRef.current?.push(el);
-                }}
                 className={cn(
                   "flex group gap-2 uppercase leading-4 cursor-pointer hover:text-secondary text-[clamp(0.2rem,3vw,0.8rem)] reveal-text",
                   rollingLabelGroupClass,
