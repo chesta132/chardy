@@ -31,6 +31,11 @@ export const useTextReveal = (scope: React.RefObject<HTMLElement | null>, option
             duration: 1,
             ease: "power3.inOut",
             stagger: 0.15,
+            onComplete: () => {
+              gsap.set(textElements, {
+                "--cover-bg": "transparent",
+              });
+            },
           });
           break;
         case "enter-view":
@@ -42,6 +47,11 @@ export const useTextReveal = (scope: React.RefObject<HTMLElement | null>, option
             scrollTrigger: {
               trigger: scope.current,
               start: "top 85%",
+            },
+            onComplete: () => {
+              gsap.set(textElements, {
+                "--cover-bg": "transparent",
+              });
             },
           });
           break;
