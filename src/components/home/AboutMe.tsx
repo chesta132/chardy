@@ -49,7 +49,7 @@ export const AboutMe = () => {
           </h2>
         </div>
         <div className="flex flex-col-reverse lg:flex-row justify-between gap-8">
-          <div className="flex lg:flex-col gap-3 justify-between items-center">
+          <div className="flex lg:flex-col gap-3 justify-between items-center overflow-x-auto">
             {STATS.map((stat, idx) => (
               <div
                 key={stat.name}
