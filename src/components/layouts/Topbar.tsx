@@ -87,6 +87,16 @@ export const Topbar = () => {
     { dependencies: [direction, initialed], scope: navRef },
   );
 
+  const handleNavClick = (item: (typeof NAV_ITEMS)[number], e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (item.href.startsWith("/#") && pathname === "/") {
+      e.preventDefault();
+      lenis.scrollTo(item.href.substring(1), { duration: 1.2 });
+    } else if (item.href === pathname) {
+      e.preventDefault();
+      lenis.scrollTo(0, { duration: 1.2 });
+    }
+  };
+
   return (
     <nav
       ref={navRef}
@@ -116,13 +126,7 @@ export const Topbar = () => {
             key={item.href}
             href={item.href}
             onClick={(e) => {
-              if (item.href.startsWith("/#") && pathname === "/") {
-                e.preventDefault();
-                lenis.scrollTo(item.href.substring(1), { duration: 1.2 });
-              } else if (item.href === pathname) {
-                e.preventDefault();
-                lenis.scrollTo(0, { duration: 1.2 });
-              }
+              handleNavClick(item, e);
             }}
             className="group gap-2 uppercase leading-4 cursor-pointer text-primary hover:text-secondary transition-all duration-700 ease-[cubic-bezier(0.87,0,0.13,1)]"
           >
@@ -131,9 +135,9 @@ export const Topbar = () => {
         ))}
       </div>
 
-      <div className="hidden lg:flex">
+      <Link className="hidden lg:flex" href={"/#contact-me"} onClick={() => lenis.scrollTo("#contact-me", { duration: 1.2 })}>
         <Button>Contact Me</Button>
-      </div>
+      </Link>
 
       {/* mobile menu */}
       <div ref={menuRef} className="overflow-hidden lg:hidden!">
@@ -147,7 +151,10 @@ export const Topbar = () => {
                   if (el) itemsRef.current[i] = el as any;
                 }}
                 className="group gap-2 uppercase leading-4 text-xs cursor-pointer text-primary hover:text-secondary transition-all duration-700 ease-[cubic-bezier(0.87,0,0.13,1)]"
-                onClick={() => setOpen(false)}
+                onClick={(e) => {
+                  handleNavClick(item, e);
+                  setOpen(false);
+                }}
               >
                 <RollingLabel>{item.label}</RollingLabel>
               </Link>

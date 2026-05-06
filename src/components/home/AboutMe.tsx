@@ -1,3 +1,7 @@
+"use client";
+
+// TODO: refactor to components
+
 import { cn } from "@/libs/utils";
 import { Arrow } from "../ui/Arrow";
 import { Globe, WEST_JAVA } from "../ui/Globe";
@@ -6,6 +10,8 @@ import { Button } from "../ui/Button";
 import { GithubCalendar } from "../about-me/GithubCalendar";
 import { Marquee } from "../about-me/ToolsMarquee";
 import Image from "next/image";
+import Link from "next/link";
+import { useSmoothScroll } from "@/contexts/SmoothScroll";
 
 const STATS = [
   { name: "Years of Experience", value: "1+" },
@@ -33,6 +39,7 @@ const TOOLS: Tool[] = [
 ];
 
 export const AboutMe = () => {
+  const lenis = useSmoothScroll();
   return (
     <section id="about-me" className="size-full flex flex-col gap-8 py-16 px-2 md:px-4">
       <div className="bg-foreground text-background rounded-2xl flex flex-col gap-10 p-10 lg:p-16">
@@ -89,7 +96,9 @@ export const AboutMe = () => {
                 ullamcorper et. Curabitur euismod posuere eros, auctor fringilla lacus egestas sed. Donec a dapibus leo, in pellentesque quam. Etiam
                 dictum dui est, vel fermentum quam tincidunt in.
               </p>
-              <Button className="w-fit">Contact Me</Button>
+              <Link href={"/#contact-me"} onClick={() => lenis.scrollTo("#contact-me", { duration: 1.2 })}>
+                <Button className="w-fit">Contact Me</Button>
+              </Link>
             </div>
           </div>
         </div>

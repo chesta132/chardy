@@ -6,6 +6,7 @@ import { PPSuplyMono, PPSuplySans } from "@/fonts/ppSupply";
 import SmoothScroll from "@/contexts/SmoothScroll";
 import { cn } from "@/libs/utils";
 import { Topbar } from "@/components/layouts/Topbar";
+import { GlobalErrorProvider } from "@/contexts/GlobalError";
 
 // TODO: better metadata
 export const metadata: Metadata = {
@@ -25,10 +26,12 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col bg-background">
-        <SmoothScroll>
-          <Topbar />
-          {children}
-        </SmoothScroll>
+        <GlobalErrorProvider>
+          <SmoothScroll>
+            <Topbar />
+            {children}
+          </SmoothScroll>
+        </GlobalErrorProvider>
       </body>
     </html>
   );
