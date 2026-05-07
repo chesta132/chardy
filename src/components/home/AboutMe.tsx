@@ -44,7 +44,7 @@ export const AboutMe = () => {
     <section id="about-me" className="size-full flex flex-col gap-8 py-16 px-2 md:px-4">
       <div className="bg-foreground text-background rounded-2xl flex flex-col gap-10 p-10 lg:p-16">
         <div>
-          <h2 className="font-supply-mono text-background/60 flex items-center gap-2">
+          <h2 className="font-supply-mono text-background/60 flex items-center gap-2 text-[clamp(0.2rem,3vw,0.8rem)] tracking-widest">
             ( ABOUT ME ) <Arrow className="rotate-90 fill-background/60" />
           </h2>
         </div>
