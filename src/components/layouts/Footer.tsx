@@ -22,7 +22,7 @@ const NAV_ITEMS = [
   { label: "Contact Me", href: "/#contact-me" },
 ];
 
-export const Footer = ({ className, asChild }: { className?: string; asChild?: boolean }) => {
+export const Footer = ({ className, asChild, hideOnHomeWithXL }: { className?: string; asChild?: boolean; hideOnHomeWithXL?: boolean }) => {
   const lenis = useSmoothScroll();
   const pathname = usePathname();
 
@@ -39,7 +39,13 @@ export const Footer = ({ className, asChild }: { className?: string; asChild?: b
   const Wrapper = asChild ? "div" : "footer";
 
   return (
-    <Wrapper className={cn("w-full border-t border-foreground/10 px-6 py-8 flex flex-col gap-6", className)}>
+    <Wrapper
+      className={cn(
+        "w-full border-t border-foreground/10 px-6 py-8 flex flex-col gap-6",
+        hideOnHomeWithXL && pathname === "/" && "xl:hidden",
+        className,
+      )}
+    >
       <div className="flex flex-col gap-6  sm:items-start sm:justify-between">
         {/* Logo + tagline */}
         <div className="flex flex-col text-center sm:text-start gap-2">

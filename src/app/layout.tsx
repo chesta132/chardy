@@ -105,7 +105,7 @@ export default function RootLayout({
           <SmoothScroll>
             <Topbar />
             {children}
-            <Footer className="xl:hidden" />
+            <Footer hideOnHomeWithXL />
           </SmoothScroll>
           <ViewGlobalError />
           <Toaster />
