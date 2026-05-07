@@ -12,21 +12,20 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
     const lenisInstance = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      autoRaf: true,
     });
 
     setLenis(lenisInstance);
 
-    function raf(time: number) {
-      lenisInstance.raf(time);
-      requestAnimationFrame(raf);
-    }
+    const ro = new ResizeObserver(() => lenisInstance.resize());
+    ro.observe(document.body);
 
-    requestAnimationFrame(raf);
-
-    return () => lenisInstance.destroy();
+    return () => {
+      lenisInstance.destroy();
+      ro.disconnect();
+    };
   }, []);
 
-  // TODO: change to loading state or create global loading state
   if (!lenis) return null;
 
   return <smoothScrollContext.Provider value={lenis}>{children}</smoothScrollContext.Provider>;
