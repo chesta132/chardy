@@ -1,0 +1,70 @@
+{
+  "Nav": {
+    "home": "Home",
+    "projects": "Projects",
+    "about": "About",
+    "contact": "Contact Me"
+  },
+
+  "Footer": {
+    "header": "{name} — Portfolio",
+    "pages": "Pages",
+    "socials": "Socials",
+    "copyright": "© {year} {name}. All rights reserved."
+  },
+
+  "HomeHero": {
+    "hello": "I am {name}",
+    "viewProjects": "View Projects",
+    "scrollForMore": "Scroll for more"
+  },
+  "HomeProjects": {
+    "title": "Featured Projects",
+    "viewAll": "View all"
+  },
+  "HomeAbout": {
+    "aboutMe": "About Me",
+    "contactMe": "Contact Me",
+    "yearsOfExperience": "Years of Experience",
+    "projectsCompleted": "Projects Completed",
+    "technologiesUsed": "Technologies Used",
+    "basedIn": "Based in {location}",
+    "availableForWorldwide": "Available for worldwide",
+    "toolsUsed": "Everyday's tools",
+    "toolsMaster": "Mastered for any project"
+  },
+  "HomeContact": {
+    "title": "Contact Me",
+    "emailDirectly": "Email me directly",
+    "mail": {
+      "fullName": "Your Full Name",
+      "email": "Your Email",
+      "subject": "Subject",
+      "message": "Message",
+      "send": "Send",
+      "reset": "Reset",
+      "placeholders": {
+        "name": "First Last",
+        "email": "example@email.com",
+        "subject": "What's on your mind?",
+        "message": "Tell me more..."
+      }
+    }
+  },
+
+  "Projects": {
+    "projects": "Projects",
+    "title": "Every Project \nAcross Experiences",
+    "total": "{count} projects total"
+  },
+
+  "ProjectDetail": {
+    "allProjects": "All projects",
+    "year": "Year",
+    "tags": "Stack / Type",
+    "live": "Live",
+    "visitSite": "Visit site",
+    "prevProject": "Previous project",
+    "nextProject": "Next project"
+  }
+}

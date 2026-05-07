@@ -8,6 +8,10 @@ export const APP_NAME = "Chardy";
 export const FULL_APP_NAME = "Chesta Ardiona Landing Page";
 export const REGION = "id-ID";
 export const APP_DOMAIN = new URL(APP_URL).hostname;
+export const LOCATION = "Bekasi, Jawa Barat, Indonesia";
+export const OWNER_FIRSTNAME = "Chesta";
+export const OWNER_LASTNAME = "Ardiona";
+export const OWNER_FULLNAME = OWNER_FIRSTNAME + " " + OWNER_LASTNAME;
 
 // helpers
 export const isDevEnv = () => process.env.NODE_ENV === "development";

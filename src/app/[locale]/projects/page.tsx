@@ -1,10 +1,11 @@
 "use client";
 
 import { Arrow } from "@/components/ui/Arrow";
+import { Link } from "@/i18n/navigation";
 import { gsap } from "@/libs/gsap/register";
 import { cn } from "@/libs/utils";
+import { useTranslations } from "next-intl";
 import Image, { type StaticImageData } from "next/image";
-import Link from "next/link";
 import { useRef, useState } from "react";
 
 // TODO: this page still using dummy data
@@ -177,6 +178,7 @@ function ProjectList({ projects }: { projects: Project[] }) {
 }
 
 export default function ProjectsPage() {
+  const t = useTranslations("Projects");
   const [activeFilter, setActiveFilter] = useState<string>("all");
 
   const filtered = activeFilter === "all" ? PROJECTS : PROJECTS.filter((p) => p.category === activeFilter);
@@ -186,14 +188,11 @@ export default function ProjectsPage() {
       {/* Header */}
       <div className="flex flex-col items-center gap-3 mb-12">
         <h2 className="font-supply-mono text-text-dark/60 flex items-center gap-2 uppercase text-xs tracking-widest">
-          <Arrow className="rotate-90 fill-text-dark/60" />
-          ( Projects )
+          <Arrow className="rotate-90 fill-text-dark/60" />( {t("projects")} )
           <Arrow className="rotate-90 fill-text-dark/60" />
         </h2>
-        <h1 className="font-neue-montreal text-[clamp(1.8rem,5vw,3.75rem)] font-medium uppercase text-center leading-[1.1] tracking-tight">
-          Every Project
-          <br />
-          Across Experiences
+        <h1 className="font-neue-montreal text-[clamp(1.8rem,5vw,3.75rem)] font-medium uppercase text-center leading-[1.1] tracking-tight whitespace-pre-wrap">
+          {t("title")}
         </h1>
       </div>
 
@@ -223,7 +222,7 @@ export default function ProjectsPage() {
 
       {/* Count */}
       <p className="font-supply-mono text-[10px] text-foreground/35 mt-6 tracking-widest">
-        — {String(filtered.length).padStart(2, "0")} projects total
+        {t("total", { count: String(filtered.length).padStart(2, "0") })}
       </p>
     </main>
   );

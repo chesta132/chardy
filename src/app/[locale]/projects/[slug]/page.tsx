@@ -1,8 +1,9 @@
 import { Arrow } from "@/components/ui/Arrow";
 import { RollingLabel, rollingLabelGroupClass } from "@/components/ui/Label";
 import { cn } from "@/libs/utils";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 
 type ProjectDetail = {
   name: string;
@@ -24,6 +25,8 @@ const PROJECT: ProjectDetail = {
 };
 
 export default function ProjectDetailPage() {
+  const t = useTranslations("ProjectDetail");
+
   return (
     <main className="flex flex-col min-h-svh">
       <article className="flex flex-col flex-1 px-5 md:px-10 lg:px-20 pt-32 pb-0 max-w-4xl mx-auto w-full">
@@ -36,7 +39,7 @@ export default function ProjectDetailPage() {
           )}
         >
           <Arrow className="rotate-180 fill-foreground/40 group-hover:fill-secondary transition-colors duration-300" />
-          <RollingLabel className="font-supply-mono text-[10px] tracking-widest uppercase">All Projects</RollingLabel>
+          <RollingLabel className="font-supply-mono text-[10px] tracking-widest uppercase">{t("allProjects")}</RollingLabel>
         </Link>
 
         {/* ── Header ── */}
@@ -48,13 +51,13 @@ export default function ProjectDetailPage() {
           <div className="flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-b border-foreground/10 py-4">
             {/* Year */}
             <div className="flex flex-col gap-1">
-              <span className="font-supply-mono text-[9px] tracking-widest uppercase text-foreground/35">Year</span>
+              <span className="font-supply-mono text-[9px] tracking-widest uppercase text-foreground/35">{t("year")}</span>
               <span className="font-supply-mono text-xs text-foreground/70">{PROJECT.year}</span>
             </div>
 
             {/* Tags */}
             <div className="flex flex-col gap-1.5">
-              <span className="font-supply-mono text-[9px] tracking-widest uppercase text-foreground/35">Stack / Type</span>
+              <span className="font-supply-mono text-[9px] tracking-widest uppercase text-foreground/35">{t("tags")}</span>
               <div className="flex flex-wrap gap-1.5">
                 {PROJECT.tags.map((tag) => (
                   <span
@@ -70,7 +73,7 @@ export default function ProjectDetailPage() {
             {/* Live link — optional */}
             {PROJECT.live && (
               <div className="flex flex-col gap-1 ml-auto">
-                <span className="font-supply-mono text-[9px] tracking-widest uppercase text-foreground/35">Live</span>
+                <span className="font-supply-mono text-[9px] tracking-widest uppercase text-foreground/35">{t("live")}</span>
                 <a
                   href={PROJECT.live}
                   target="_blank"
@@ -80,7 +83,7 @@ export default function ProjectDetailPage() {
                     rollingLabelGroupClass,
                   )}
                 >
-                  <RollingLabel>Visit Site</RollingLabel>
+                  <RollingLabel>{t("visitSite")}</RollingLabel>
                   <Arrow className="fill-secondary -rotate-45" />
                 </a>
               </div>
@@ -131,14 +134,14 @@ export default function ProjectDetailPage() {
             className={cn("flex items-center gap-2 text-foreground/40 hover:text-secondary transition-colors duration-300", rollingLabelGroupClass)}
           >
             <Arrow className="rotate-180 fill-foreground/40 group-hover:fill-secondary transition-colors duration-300" />
-            <RollingLabel className="font-supply-mono text-[10px] tracking-widest uppercase">Previous Project</RollingLabel>
+            <RollingLabel className="font-supply-mono text-[10px] tracking-widest uppercase">{t("prevProject")}</RollingLabel>
           </Link>
 
           <Link
             href="/projects"
             className={cn("flex items-center gap-2 text-foreground/40 hover:text-secondary transition-colors duration-300", rollingLabelGroupClass)}
           >
-            <RollingLabel className="font-supply-mono text-[10px] tracking-widest uppercase">Next Project</RollingLabel>
+            <RollingLabel className="font-supply-mono text-[10px] tracking-widest uppercase">{t("nextProject")}</RollingLabel>
             <Arrow className="fill-foreground/40 group-hover:fill-secondary transition-colors duration-300" />
           </Link>
         </div>

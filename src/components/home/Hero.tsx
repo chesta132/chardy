@@ -9,9 +9,12 @@ import { Arrow } from "../ui/Arrow";
 import { Button } from "../ui/Button";
 import { useTextReveal } from "@/hooks/useTextReveal";
 import { useSmoothScroll } from "@/contexts/SmoothScroll";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
+import { OWNER_FIRSTNAME } from "@/config";
 
 export const Hero = () => {
+  const t = useTranslations("HomeHero");
   const containerRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
   const lenis = useSmoothScroll();
@@ -53,14 +56,6 @@ export const Hero = () => {
     { scope: containerRef, dependencies: [] },
   );
 
-  const handleViewProjects = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    const projectsSection = document.getElementById("featured-projects");
-    if (projectsSection) {
-      lenis.scrollTo(projectsSection, { duration: 1.2 });
-    }
-  };
-
   return (
     <section className="flex flex-col flex-1 items-center justify-center overflow-x-hidden">
       <div className="h-dvh w-screen p-2 md:p-4">
@@ -70,21 +65,23 @@ export const Hero = () => {
 
           {/* Text overlay */}
           <div className="absolute inset-0 flex z-10 flex-col xl:justify-center p-8 xl:items-baseline items-center text-center xl:text-left mt-20 xl:mt-0">
-            <p className="reveal-text text-[clamp(0.7rem,1vw,0.875rem)] text-neutral-400 mb-4 font-supply-mono">( I AM CHESTA )</p>
+            <p className="reveal-text text-[clamp(0.7rem,1vw,0.875rem)] text-neutral-400 mb-4 font-supply-mono uppercase">
+              ( {t("hello", { name: OWNER_FIRSTNAME })} )
+            </p>
             <h1 className="reveal-text text-[clamp(2rem,5vw,3.75rem)]/[clamp(2.5rem,5.5vw,4.125rem)] text-white mb-4 uppercase font-neue-montreal">
               Lorem ipsum <br /> dolor
             </h1>
             <p className="reveal-text text-[clamp(0.875rem,1.5vw,1.25rem)]/[clamp(1.1rem,2vw,1.1875rem)] text-neutral-200 max-w-lg font-neue-montreal">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis maximus augue sapien, at commodo massa imperdiet in.
             </p>
-            <Link href={"#featured-projects"} onClick={handleViewProjects}>
-              <Button className="reveal-text mt-8">View Projects</Button>
+            <Link href={"#featured-projects"} onClick={() => lenis.scrollTo("#featured-projects", { duration: 1.2 })}>
+              <Button className="reveal-text mt-8">{t("viewProjects")}</Button>
             </Link>
           </div>
 
           <div className="absolute inset-0 xl:flex flex-col hidden xl:justify-end p-8 text-[#d4d4d4]">
             <p className="reveal-text w-fit flex items-center gap-2 font-neue-montreal">
-              Scroll for more <Arrow fill="#d4d4d4" className="rotate-90" />
+              {t("scrollForMore")} <Arrow fill="#d4d4d4" className="rotate-90" />
             </p>
           </div>
 

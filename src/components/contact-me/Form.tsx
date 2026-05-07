@@ -9,8 +9,11 @@ import { useState } from "react";
 import { api } from "@/libs/api/apiClient";
 import { toast } from "sonner";
 import { Loading } from "../ui/Loading";
+import { useTranslations } from "next-intl";
 
 export const ContactMeForm = () => {
+  const t = useTranslations("HomeContact.mail");
+
   const formGroup = useForm({ email: "", fullName: "", message: "", subject: "" }, ContactPayload.sendMessage.body);
   const [loading, setLoading] = useState(false);
   const {
@@ -34,57 +37,57 @@ export const ContactMeForm = () => {
     <FormLayout form={formGroup} onFormSubmit={handleSendMessage} className="space-y-4 w-full lg:w-2xl p-5 font-neue-montreal">
       <div className="flex flex-col">
         <label htmlFor="fullName" className="font-neue-montreal reveal-text">
-          Your Full Name
+          {t("fullName")}
         </label>
         <FormLayout.input
           id="fullName"
           field="fullName"
-          placeholder="First Last"
+          placeholder={t("placeholders.name")}
           className="w-full outline-none border-b transition-all p-2 lg:pl-0"
         />
       </div>
       <div className="flex flex-col">
         <label htmlFor="email" className="font-neue-montreal reveal-text">
-          Your Email
+          {t("email")}
         </label>
         <FormLayout.input
           id="email"
           field="email"
-          placeholder="example@email.com"
+          placeholder={t("placeholders.email")}
           className="w-full outline-none border-b transition-all p-2 lg:pl-0"
           autoComplete="email"
         />
       </div>
       <div className="flex flex-col">
         <label htmlFor="subject" className="font-neue-montreal reveal-text">
-          Subject
+          {t("subject")}
         </label>
         <FormLayout.input
           id="subject"
           field="subject"
-          placeholder="What's on your mind?"
+          placeholder={t("placeholders.subject")}
           className="w-full outline-none border-b transition-all p-2 lg:pl-0"
         />
       </div>
       <div className="flex flex-col">
         <label htmlFor="message" className="font-neue-montreal reveal-text">
-          Message
+          {t("message")}
         </label>
         <FormLayout.textarea
           ref={textAreaRef}
           id="message"
           field="message"
-          placeholder="Tell me more...."
+          placeholder={t("placeholders.message")}
           className="w-full outline-none border-b transition-all p-2 lg:pl-0 leading-5"
         />
       </div>
       <div className="flex flex-col lg:flex-row gap-2">
         <div className="flex gap-2 justify-center lg:justify-start">
           <Button disabled={loading} type="submit">
-            Send
+            {t("send")}
           </Button>
-          <Button disabled={loading} onClick={resetForm} type="button">
-            Reset
+          <Button disabled={loading} onClick={resetForm} type="button" withoutArrow>
+            {t("reset")}
           </Button>
         </div>
         <div className="flex justify-center lg:justify-start">{loading && <Loading className="invert-50 h-10" />}</div>

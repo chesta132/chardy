@@ -3,7 +3,7 @@
 import { gsap } from "@/libs/gsap/register";
 import { cn } from "@/libs/utils";
 import Image, { type StaticImageData } from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useRef } from "react";
 
 export type FeaturedProject = {

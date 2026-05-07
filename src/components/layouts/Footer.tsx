@@ -1,13 +1,13 @@
 "use client";
 
-import Link from "next/link";
+import { Link, usePathname } from "@/i18n/navigation";
 import { ChardyLogo } from "../ui/Logo";
 import { FaGithub, FaLinkedin, FaRegEnvelope } from "react-icons/fa";
 import { RollingLabel, rollingLabelGroupClass } from "../ui/Label";
 import { cn } from "@/libs/utils";
-import { APP_DOMAIN } from "@/config";
+import { APP_DOMAIN, OWNER_FULLNAME } from "@/config";
 import { useSmoothScroll } from "@/contexts/SmoothScroll";
-import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 const SOCIAL_ITEMS = [
   { label: "GitHub", href: "https://github.com/chesta132", icon: FaGithub },
@@ -16,22 +16,22 @@ const SOCIAL_ITEMS = [
 ];
 
 const NAV_ITEMS = [
-  { label: "Home", href: "/#" },
-  { label: "Projects", href: "/projects" },
-  { label: "About Me", href: "/#about-me" },
-  { label: "Contact Me", href: "/#contact-me" },
-];
+  { t: "home", href: "/#" },
+  { t: "projects", href: "/projects" },
+  { t: "about", href: "/#about-me" },
+  { t: "contact", href: "/#contact-me" },
+] as const;
 
 export const Footer = ({ className, asChild, hideOnHomeWithXL }: { className?: string; asChild?: boolean; hideOnHomeWithXL?: boolean }) => {
+  const t = useTranslations();
+
   const lenis = useSmoothScroll();
   const pathname = usePathname();
 
   const handleNavClick = (item: (typeof NAV_ITEMS)[number], e: React.MouseEvent<HTMLAnchorElement>) => {
     if (item.href.startsWith("/#") && pathname === "/") {
-      e.preventDefault();
       lenis.scrollTo(item.href.substring(1), { duration: 1.2 });
     } else if (item.href === pathname) {
-      e.preventDefault();
       lenis.scrollTo(0, { duration: 1.2 });
     }
   };
@@ -52,13 +52,13 @@ export const Footer = ({ className, asChild, hideOnHomeWithXL }: { className?: s
           <div className="invert-40 flex justify-center sm:justify-start">
             <ChardyLogo animateOnHover className="h-8 w-fit" />
           </div>
-          <p className="text-xs font-supply-mono text-foreground/40 uppercase tracking-widest mt-1">Chesta Ardiona — Portfolio</p>
+          <p className="text-xs font-supply-mono text-foreground/40 uppercase tracking-widest mt-1">{t("Footer.header", { name: OWNER_FULLNAME })}</p>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-6">
           {/* Nav links */}
           <div className="flex flex-col gap-2">
-            <span className="text-[0.65rem] font-supply-mono uppercase tracking-widest text-foreground/30 mb-1">Pages</span>
+            <span className="text-[0.65rem] font-supply-mono uppercase tracking-widest text-foreground/30 mb-1">{t("Footer.pages")}</span>
             {NAV_ITEMS.map((item) => (
               <Link
                 key={item.href}
@@ -69,14 +69,14 @@ export const Footer = ({ className, asChild, hideOnHomeWithXL }: { className?: s
                 )}
                 onClick={(e) => handleNavClick(item, e)}
               >
-                <RollingLabel>{item.label}</RollingLabel>
+                <RollingLabel>{t(`Nav.${item.t}`)}</RollingLabel>
               </Link>
             ))}
           </div>
 
           {/* Social links */}
           <div className="flex flex-col gap-2">
-            <span className="text-[0.65rem] font-supply-mono uppercase tracking-widest text-foreground/30 mb-1">Socials</span>
+            <span className="text-[0.65rem] font-supply-mono uppercase tracking-widest text-foreground/30 mb-1">{t("Footer.socials")}</span>
             {SOCIAL_ITEMS.map((item) => (
               <a
                 key={item.href}
@@ -99,7 +99,7 @@ export const Footer = ({ className, asChild, hideOnHomeWithXL }: { className?: s
       {/* Bottom bar */}
       <div className="border-t border-foreground/10 pt-4 flex flex-col justify-between gap-2">
         <p className="text-[0.65rem] font-supply-mono uppercase tracking-widest text-foreground/30">
-          © {new Date().getFullYear()} Chesta Ardiona. All rights reserved.
+          {t("Footer.copyright", { year: new Date().getFullYear(), name: OWNER_FULLNAME })}
         </p>
         <p className="text-[0.65rem] font-supply-mono uppercase tracking-widest text-foreground/20">{APP_DOMAIN}</p>
       </div>

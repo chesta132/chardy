@@ -1,7 +1,7 @@
 "use client";
 
 import { useTextReveal } from "@/hooks/useTextReveal";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useRef } from "react";
 import { cn } from "@/libs/utils";
 import { Button } from "../ui/Button";
@@ -9,6 +9,7 @@ import { FaGithub, FaLinkedin, FaRegEnvelope } from "react-icons/fa";
 import { RollingLabel, rollingLabelGroupClass } from "../ui/Label";
 import { ContactMeForm } from "../contact-me/Form";
 import { Footer } from "../layouts/Footer";
+import { useTranslations } from "next-intl";
 
 const SOCIAL_ITEMS = [
   { label: "GitHub", href: "https://github.com/chesta132", icon: FaGithub },
@@ -17,6 +18,8 @@ const SOCIAL_ITEMS = [
 ];
 
 export const ContactMe = () => {
+  const t = useTranslations("HomeContact");
+
   const leftRef = useRef<HTMLDivElement>(null);
   const rightRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
@@ -28,10 +31,10 @@ export const ContactMe = () => {
   return (
     <section id="contact-me" className="flex flex-col gap-8 py-16 px-2 md:px-4 w-full min-h-dvh">
       <div ref={headerRef} className="flex justify-between w-full items-center">
-        <h2 className="text-[clamp(2rem,5vw,3.75rem)] leading-[1.1] font-neue-montreal reveal-text">Contact Me</h2>
+        <h2 className="text-[clamp(2rem,5vw,3.75rem)] leading-[1.1] font-neue-montreal reveal-text">{t("title")}</h2>
         {/* TODO: use payload cms */}
         <Link href="mailto:chestaardi4@gmail.com" className={cn("text-foreground hover:text-secondary reveal-text")}>
-          <Button>Email Me Directly</Button>
+          <Button>{t('emailDirectly')}</Button>
         </Link>
       </div>
       <div className="flex flex-col lg:flex-row justify-between gap-10 px-2 lg:px-5">

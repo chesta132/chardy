@@ -3,12 +3,7 @@ import "../assets/styles/main.css";
 import { inter } from "@/fonts/inter";
 import { neueMontreal } from "@/fonts/neueMontreal";
 import { PPSuplyMono, PPSuplySans } from "@/fonts/ppSupply";
-import SmoothScroll from "@/contexts/SmoothScroll";
 import { cn } from "@/libs/utils";
-import { Topbar } from "@/components/layouts/Topbar";
-import { Footer } from "@/components/layouts/Footer";
-import { GlobalErrorProvider, ViewGlobalError } from "@/contexts/GlobalError";
-import { Toaster } from "@/components/ui/Toaster";
 import { APP_URL } from "@/config";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -96,20 +91,11 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
       className={cn("h-full", "antialiased", inter.variable, neueMontreal.variable, PPSuplySans.variable, PPSuplyMono.variable)}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col bg-background" suppressHydrationWarning>
-        <GlobalErrorProvider>
-          <SmoothScroll>
-            <Topbar />
-            {children}
-            <Footer hideOnHomeWithXL />
-          </SmoothScroll>
-          <ViewGlobalError />
-          <Toaster />
-        </GlobalErrorProvider>
+        {children}
       </body>
     </html>
   );

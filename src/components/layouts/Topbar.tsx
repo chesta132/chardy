@@ -1,22 +1,23 @@
 "use client";
 
-import Link from "next/link";
+import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { ChardyLogo } from "../ui/Logo";
-import { usePathname } from "next/navigation";
 import { useSmoothScroll } from "@/contexts/SmoothScroll";
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import { gsap } from "@/libs/gsap/register";
-import { FaGithub, FaLinkedin, FaRegEnvelope } from "react-icons/fa";
+import { FaGithub, FaGlobe, FaLinkedin, FaRegEnvelope } from "react-icons/fa";
 import { useGSAP } from "@gsap/react";
 import { useScrollDirection } from "@/hooks/useScrollDirection";
 import { RollingLabel } from "../ui/Label";
 import { Button } from "../ui/Button";
+import { useLocale, useTranslations } from "next-intl";
+import { routing } from "@/i18n/routing";
 
 const NAV_ITEMS = [
-  { label: "Home", href: "/#" },
-  { label: "Projects", href: "/projects" },
-  { label: "About Me", href: "/#about-me" },
-];
+  { t: "home", href: "/#" },
+  { t: "projects", href: "/projects" },
+  { t: "about", href: "/#about-me" },
+] as const;
 
 const SOCIAL_ITEMS = [
   { label: "GitHub", href: "https://github.com/chesta132", icon: FaGithub },
@@ -25,7 +26,18 @@ const SOCIAL_ITEMS = [
 ];
 
 export const Topbar = () => {
+  // translations
+  const t = useTranslations("Nav");
+  const locale = useLocale();
+  const router = useRouter();
   const pathname = usePathname();
+
+  const handleNextLocale = () => {
+    const current = routing.locales.indexOf(locale as any);
+    const next = routing.locales[(current + 1) % routing.locales.length];
+    router.replace(pathname, { locale: next });
+  };
+
   const lenis = useSmoothScroll();
   const direction = useScrollDirection({ threshold: 10 });
   const [open, setOpen] = useState(false);
@@ -89,10 +101,8 @@ export const Topbar = () => {
 
   const handleNavClick = (item: (typeof NAV_ITEMS)[number], e: React.MouseEvent<HTMLAnchorElement>) => {
     if (item.href.startsWith("/#") && pathname === "/") {
-      e.preventDefault();
       lenis.scrollTo(item.href.substring(1), { duration: 1.2 });
     } else if (item.href === pathname) {
-      e.preventDefault();
       lenis.scrollTo(0, { duration: 1.2 });
     }
   };
@@ -105,9 +115,8 @@ export const Topbar = () => {
       <div className="flex items-center justify-between">
         <Link
           href={pathname === "/" ? "#" : "/"}
-          onClick={(e) => {
+          onClick={() => {
             if (pathname === "/") {
-              e.preventDefault();
               lenis.scrollTo(0, { duration: 1.2 });
             }
           }}
@@ -130,14 +139,22 @@ export const Topbar = () => {
             }}
             className="group gap-2 uppercase leading-4 cursor-pointer text-primary hover:text-secondary transition-all duration-700 ease-[cubic-bezier(0.87,0,0.13,1)]"
           >
-            <RollingLabel>{item.label}</RollingLabel>
+            <RollingLabel>{t(item.t)}</RollingLabel>
           </Link>
         ))}
       </div>
 
-      <Link className="hidden lg:flex" href={"/#contact-me"} onClick={() => lenis.scrollTo("#contact-me", { duration: 1.2 })}>
-        <Button>Contact Me</Button>
-      </Link>
+      <div className="hidden lg:flex gap-2">
+        <Button withoutArrow onClick={handleNextLocale}>
+          <div className="flex gap-2 items-center">
+            <FaGlobe />
+            {locale.toUpperCase()}
+          </div>
+        </Button>
+        <Link href={"/#contact-me"} onClick={() => lenis.scrollTo("#contact-me", { duration: 1.2 })}>
+          <Button>{t("contact")}</Button>
+        </Link>
+      </div>
 
       {/* mobile menu */}
       <div ref={menuRef} className="overflow-hidden lg:hidden!">
@@ -156,7 +173,7 @@ export const Topbar = () => {
                   setOpen(false);
                 }}
               >
-                <RollingLabel>{item.label}</RollingLabel>
+                <RollingLabel>{t(item.t)}</RollingLabel>
               </Link>
             ))}
           </div>

@@ -1,11 +1,12 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { RollingLabel, rollingLabelGroupClass } from "../ui/Label";
 import { cn } from "@/libs/utils";
 import { ProjectCard, FeaturedProject } from "../projects/ProjectCard";
 import { useTextReveal } from "@/hooks/useTextReveal";
 import { useRef } from "react";
+import { useTranslations } from "next-intl";
 
 // TODO: fetch real data from Payload CMS
 const FEATURED_PROJECTS: FeaturedProject[] = [
@@ -47,6 +48,7 @@ const FEATURED_PROJECTS: FeaturedProject[] = [
 ];
 
 export const FeaturedProjects = () => {
+  const t = useTranslations("HomeProjects");
   const headerRef = useRef<HTMLDivElement>(null);
   useTextReveal(headerRef, { on: "enter-view", direction: "down" });
 
@@ -54,9 +56,9 @@ export const FeaturedProjects = () => {
     <section id="featured-projects" className="flex flex-col gap-8 py-16 px-2 md:px-4 w-full">
       {/* Header */}
       <div className="flex justify-between w-full items-center" ref={headerRef}>
-        <h2 className="text-[clamp(2rem,5vw,3.75rem)] leading-[1.1] font-neue-montreal reveal-text">Featured Projects</h2>
+        <h2 className="text-[clamp(2rem,5vw,3.75rem)] leading-[1.1] font-neue-montreal reveal-text">{t("title")}</h2>
         <Link href="/projects" className={cn("text-foreground hover:text-secondary reveal-text", rollingLabelGroupClass)}>
-          <RollingLabel>View All</RollingLabel>
+          <RollingLabel>{t("viewAll")}</RollingLabel>
         </Link>
       </div>
 

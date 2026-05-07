@@ -10,14 +10,16 @@ import { Button } from "../ui/Button";
 import { GithubCalendar } from "../about-me/GithubCalendar";
 import { Marquee } from "../about-me/ToolsMarquee";
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useSmoothScroll } from "@/contexts/SmoothScroll";
+import { useTranslations } from "next-intl";
+import { LOCATION } from "@/config";
 
 const STATS = [
-  { name: "Years of Experience", value: "1+" },
-  { name: "Projects Completed", value: "10+" },
-  { name: "Technologies Used", value: "10+" },
-];
+  { t: "yearsOfExperience", value: "1+" },
+  { t: "projectsCompleted", value: "10+" },
+  { t: "technologiesUsed", value: "10+" },
+] as const;
 
 type Tool = { name: string; href?: string; imgUrl: string };
 
@@ -39,20 +41,21 @@ const TOOLS: Tool[] = [
 ];
 
 export const AboutMe = () => {
+  const t = useTranslations("HomeAbout");
   const lenis = useSmoothScroll();
   return (
     <section id="about-me" className="size-full flex flex-col gap-8 py-16 px-2 md:px-4">
       <div className="bg-foreground text-background rounded-2xl flex flex-col gap-10 p-10 lg:p-16">
         <div>
-          <h2 className="font-supply-mono text-background/60 flex items-center gap-2 text-[clamp(0.2rem,3vw,0.8rem)] tracking-widest">
-            ( ABOUT ME ) <Arrow className="rotate-90 fill-background/60" />
+          <h2 className="font-supply-mono text-background/60 flex items-center gap-2 text-[clamp(0.2rem,3vw,0.8rem)] tracking-widest uppercase">
+            ( {t("aboutMe")} ) <Arrow className="rotate-90 fill-background/60" />
           </h2>
         </div>
         <div className="flex flex-col-reverse lg:flex-row justify-between gap-8">
           <div className="flex lg:flex-col gap-3 justify-between items-center overflow-x-auto">
             {STATS.map((stat, idx) => (
               <div
-                key={stat.name}
+                key={stat.t}
                 className={cn(
                   "size-full aspect-square p-px from-background/0 to-primary/60 rounded-lg",
                   idx % 2 === 0 ? "bg-linear-to-tr" : "bg-linear-to-tl",
@@ -60,7 +63,7 @@ export const AboutMe = () => {
               >
                 <div className="p-8 text-center size-full items-center flex flex-col justify-center border border-background/10 rounded-lg bg-foreground">
                   <h3 className="text-[clamp(1rem,5vw,2.25rem)] font-neue-montreal">{stat.value}</h3>
-                  <p className="text-[clamp(0.2rem,3vw,0.6rem)] text-background/50 font-inter">{stat.name}</p>
+                  <p className="text-[clamp(0.2rem,3vw,0.6rem)] text-background/50 font-inter">{t(stat.t)}</p>
                 </div>
               </div>
             ))}
@@ -72,9 +75,9 @@ export const AboutMe = () => {
             <div className="flex justify-center flex-col lg:flex-row-reverse gap-2 w-full items-center">
               <div className="text-center lg:text-start">
                 <h2 className="font-neue-montreal text-[clamp(1rem,5vw,2.25rem)] lg:leading-10 leading-6.5">
-                  Based in Bekasi, Jawa Barat, Indonesia
+                  {t("basedIn", { location: LOCATION })}
                 </h2>
-                <h3 className="uppercase font-supply-mono text-text-light/50 text-[clamp(0.2rem,3vw,0.75rem)] mt-2">Available For Worldwide</h3>
+                <h3 className="uppercase font-supply-mono text-text-light/50 text-[clamp(0.2rem,3vw,0.75rem)] mt-2">{t("availableForWorldwide")}</h3>
               </div>
               <Globe markers={[{ location: WEST_JAVA, size: 0.08 }]} />
             </div>
@@ -85,6 +88,7 @@ export const AboutMe = () => {
             <div className="aspect-square w-full h-auto max-w-125 lg:size-125 bg-linear-to-tr from-[#f8a271] to-[#FF652F] rounded-lg">
               <ChardyLogo className="size-full" />
             </div>
+            {/* TODO: cms */}
             <div className="font-neue-montreal flex flex-col justify-between mb-3 lg:my-10 gap-5">
               <h2 className="text-[clamp(1rem,5vw,2.25rem)]">Chesta Ardiona</h2>
               <p className="text-[clamp(0.3rem,3vw,0.8rem)] whitespace-pre-wrap">
@@ -97,7 +101,7 @@ export const AboutMe = () => {
                 dictum dui est, vel fermentum quam tincidunt in.
               </p>
               <Link href={"/#contact-me"} onClick={() => lenis.scrollTo("#contact-me", { duration: 1.2 })}>
-                <Button className="w-fit">Contact Me</Button>
+                <Button className="w-fit">{t("contactMe")}</Button>
               </Link>
             </div>
           </div>
@@ -105,8 +109,8 @@ export const AboutMe = () => {
         <div className="p-px rounded-xl overflow-hidden bg-linear-to-br from-background/0 to-background/70">
           <div className="border px-6 py-10 flex flex-col lg:flex-row items-center gap-6 border-background/10 rounded-xl bg-foreground">
             <div className="shrink-0">
-              <h2 className="text-[clamp(0.3rem,5vw,1rem)]">Everyday's Tools</h2>
-              <p className="text-[clamp(0.2rem,3vw,0.6rem)] text-background/65">Mastered for any projects</p>
+              <h2 className="text-[clamp(0.3rem,5vw,1rem)]">{t("toolsUsed")}</h2>
+              <p className="text-[clamp(0.2rem,3vw,0.6rem)] text-background/65">{t("toolsMaster")}</p>
             </div>
 
             <div className="relative overflow-hidden flex-1 w-full">

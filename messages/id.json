@@ -1,0 +1,70 @@
+{
+  "Nav": {
+    "home": "Beranda",
+    "projects": "Karya",
+    "about": "Tentang Saya",
+    "contact": "Hubungi Saya"
+  },
+
+  "Footer": {
+    "header": "{name} — Portofolio",
+    "pages": "Halaman",
+    "socials": "Media Sosial",
+    "copyright": "© {year} {name}. Seluruh hak cipta dilindungi."
+  },
+
+  "HomeHero": {
+    "hello": "Saya {name}",
+    "viewProjects": "Lihat Karya",
+    "scrollForMore": "Scroll lebih lanjut"
+  },
+  "HomeProjects": {
+    "title": "Karya Unggulan",
+    "viewAll": "Lihat semua"
+  },
+  "HomeAbout": {
+    "aboutMe": "Tentang Saya",
+    "contactMe": "Hubungi Saya",
+    "yearsOfExperience": "Tahun Pengalaman",
+    "projectsCompleted": "Karya Selesai",
+    "technologiesUsed": "Teknologi yang digunakan",
+    "basedIn": "Berlokasi di {location}",
+    "availableForWorldwide": "Tersedia untuk seluruh dunia",
+    "toolsUsed": "Alat sehari-hari",
+    "toolsMaster": "Dikuasai untuk setiap proyek"
+  },
+  "HomeContact": {
+    "title": "Hubungi Saya",
+    "emailDirectly": "Kirim email langsung",
+    "mail": {
+      "fullName": "Nama Lengkap",
+      "email": "Email Kamu",
+      "subject": "Subjek",
+      "message": "Pesan",
+      "send": "Kirim",
+      "reset": "Reset",
+      "placeholders": {
+        "name": "Depan Belakang",
+        "email": "contoh@email.com",
+        "subject": "Apa yang kamu pikirkan?",
+        "message": "Beri tahu lebih lanjut..."
+      }
+    }
+  },
+
+  "Projects": {
+    "projects": "Karya saya",
+    "title": "Setiap Karya \ndari Berbagai Pengalaman",
+    "total": "Total {count} karya"
+  },
+
+  "ProjectDetail": {
+    "allProjects": "Semua karya",
+    "year": "Tahun",
+    "tags": "Stack / Tipe",
+    "live": "Live",
+    "visitSite": "Kunjungi situs",
+    "prevProject": "Karya sebelumnya",
+    "nextProject": "Karya berikutnya"
+  }
+}
