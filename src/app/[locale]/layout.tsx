@@ -17,10 +17,8 @@ type MetadataProps = {
 
 export async function generateMetadata({ params }: MetadataProps): Promise<Metadata> {
   let { locale } = await params;
-  console.log("first", locale);
   if (!hasLocale(routing.locales, locale)) locale = "en";
   const t = await getTranslations({ locale, namespace: "Metadata" });
-  console.log("sec", locale);
 
   return {
     title: {
