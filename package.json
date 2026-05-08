@@ -13,6 +13,7 @@
     "@gsap/react": "^2.1.2",
     "@lottiefiles/dotlottie-react": "^0.19.1",
     "@payloadcms/db-postgres": "^3.84.1",
+    "@payloadcms/email-nodemailer": "^3.84.1",
     "@payloadcms/next": "^3.84.1",
     "@payloadcms/richtext-lexical": "^3.84.1",
     "axios": "^1.16.0",

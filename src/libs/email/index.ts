@@ -3,7 +3,7 @@ import { APP_NAME, MAILER_FROM, MAILER_HOST, MAILER_PASS, MAILER_USER } from "@/
 import Mail from "nodemailer/lib/mailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
 
-const transporter = nodemailer.createTransport({
+export const transporter = nodemailer.createTransport({
   host: MAILER_HOST,
   port: 587,
   secure: false, // true for port 465, false for other ports
@@ -17,4 +17,14 @@ type SendMailOptions = Omit<Mail.Options & Partial<SMTPTransport.Options>, "html
 export const sendMail = (html: string, options: SendMailOptions) => {
   options.subject ||= `${APP_NAME} Notification`;
   return transporter.sendMail({ ...options, html, from: MAILER_FROM });
+};
+
+export const extractAddress = (from: string) => {
+  const match = from.match(/<(.+)>$/);
+  return match ? match[1] : from;
+};
+
+export const extractName = (from: string) => {
+  const match = from.match(/^"?(.*?)"?\s*<.*>$/);
+  return match ? match[1] : from;
 };
