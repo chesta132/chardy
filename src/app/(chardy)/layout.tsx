@@ -1,4 +1,4 @@
-import "../assets/styles/main.css";
+import "@/assets/styles/main.css";
 import { inter } from "@/fonts/inter";
 import { neueMontreal } from "@/fonts/neueMontreal";
 import { PPSuplyMono, PPSuplySans } from "@/fonts/ppSupply";

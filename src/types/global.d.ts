@@ -1,3 +1,5 @@
+declare module "@payloadcms/next/css";
+
 /** Utility type that removes all fields from `T` whose value type extend `U`. */
 type OmitByValue<T, U> = {
   [K in keyof T as U extends T[K] ? never : K]: T[K];
