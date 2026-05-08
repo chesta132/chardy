@@ -1,4 +1,4 @@
-import { APP_URL, REGION } from "@/config";
+import { APP_NAME, APP_URL, REGION } from "@/config";
 import { ContactFormPayload, ContactFormReplyPayload } from "./types";
 
 const C = {
@@ -29,7 +29,7 @@ const C = {
         <table width="100%" cellpadding="0" cellspacing="0">
           <tr>
             <td>
-              <img src="${APP_URL}/logo.png" alt="Chesta" height="28" style="display:block;" />
+              <img src="${APP_URL}/logo.png" alt="${APP_NAME}" height="28" style="display:block;" />
             </td>
             <td align="right">
               <span style="font-size:10px;color:#6b6560;letter-spacing:0.1em;text-transform:uppercase;">
