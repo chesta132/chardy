@@ -66,5 +66,17 @@
     "visitSite": "Kunjungi situs",
     "prevProject": "Karya sebelumnya",
     "nextProject": "Karya berikutnya"
+  },
+
+  "Metadata": {
+    "title": "{name} - Portofolio Pribadi",
+    "description": "Portofolio pribadi Chesta Ardiona — fullstack developer dari {location}. Spesialis pengembangan situs web.",
+    "og": {
+      "description": "Web developer dari {location}. Membangun pengalaman web yang bersih, modern, dan berperforma tinggi.",
+      "locale": "id_ID"
+    },
+    "twitter": {
+      "description": "Web developer dari {location}. TypeScript, React, Next.js, Golang, dan masih banyak lagi."
+    }
   }
 }

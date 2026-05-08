@@ -66,5 +66,17 @@
     "visitSite": "Visit site",
     "prevProject": "Previous project",
     "nextProject": "Next project"
+  },
+
+  "Metadata": {
+    "title": "{name} - Personal Portfolio",
+    "description": "Personal portfolio of {name} — a fullstack developer from {location}. Specializing in website development.",
+    "og": {
+      "description": "Web developer from {location}. Building clean, modern, and performant web experiences.",
+      "locale": "en_US"
+    },
+    "twitter": {
+      "description": "Web developer from {location}. TypeScript, React, Next.js, Golang, and more."
+    }
   }
 }
