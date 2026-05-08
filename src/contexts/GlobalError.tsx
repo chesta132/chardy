@@ -20,11 +20,8 @@ export const GlobalErrorProvider = ({ children }: { children: ReactNode }) => {
   const [error, setError] = useState<GlobalError>(null);
   const clearError = () => setError(null);
 
-  return (
-    <GlobalErrorContext.Provider value={{ error, setError, clearError }}>
-      <SilentErrorBoundary onError={setError}>{children}</SilentErrorBoundary>
-    </GlobalErrorContext.Provider>
-  );
+  // TODO: implement real error ui
+  return <GlobalErrorContext.Provider value={{ error, setError, clearError }}>{children}</GlobalErrorContext.Provider>;
 };
 
 export const useGlobalError = () => {
