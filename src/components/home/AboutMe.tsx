@@ -84,7 +84,7 @@ export const AboutMe = ({ data, githubUrl }: { data: AboutMePayload; githubUrl: 
             <div className="font-neue-montreal flex flex-col justify-between mb-3 lg:my-10 gap-5">
               <h2 className="text-[clamp(1rem,5vw,2.25rem)]">{OWNER_FULLNAME}</h2>
               <RichText data={data.cardContent} />
-              <Link href={"/#contact-me"} onClick={() => lenis.scrollTo("#contact-me", { duration: 1.2 })}>
+              <Link href={"/#contact-me"} className="w-fit" onClick={() => lenis.scrollTo("#contact-me", { duration: 1.2 })}>
                 <Button className="w-fit">{t("contactMe")}</Button>
               </Link>
             </div>
