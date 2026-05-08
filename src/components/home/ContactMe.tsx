@@ -10,15 +10,18 @@ import { RollingLabel, rollingLabelGroupClass } from "../ui/Label";
 import { ContactMeForm } from "../contact-me/Form";
 import { Footer } from "../layouts/Footer";
 import { useTranslations } from "next-intl";
+import { ContactMe as ContactMePayload } from "@/types/payload";
 
-const SOCIAL_ITEMS = [
-  { label: "GitHub", href: "https://github.com/chesta132", icon: FaGithub },
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/chesta-ardiona-895601405", icon: FaLinkedin },
-  { label: "Email", href: "mailto:chestaardi4@gmail.com", icon: FaRegEnvelope },
+const getSocialItems = (data: ContactMePayload["socials"]) => [
+  { label: "GitHub", href: data.github, icon: FaGithub },
+  { label: "LinkedIn", href: data.linkedin, icon: FaLinkedin },
+  { label: "Email", href: `mailto:${data.email}`, icon: FaRegEnvelope },
 ];
 
-export const ContactMe = () => {
+export const ContactMe = ({ data }: { data: ContactMePayload }) => {
   const t = useTranslations("HomeContact");
+
+  const socialItems = getSocialItems(data.socials);
 
   const leftRef = useRef<HTMLDivElement>(null);
   const rightRef = useRef<HTMLDivElement>(null);
@@ -32,15 +35,14 @@ export const ContactMe = () => {
     <section id="contact-me" className="flex flex-col gap-8 py-16 px-2 md:px-4 w-full min-h-dvh">
       <div ref={headerRef} className="flex justify-between w-full items-center">
         <h2 className="text-[clamp(2rem,5vw,3.75rem)] leading-[1.1] font-neue-montreal reveal-text">{t("title")}</h2>
-        {/* TODO: use payload cms */}
-        <Link href="mailto:chestaardi4@gmail.com" className={cn("text-foreground hover:text-secondary reveal-text")}>
-          <Button>{t('emailDirectly')}</Button>
+        <Link href={`mailto:${data.socials.email}`} className={cn("text-foreground hover:text-secondary reveal-text")}>
+          <Button>{t("emailDirectly")}</Button>
         </Link>
       </div>
       <div className="flex flex-col lg:flex-row justify-between gap-10 px-2 lg:px-5">
         <div ref={leftRef} className="flex flex-col justify-between">
           <div className="flex flex-col gap-4">
-            {SOCIAL_ITEMS.map((item) => (
+            {socialItems.map((item) => (
               <a
                 key={item.href}
                 href={item.href}

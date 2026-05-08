@@ -12,8 +12,11 @@ import { useSmoothScroll } from "@/contexts/SmoothScroll";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { OWNER_FIRSTNAME } from "@/config";
+import { type Hero as HeroPayload } from "@/types/payload";
 
-export const Hero = () => {
+type Props = { data: HeroPayload };
+
+export const Hero = ({ data }: Props) => {
   const t = useTranslations("HomeHero");
   const containerRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
@@ -68,11 +71,11 @@ export const Hero = () => {
             <p className="reveal-text text-[clamp(0.7rem,1vw,0.875rem)] text-neutral-400 mb-4 font-supply-mono uppercase">
               ( {t("hello", { name: OWNER_FIRSTNAME })} )
             </p>
-            <h1 className="reveal-text text-[clamp(2rem,5vw,3.75rem)]/[clamp(2.5rem,5.5vw,4.125rem)] text-white mb-4 uppercase font-neue-montreal">
-              Lorem ipsum <br /> dolor
+            <h1 className="reveal-text text-[clamp(2rem,5vw,3.75rem)]/[clamp(2.5rem,5.5vw,4.125rem)] text-white mb-4 uppercase font-neue-montreal whitespace-pre-wrap">
+              {data.title}
             </h1>
             <p className="reveal-text text-[clamp(0.875rem,1.5vw,1.25rem)]/[clamp(1.1rem,2vw,1.1875rem)] text-neutral-200 max-w-lg font-neue-montreal">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis maximus augue sapien, at commodo massa imperdiet in.
+              {data.subtitle}
             </p>
             <Link href={"#featured-projects"} onClick={() => lenis.scrollTo("#featured-projects", { duration: 1.2 })}>
               <Button className="reveal-text mt-8">{t("viewProjects")}</Button>

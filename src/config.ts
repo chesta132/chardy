@@ -17,7 +17,7 @@ export const {
   // cloudinary
   CLOUDINARY_KEY,
   CLOUDINARY_SECRET,
-  CLOUDINARY_NAME,
+  CLOUDINARY_CLOUD_NAME,
   CLOUDINARY_FOLDER,
 } = process.env;
 

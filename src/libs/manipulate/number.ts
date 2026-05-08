@@ -29,7 +29,7 @@ export const getMaxChar = (width: number, { fontSize = 16, fontFamily = "Manrope
   return result;
 };
 
-type TimeInMsProps = {
+type TimeProps = {
   second?: number;
   minute?: number;
   hour?: number;
@@ -39,7 +39,7 @@ type TimeInMsProps = {
   year?: number;
 };
 
-export const timeInMs = ({ second = 0, minute = 0, hour = 0, day = 0, week = 0, month = 0, year = 0 }: TimeInMsProps) => {
+export const timeInMs = ({ second = 0, minute = 0, hour = 0, day = 0, week = 0, month = 0, year = 0 }: TimeProps) => {
   const factors = {
     second: 1000,
     minute: 1000 * 60,
@@ -59,4 +59,8 @@ export const timeInMs = ({ second = 0, minute = 0, hour = 0, day = 0, week = 0, 
     month * factors.month +
     year * factors.year
   );
+};
+
+export const timeInSec = (props: TimeProps) => {
+  return timeInMs(props) / 1000;
 };
