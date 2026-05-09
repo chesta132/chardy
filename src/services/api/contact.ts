@@ -2,32 +2,23 @@ import { OWNER_EMAIL } from "@/config";
 import { sendMail } from "@/libs/email";
 import { EmailTemplates } from "@/libs/email/templates";
 import { ContactPayload } from "@/payloads/contact";
-import { getPayload } from "payload";
-import config from "@payload-config";
-import { timeInMs } from "@/libs/manipulate/number";
+import { timeInSec } from "@/libs/manipulate/number";
 import { ServerError } from "@/libs/error/server";
 import { Locale } from "@/i18n/types";
 import { createTranslator } from "next-intl";
 import { getMessages } from "@/i18n/request";
+import { redis } from "@/libs/redis";
 
 export abstract class ContactService {
   static readonly MAX_SEND_MESSAGE = 3; // per hour
 
   static readonly sendMessage = async ({ email, fullName, message, subject }: ContactPayload.SendMessageBody, lang: Locale) => {
     const submitTime = new Date();
-    const oneHourAgo = new Date(Date.now() - timeInMs({ hour: 1 }));
-    const payload = await getPayload({ config });
 
-    await payload.delete({ collection: "contact-rate-limit", where: { sentAt: { less_than: oneHourAgo } }, select: { sentAt: true } });
+    let totalSend = await redis.get<number>(`contact:cta:${email}`);
+    if (totalSend === null || totalSend < 0) totalSend = 0;
 
-    const { totalDocs } = await payload.find({
-      collection: "contact-rate-limit",
-      where: { email: { equals: email } },
-      select: { email: true },
-      limit: this.MAX_SEND_MESSAGE,
-    });
-
-    if (totalDocs >= this.MAX_SEND_MESSAGE) {
+    if (totalSend >= this.MAX_SEND_MESSAGE) {
       const t = createTranslator({ locale: lang, messages: await getMessages(lang), namespace: "Error.Contact" });
       throw new ServerError("TOO_MUCH_REQ", { desc: t("TOO_MUCH_REQ.desc") }).withLocale(lang);
     }
@@ -35,7 +26,11 @@ export abstract class ContactService {
     await sendMail(await EmailTemplates.contactForm({ email, fullName, message, subject, submittedAt: submitTime }, lang), { to: OWNER_EMAIL! });
 
     // ignorable
-    payload.create({ collection: "contact-rate-limit", data: { email, sentAt: submitTime.toISOString() } });
+    redis
+      .pipeline()
+      .incr(`contact:cta:${email}`)
+      .expire(`contact:cta:${email}`, timeInSec({ hour: 1 }))
+      .exec();
     sendMail(await EmailTemplates.contactFormReply({ fullName, subject }, lang), { to: email }).catch(() => {});
 
     return null;

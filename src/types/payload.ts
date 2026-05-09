@@ -70,7 +70,6 @@ export interface Config {
     users: User;
     media: Media;
     project: Project;
-    'contact-rate-limit': ContactRateLimit;
     'featured-project': FeaturedProject;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -82,7 +81,6 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     project: ProjectSelect<false> | ProjectSelect<true>;
-    'contact-rate-limit': ContactRateLimitSelect<false> | ContactRateLimitSelect<true>;
     'featured-project': FeaturedProjectSelect<false> | FeaturedProjectSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -271,17 +269,6 @@ export interface Project {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "contact-rate-limit".
- */
-export interface ContactRateLimit {
-  id: number;
-  email: string;
-  sentAt: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "featured-project".
  */
 export interface FeaturedProject {
@@ -327,10 +314,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'project';
         value: number | Project;
-      } | null)
-    | ({
-        relationTo: 'contact-rate-limit';
-        value: number | ContactRateLimit;
       } | null)
     | ({
         relationTo: 'featured-project';
@@ -453,16 +436,6 @@ export interface ProjectSelect<T extends boolean = true> {
   liveSite?: T;
   description?: T;
   screenshot?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "contact-rate-limit_select".
- */
-export interface ContactRateLimitSelect<T extends boolean = true> {
-  email?: T;
-  sentAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }
