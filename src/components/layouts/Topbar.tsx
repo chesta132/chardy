@@ -8,10 +8,12 @@ import { gsap } from "@/libs/gsap/register";
 import { FaGithub, FaGlobe, FaLinkedin, FaRegEnvelope } from "react-icons/fa";
 import { useGSAP } from "@gsap/react";
 import { useScrollDirection } from "@/hooks/useScrollDirection";
-import { RollingLabel } from "../ui/Label";
+import { RollingLabel, rollingLabelGroupClass } from "../ui/Label";
 import { Button } from "../ui/Button";
 import { useLocale, useTranslations } from "next-intl";
 import { routing } from "@/i18n/routing";
+import { Locale } from "@/i18n/types";
+import { cn } from "@/libs/utils";
 
 const NAV_ITEMS = [
   { t: "home", href: "/#" },
@@ -25,6 +27,12 @@ const SOCIAL_ITEMS = [
   { label: "Email", href: "mailto:chestaardi4@gmail.com", icon: FaRegEnvelope },
 ];
 
+const LANG_MAP: Record<Locale, string> = {
+  en: "English",
+  id: "Bahasa Indonesia",
+};
+const LANG_MAP_ENTRIES = Object.entries(LANG_MAP) as [Locale, string][];
+
 export const Topbar = () => {
   // translations
   const t = useTranslations("Nav");
@@ -32,10 +40,14 @@ export const Topbar = () => {
   const router = useRouter();
   const pathname = usePathname();
 
+  const setLocale = (locale: Locale) => {
+    router.replace(pathname, { locale });
+  };
+
   const handleNextLocale = () => {
     const current = routing.locales.indexOf(locale as any);
     const next = routing.locales[(current + 1) % routing.locales.length];
-    router.replace(pathname, { locale: next });
+    setLocale(next);
   };
 
   const lenis = useSmoothScroll();
@@ -45,7 +57,7 @@ export const Topbar = () => {
 
   const navRef = useRef<HTMLElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
-  const itemsRef = useRef<HTMLDivElement[]>([]);
+  const itemsRef = useRef<HTMLElement[]>([]);
 
   // gsap for initial load animation
   useGSAP(
@@ -160,14 +172,32 @@ export const Topbar = () => {
       <div ref={menuRef} className="overflow-hidden lg:hidden!">
         <div className="mt-10 space-y-10">
           <div className="flex flex-col space-y-2">
+            {LANG_MAP_ENTRIES.map(([l, label], i) => (
+              <div
+                key={l}
+                className={cn(
+                  "text-xs leading-4 cursor-pointer text-primary hover:text-secondary uppercase",
+                  rollingLabelGroupClass,
+                  l === locale && "text-secondary",
+                )}
+                onClick={() => l !== locale && setLocale(l)}
+                ref={(el) => {
+                  if (el) itemsRef.current[i] = el;
+                }}
+              >
+                <RollingLabel>{label}</RollingLabel>
+              </div>
+            ))}
+          </div>
+          <div className="flex flex-col space-y-2">
             {NAV_ITEMS.map((item, i) => (
               <Link
                 key={item.href}
                 href={item.href}
                 ref={(el) => {
-                  if (el) itemsRef.current[i] = el as any;
+                  if (el) itemsRef.current[LANG_MAP_ENTRIES.length + i] = el;
                 }}
-                className="group gap-2 uppercase leading-4 text-xs cursor-pointer text-primary hover:text-secondary transition-all duration-700 ease-[cubic-bezier(0.87,0,0.13,1)]"
+                className={cn("uppercase leading-4 text-xs cursor-pointer text-primary hover:text-secondary", rollingLabelGroupClass)}
                 onClick={(e) => {
                   handleNavClick(item, e);
                   setOpen(false);
@@ -185,9 +215,9 @@ export const Topbar = () => {
                 target="_blank"
                 rel="noreferrer"
                 ref={(el) => {
-                  if (el) itemsRef.current[NAV_ITEMS.length + i] = el as any;
+                  if (el) itemsRef.current[LANG_MAP_ENTRIES.length + NAV_ITEMS.length + i] = el;
                 }}
-                className="flex group gap-2 uppercase leading-4 text-xs cursor-pointer text-primary hover:text-secondary transition-all duration-700 ease-[cubic-bezier(0.87,0,0.13,1)]"
+                className={cn("flex gap-2 uppercase leading-4 text-xs cursor-pointer text-primary hover:text-secondary", rollingLabelGroupClass)}
               >
                 <item.icon className="text-primary!" />
                 <RollingLabel>{item.label}</RollingLabel>
