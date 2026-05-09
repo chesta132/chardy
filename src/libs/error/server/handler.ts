@@ -1,12 +1,8 @@
 import { Reply } from "@/libs/reply";
 import { ServerError } from ".";
 
-export const handleServerError = (err: unknown, reply: Reply) => {
+export const handleServerError = async (err: unknown, reply: Reply) => {
   const res = reply.reset();
-  if (err instanceof ServerError) {
-    new ServerError(err).exec(res);
-    return;
-  } else {
-    res.error({ message: "Internal server error", code: "SERVER_ERROR", details: (err as Error).message || "Unknown error occured." }).fail();
-  }
+  const error = err instanceof ServerError ? err : new ServerError("SERVER_ERROR", new Error((err as Error)?.message));
+  await error.withLocale(error.locale).exec(res);
 };

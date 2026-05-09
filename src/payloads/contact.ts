@@ -11,7 +11,7 @@ export abstract class ContactPayload {
       message: z.string().min(1, "Message is required"),
     }),
     query: z.object({
-      lang: z.enum(routing.locales).default("en"),
+      lang: z.enum(routing.locales),
     }),
   } satisfies CreateRouteValidator;
 }

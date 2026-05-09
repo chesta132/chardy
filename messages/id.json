@@ -111,5 +111,39 @@
       "ctaButton": "Lihat karya saya →",
       "footer": "Kamu menerima ini karena kamu mengisi formulir kontak di {domain}."
     }
+  },
+
+  "Error": {
+    "ServerError": {
+      "CLIENT_FIELD": {
+        "message": "Nilai yang dimasukkan tidak valid."
+      },
+      "MISSING_FIELDS": {
+        "message": "{count} kolom wajib diisi.",
+        "fieldVal": "Kolom ini wajib diisi."
+      },
+      "INVALID_AUTH": {
+        "title": "Autentikasi Diperlukan",
+        "message": "Silakan login untuk melanjutkan."
+      },
+      "NOT_FOUND": {
+        "message": "{item} tidak ditemukan."
+      },
+      "TOO_MUCH_REQ": {
+        "title": "Terlalu Banyak Permintaan",
+        "message": "Terlalu banyak tindakan.",
+        "desc": "Silakan coba lagi nanti."
+      },
+      "SERVER_ERROR": {
+        "title": "Kesalahan Server",
+        "message": "Terjadi kesalahan pada server."
+      }
+    },
+
+    "Contact": {
+      "TOO_MUCH_REQ": {
+        "desc": "Silakan kirim pesan lagi nanti."
+      }
+    }
   }
 }

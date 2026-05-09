@@ -83,7 +83,7 @@ export class Route<H extends Handlers> {
       if (!handlers || this.count >= handlers.length) {
         (this.count as any)--;
         throw new ServerError("SERVER_ERROR", {
-          message: "Rute tidak valid: tidak ada hander lebih lanjut.",
+          message: "Route not valid: no next handler.",
           debug: {
             currentIndex: this.count,
             totalHandlers: handlers?.length || 0,
@@ -135,7 +135,7 @@ export class Route<H extends Handlers> {
         }
       } catch (err) {
         if (recover) return await recover(err, req, res);
-        else return handleServerError(err, res.reply);
+        else return await handleServerError(err, res.reply);
       }
     };
   }
