@@ -1,4 +1,3 @@
-export const OWNER_EMAIL = process.env.NEXT_PUBLIC_OWNER_EMAIL;
 export const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://chardy.dev";
 
 export const {
@@ -7,6 +6,7 @@ export const {
   MAILER_HOST,
   MAILER_PASS,
   MAILER_USER,
+  OWNER_EMAIL,
 
   // db
   DATABASE_URL,
