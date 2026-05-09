@@ -1,8 +1,5 @@
-import { ResponseError } from "@/libs/api/serverResponse";
 import { Toaster as SonnerToaster, toast } from "sonner";
 import { ZodError } from "zod";
-
-export { toast };
 
 export function Toaster() {
   return (
@@ -24,11 +21,6 @@ export const toastError = (err: unknown, { fallback = "An error occured", unmatc
     if (unmatchSilent) return err;
     else throw err;
   };
-  if (err instanceof ResponseError) {
-    fallback = err.getMessage();
-    // should be handled with useForm
-    if (fallback.toLowerCase() === "invalid payload") return unMatch(err);
-  }
   // should be handled with useForm
   if (err instanceof ZodError) return unMatch(err);
   if (err instanceof Error) {

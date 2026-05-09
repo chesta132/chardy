@@ -1,4 +1,8 @@
+"use client";
+
 import { record } from "@/libs/manipulate/object";
+import { Payload } from "@/payloads";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { type ZodObject, type infer as ZodInfer, type ZodError, z, ZodType } from "zod";
 
@@ -9,20 +13,18 @@ export type FormGroup<T extends ZodObject> = {
   readonly resetForm: () => void;
   readonly updateField: <K extends keyof ZodInfer<T>>(field: K, value: ZodInfer<T>[K]) => void;
 };
+type FormErrorTranslations = ReturnType<typeof useTranslations<"Form.error">>;
 
 export const useForm = <T extends ZodObject>(defaultVal: ZodInfer<T>, validator: T) => {
   type Inferred = ZodInfer<T>;
+  const tErr = useTranslations("Form.error");
   const [form, setForm] = useState(defaultVal);
   const [error, setError] = useState(record(defaultVal, ""));
-
-  const formatErrors = (zodError: ZodError) => {
-    return Object.fromEntries(Object.entries<string[]>(z.flattenError(zodError).fieldErrors).map(([key, val]) => [key, val?.[0] ?? ""]));
-  };
 
   const validateForm = () => {
     const parsed = validator.safeParse(form);
     if (!parsed.success) {
-      setError((prev) => ({ ...prev, ...formatErrors(parsed.error) }));
+      setError((prev) => ({ ...prev, ...formatErrors(parsed.error, tErr) }));
     } else {
       setError(record(error, ""));
     }
@@ -36,7 +38,7 @@ export const useForm = <T extends ZodObject>(defaultVal: ZodInfer<T>, validator:
       const validator = z.object({ [field]: fieldValidator });
       const parsed = validator.safeParse({ [field]: value });
       if (!parsed.success) {
-        setError((prev) => ({ ...prev, ...formatErrors(parsed.error) }));
+        setError((prev) => ({ ...prev, ...formatErrors(parsed.error, tErr) }));
       } else if (error[field.toString()] !== "") {
         setError((prev) => ({ ...prev, [field]: "" }));
       }
@@ -55,4 +57,15 @@ export const useForm = <T extends ZodObject>(defaultVal: ZodInfer<T>, validator:
     resetForm,
     updateField,
   } as FormGroup<T>;
+};
+
+const formatErrors = (zodError: ZodError, t: FormErrorTranslations) => {
+  return Object.fromEntries(
+    Object.entries<string[]>(z.flattenError(zodError).fieldErrors).map(([key, val]) => [key, val?.[0] ? localizeError(val[0], t) : ""]),
+  );
+};
+
+const localizeError = (error: string, t: FormErrorTranslations) => {
+  if (error in Payload.LOCALIZATION) return t(error);
+  else return error;
 };

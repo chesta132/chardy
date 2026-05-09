@@ -185,5 +185,12 @@
         "action": "Kembali ke Beranda"
       }
     }
+  },
+
+  "Form": {
+    "error": {
+      "INVALID_EMAIL": "Alamat email tidak valid.",
+      "REQUIRED_FIELD": "Bidang ini wajib diisi."
+    }
   }
 }

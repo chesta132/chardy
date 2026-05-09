@@ -6,17 +6,17 @@ import { useForm } from "@/hooks/useForm";
 import { Button } from "../ui/Button";
 import { ContactPayload } from "@/payloads/contact";
 import { useState } from "react";
-import { api } from "@/libs/api/apiClient";
 import { toast } from "sonner";
 import { Loading } from "../ui/Loading";
 import { useLocale, useTranslations } from "next-intl";
 import { Locale } from "@/i18n/types";
+import { sendMessageAction } from "@/actions/contact";
 
 export const ContactMeForm = () => {
   const t = useTranslations("HomeContact.mail");
   const locale = useLocale();
 
-  const formGroup = useForm({ email: "", fullName: "", message: "", subject: "" }, ContactPayload.sendMessage.body);
+  const formGroup = useForm({ email: "", fullName: "", message: "", subject: "" }, ContactPayload.sendMessage);
   const [loading, setLoading] = useState(false);
   const {
     form: [form],
@@ -25,10 +25,10 @@ export const ContactMeForm = () => {
 
   const { textAreaRef } = useAutosizeTextarea(form.message);
 
-  const handleSendMessage = async (_: unknown, form: ContactPayload.SendMessageBody) => {
+  const handleSendMessage = async (_: unknown, form: ContactPayload.SendMessage) => {
     try {
       setLoading(true);
-      await api.post("/contact", { data: form, query: { lang: locale as Locale } });
+      await sendMessageAction(form, locale as Locale);
       toast.info("Message sent successfully!");
     } finally {
       setLoading(false);

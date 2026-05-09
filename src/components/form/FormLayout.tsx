@@ -48,7 +48,7 @@ export const FormLayout = <F extends ZodObject, C extends boolean = false>({
       await onFormSubmit?.(e, formVal);
       if (resetAfterSubmit) resetForm();
     } catch (err) {
-      handleFormError(err, setFormError, setError);
+      await handleFormError(err, setFormError, setError);
     }
   };
 

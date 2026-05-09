@@ -1,16 +1,23 @@
 import { capital } from "@/libs/manipulate/string";
-import { Reply } from "../../reply";
-import { ErrorReplyType } from "../../reply/types";
 import { record } from "../../manipulate/object";
-import { ServerErrorMessages } from "./messages";
 import { Locale } from "@/i18n/types";
 import { createTranslator } from "next-intl";
 import { getMessages } from "@/i18n/request";
 
-interface RestError extends Omit<ErrorReplyType, "message" | "code" | "field"> {
+interface RestError {
   debug?: any;
   field?: Record<string, string>;
 }
+
+export type CodeError =
+  | "CLIENT_FIELD"
+  | "MISSING_FIELDS"
+  | "INVALID_AUTH"
+  | "NOT_FOUND"
+  | "TOO_MUCH_REQUEST"
+  | "SERVER_ERROR"
+  | "FORBIDDEN"
+  | "CONFLICT";
 export type ServerErrorConfig =
   | { code: "CLIENT_FIELD"; deps: [err: { field: Record<string, string> } & Omit<RestError, "field">] }
   | { code: "MISSING_FIELDS"; deps: [err: { field: Record<string, string> | string[] } & Omit<RestError, "field">] }
@@ -21,11 +28,17 @@ export type ServerErrorConfig =
   | { code: "FORBIDDEN"; deps: [err: { message: string } & RestError] }
   | { code: "CONFLICT"; deps: [err: { message: string } & RestError] };
 export type ServerErrorCode = ServerErrorConfig["code"];
+export type FlattenedServerError = {
+  code: CodeError;
+  message: string;
+  field?: Record<string, string>;
+  details?: string;
+};
 
 type Config<C> = Extract<ServerErrorConfig, { code: C }>;
 type DepsOf<C extends ServerErrorCode> = Config<C>["deps"];
 
-export class ServerError<C extends ServerErrorCode> extends ServerErrorMessages {
+export class ServerError<C extends ServerErrorCode> {
   private code: C;
   private deps: DepsOf<C>;
   readonly locale: Locale = "en";
@@ -34,7 +47,6 @@ export class ServerError<C extends ServerErrorCode> extends ServerErrorMessages 
   constructor(error: ServerError<C>);
 
   constructor(codeOrError: C | ServerError<C>, ...depsOrRes: DepsOf<C> | [undefined]) {
-    super();
     if (codeOrError instanceof ServerError) {
       this.code = codeOrError.code;
       this.deps = codeOrError.deps;
@@ -49,66 +61,68 @@ export class ServerError<C extends ServerErrorCode> extends ServerErrorMessages 
     return this;
   }
 
-  async exec(reply: Reply) {
+  async flatten(): Promise<FlattenedServerError> {
     const t = createTranslator({ locale: this.locale, messages: await getMessages(this.locale), namespace: "Error.ServerError" });
     const { deps, code } = { code: this.code, deps: this.deps } as ServerErrorConfig;
 
     switch (code) {
       case "CLIENT_FIELD":
-        reply.error({ ...deps[0], message: t("CLIENT_FIELD.message"), code: "CLIENT_FIELD" });
-        break;
+        return { ...deps[0], message: t("CLIENT_FIELD.message"), code: "CLIENT_FIELD" } as const;
       case "MISSING_FIELDS":
         const arrFields = Array.isArray(deps[0].field) ? [...new Set(deps[0].field)] : Object.keys(deps[0].field);
         const fieldVal = t("MISSING_FIELDS.fieldVal");
         const objFields = Array.isArray(deps[0].field) ? record(deps[0].field, fieldVal) : deps[0].field;
-        reply.error({
+        return {
           ...deps[0],
-          title: "Missing Fields",
           message: t("MISSING_FIELDS.message", { count: arrFields.length }),
           code: "MISSING_FIELDS",
           field: objFields,
-        });
-        break;
+        } as const;
       case "INVALID_AUTH":
-        reply.error({
+        return {
           ...deps[0],
-          title: t("INVALID_AUTH.title"),
           message: t("INVALID_AUTH.message"),
           code: "INVALID_AUTH",
-        });
-        break;
+        } as const;
       case "NOT_FOUND":
-        reply.error({
+        return {
           ...deps[0],
-          title: t("NOT_FOUND.title"),
           message: `${t("NOT_FOUND.message", { item: deps[0].item })}${deps[0].desc ? ` ${capital(deps[0].desc)}` : ""}}`,
-          // message: `${capital(deps[0].item)} not found.${deps[0].desc ? ` ${capital(deps[0].desc)}` : ""}`,
           code: "NOT_FOUND",
-        });
-        break;
+        } as const;
       case "TOO_MUCH_REQ":
-        reply.error({
+        return {
           ...deps[0],
-          title: t("TOO_MUCH_REQ.title"),
           message: `${t("TOO_MUCH_REQ.message")} ${capital(deps[0]?.desc || t("TOO_MUCH_REQ.desc"))}`,
           code: "TOO_MUCH_REQUEST",
-        });
-        break;
+        } as const;
       case "SERVER_ERROR":
-        reply.error({
+        return {
           ...deps[0],
-          title: t("SERVER_ERROR.title"),
           message: deps[0].message || t("SERVER_ERROR.message"),
           code: "SERVER_ERROR",
           details: deps[0].error?.message,
-        });
-        break;
+        } as const;
       case "FORBIDDEN":
       case "CONFLICT":
-        reply.error({ ...deps[0], code });
-        break;
+        return { ...deps[0], code } as const;
     }
-
-    reply.debug(deps[0]?.debug).fail();
   }
+
+  async flattenToString() {
+    return JSON.stringify(await this.flatten());
+  }
+
+  static flattenFromString(str: string) {
+    try {
+      const parsed = JSON.parse(str);
+      return isServerError(parsed) ? parsed : null;
+    } catch {
+      return null;
+    }
+  }
+}
+
+export function isServerError(err: unknown): err is FlattenedServerError {
+  return typeof err === "object" && err !== null && "code" in err;
 }

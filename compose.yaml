@@ -18,9 +18,35 @@ services:
     networks:
       - app-network
 
+  redis:
+    image: redis:alpine
+    container_name: chardy-redis
+    volumes:
+      - redis-chardy-data:/redis/data
+    ports:
+      - "6379:6379"
+    networks:
+      - app-network
+
+  upstash-proxy:
+    image: hiett/serverless-redis-http:latest
+    ports:
+      - "8080:80"
+    volumes:
+      - redis-chardy-data:/redis/upstash/data
+    environment:
+      - SRH_MODE=env
+      - SRH_TOKEN=example_token
+      - SRH_CONNECTION_STRING=redis://redis:6379
+    depends_on:
+      - redis
+    networks:
+      - app-network
+
 networks:
   app-network:
     driver: bridge
 
 volumes:
   postgres-chardy-data:
+  redis-chardy-data:

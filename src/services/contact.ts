@@ -12,7 +12,7 @@ import { redis } from "@/libs/redis";
 export abstract class ContactService {
   static readonly MAX_SEND_MESSAGE = 3; // per hour
 
-  static readonly sendMessage = async ({ email, fullName, message, subject }: ContactPayload.SendMessageBody, lang: Locale) => {
+  static readonly sendMessage = async ({ email, fullName, message, subject }: ContactPayload.SendMessage, lang: Locale) => {
     const submitTime = new Date();
 
     let totalSend = await redis.get<number>(`contact:cta:${email}`);
@@ -20,7 +20,7 @@ export abstract class ContactService {
 
     if (totalSend >= this.MAX_SEND_MESSAGE) {
       const t = createTranslator({ locale: lang, messages: await getMessages(lang), namespace: "Error.Contact" });
-      throw new ServerError("TOO_MUCH_REQ", { desc: t("TOO_MUCH_REQ.desc") }).withLocale(lang);
+      throw await new ServerError("TOO_MUCH_REQ", { desc: t("TOO_MUCH_REQ.desc") }).withLocale(lang).flattenToString();
     }
 
     await sendMail(await EmailTemplates.contactForm({ email, fullName, message, subject, submittedAt: submitTime }, lang), { to: OWNER_EMAIL! });
@@ -30,7 +30,8 @@ export abstract class ContactService {
       .pipeline()
       .incr(`contact:cta:${email}`)
       .expire(`contact:cta:${email}`, timeInSec({ hour: 1 }))
-      .exec();
+      .exec()
+      .catch(() => {});
     sendMail(await EmailTemplates.contactFormReply({ fullName, subject }, lang), { to: email }).catch(() => {});
 
     return null;

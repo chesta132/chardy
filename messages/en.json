@@ -186,5 +186,12 @@
         "action": "Back to Home"
       }
     }
+  },
+
+  "Form": {
+    "error": {
+      "INVALID_EMAIL": "Invalid email address.",
+      "REQUIRED_FIELD": "This field is required."
+    }
   }
 }
