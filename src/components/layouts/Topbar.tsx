@@ -3,7 +3,7 @@
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { ChardyLogo } from "../ui/Logo";
 import { useSmoothScroll } from "@/contexts/SmoothScroll";
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef } from "react";
 import { gsap } from "@/libs/gsap/register";
 import { FaGithub, FaGlobe, FaLinkedin, FaRegEnvelope } from "react-icons/fa";
 import { useGSAP } from "@gsap/react";
@@ -14,6 +14,8 @@ import { useLocale, useTranslations } from "next-intl";
 import { routing } from "@/i18n/routing";
 import { Locale } from "@/i18n/types";
 import { cn } from "@/libs/utils";
+import { ContactMe } from "@/types/payload";
+import { getSocialItems } from "../home/ContactMe";
 
 const NAV_ITEMS = [
   { t: "home", href: "/#" },
@@ -21,19 +23,13 @@ const NAV_ITEMS = [
   { t: "about", href: "/#about-me" },
 ] as const;
 
-const SOCIAL_ITEMS = [
-  { label: "GitHub", href: "https://github.com/chesta132", icon: FaGithub },
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/chesta-ardiona-895601405", icon: FaLinkedin },
-  { label: "Email", href: "mailto:chestaardi4@gmail.com", icon: FaRegEnvelope },
-];
-
 const LANG_MAP: Record<Locale, string> = {
   en: "English",
   id: "Bahasa Indonesia",
 };
 const LANG_MAP_ENTRIES = Object.entries(LANG_MAP) as [Locale, string][];
 
-export const Topbar = () => {
+export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
   // translations
   const t = useTranslations("Nav");
   const locale = useLocale();
@@ -208,7 +204,7 @@ export const Topbar = () => {
             ))}
           </div>
           <div className="flex flex-col space-y-2">
-            {SOCIAL_ITEMS.map((item, i) => (
+            {getSocialItems(socials).map((item, i) => (
               <a
                 key={item.href}
                 href={item.href}

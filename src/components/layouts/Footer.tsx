@@ -2,18 +2,13 @@
 
 import { Link, usePathname } from "@/i18n/navigation";
 import { ChardyLogo } from "../ui/Logo";
-import { FaGithub, FaLinkedin, FaRegEnvelope } from "react-icons/fa";
 import { RollingLabel, rollingLabelGroupClass } from "../ui/Label";
 import { cn } from "@/libs/utils";
 import { APP_DOMAIN, OWNER_FULLNAME } from "@/config";
 import { useSmoothScroll } from "@/contexts/SmoothScroll";
 import { useTranslations } from "next-intl";
-
-const SOCIAL_ITEMS = [
-  { label: "GitHub", href: "https://github.com/chesta132", icon: FaGithub },
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/chesta-ardiona-895601405", icon: FaLinkedin },
-  { label: "Email", href: "mailto:chestaardi4@gmail.com", icon: FaRegEnvelope },
-];
+import { ContactMe } from "@/types/payload";
+import { getSocialItems } from "../home/ContactMe";
 
 const NAV_ITEMS = [
   { t: "home", href: "/#" },
@@ -22,7 +17,9 @@ const NAV_ITEMS = [
   { t: "contact", href: "/#contact-me" },
 ] as const;
 
-export const Footer = ({ className, asChild, hideOnHomeWithXL }: { className?: string; asChild?: boolean; hideOnHomeWithXL?: boolean }) => {
+type FooterProps = { className?: string; asChild?: boolean; hideOnHomeWithXL?: boolean; socials: ContactMe["socials"] };
+
+export const Footer = ({ className, asChild, hideOnHomeWithXL, socials }: FooterProps) => {
   const t = useTranslations();
 
   const lenis = useSmoothScroll();
@@ -77,7 +74,7 @@ export const Footer = ({ className, asChild, hideOnHomeWithXL }: { className?: s
           {/* Social links */}
           <div className="flex flex-col gap-2">
             <span className="text-[0.65rem] font-supply-mono uppercase tracking-widest text-foreground/30 mb-1">{t("Footer.socials")}</span>
-            {SOCIAL_ITEMS.map((item) => (
+            {getSocialItems(socials).map((item) => (
               <a
                 key={item.href}
                 href={item.href}

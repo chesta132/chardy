@@ -12,7 +12,7 @@ import { Footer } from "../layouts/Footer";
 import { useTranslations } from "next-intl";
 import { ContactMe as ContactMePayload } from "@/types/payload";
 
-const getSocialItems = (data: ContactMePayload["socials"]) => [
+export const getSocialItems = (data: ContactMePayload["socials"]) => [
   { label: "GitHub", href: data.github, icon: FaGithub },
   { label: "LinkedIn", href: data.linkedin, icon: FaLinkedin },
   { label: "Email", href: `mailto:${data.email}`, icon: FaRegEnvelope },
@@ -58,7 +58,7 @@ export const ContactMe = ({ data }: { data: ContactMePayload }) => {
               </a>
             ))}
           </div>
-          <Footer className="hidden xl:flex mt-10 px-0 border-none" asChild />
+          <Footer className="hidden xl:flex mt-10 px-0 border-none" asChild socials={data.socials} />
         </div>
         <div ref={rightRef}>
           <ContactMeForm />

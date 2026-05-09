@@ -91,3 +91,11 @@ export const getProjectWithNav = async (payload: BasePayload, id: number) => {
     nextId: docs[idx + 1]?.id ?? null,
   };
 };
+
+export const getSocials = async (payload: BasePayload) => {
+  const locale = await getLocale();
+  const cache = withCache(() => payload.findGlobal({ slug: "contact-me", locale, select: { socials: true } }), ["contact-me", locale], {
+    revalidate: timeInSec({ day: 1 }),
+  });
+  return (await cache()).socials;
+};
