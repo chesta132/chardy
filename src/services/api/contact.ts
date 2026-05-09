@@ -6,11 +6,12 @@ import { getPayload } from "payload";
 import config from "@payload-config";
 import { timeInMs } from "@/libs/manipulate/number";
 import { ServerError } from "@/libs/error/server";
+import { Locale } from "@/i18n/types";
 
 export abstract class ContactService {
   static readonly MAX_SEND_MESSAGE = 3; // per hour
 
-  static readonly sendMessage = async ({ email, fullName, message, subject }: ContactPayload.SendMessageBody) => {
+  static readonly sendMessage = async ({ email, fullName, message, subject }: ContactPayload.SendMessageBody, lang: Locale) => {
     const submitTime = new Date();
     const oneHourAgo = new Date(Date.now() - timeInMs({ hour: 1 }));
     const payload = await getPayload({ config });
@@ -28,11 +29,11 @@ export abstract class ContactService {
       throw new ServerError("TOO_MUCH_REQ", { desc: "Please send another message later." });
     }
 
-    await sendMail(EmailTemplates.contactForm({ email, fullName, message, subject, submittedAt: submitTime }), { to: OWNER_EMAIL! });
+    await sendMail(await EmailTemplates.contactForm({ email, fullName, message, subject, submittedAt: submitTime }, lang), { to: OWNER_EMAIL! });
 
     // ignorable
     payload.create({ collection: "contact-rate-limit", data: { email, sentAt: submitTime.toISOString() } });
-    sendMail(EmailTemplates.contactFormReply({ fullName, subject }), { to: email }).catch(() => {});
+    sendMail(await EmailTemplates.contactFormReply({ fullName, subject }, lang), { to: email }).catch(() => {});
 
     return null;
   };

@@ -78,5 +78,38 @@
     "twitter": {
       "description": "Web developer dari {location}. TypeScript, React, Next.js, Golang, dan masih banyak lagi."
     }
+  },
+
+  "Email": {
+    "contactForm": {
+      "badge": "Pesan Baru",
+      "subheader": {
+        "separator": "·"
+      },
+      "label": "Formulir Kontak",
+      "heading": "Kamu dapat pesan baru",
+      "meta": {
+        "from": "Dari",
+        "email": "Email",
+        "subject": "Subjek"
+      },
+      "replyButton": "Balas ke {name} →",
+      "footer": "Email ini dikirim dari formulir kontak di {domain}. Jika ini mencurigakan, kamu bisa abaikan saja."
+    },
+    "contactFormReply": {
+      "badge": "Pesan Diterima",
+      "label": "Terima kasih",
+      "heading": "Pesanmu sudah sampai, {firstName}.",
+      "body": {
+        "line1": "Pesanmu mengenai \"{subject}\" sudah masuk ke inbox saya. Saya akan membacanya dan membalasmu sesegera mungkin.",
+        "line2": "Sementara itu, yuk lihat-lihat karya saya di bawah ini."
+      },
+      "infoBox": {
+        "title": "Yang bisa kamu harapkan",
+        "text": "Saya biasanya membalas dalam 1–3 hari kerja. Jika mendesak, kamu bisa menghubungi langsung lewat tautan media sosial di situs."
+      },
+      "ctaButton": "Lihat karya saya →",
+      "footer": "Kamu menerima ini karena kamu mengisi formulir kontak di {domain}."
+    }
   }
 }

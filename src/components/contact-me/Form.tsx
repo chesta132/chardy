@@ -9,10 +9,12 @@ import { useState } from "react";
 import { api } from "@/libs/api/apiClient";
 import { toast } from "sonner";
 import { Loading } from "../ui/Loading";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { Locale } from "@/i18n/types";
 
 export const ContactMeForm = () => {
   const t = useTranslations("HomeContact.mail");
+  const locale = useLocale();
 
   const formGroup = useForm({ email: "", fullName: "", message: "", subject: "" }, ContactPayload.sendMessage.body);
   const [loading, setLoading] = useState(false);
@@ -26,7 +28,7 @@ export const ContactMeForm = () => {
   const handleSendMessage = async (_: unknown, form: ContactPayload.SendMessageBody) => {
     try {
       setLoading(true);
-      await api.post("/contact", { data: form });
+      await api.post("/contact", { data: form, query: { lang: locale as Locale } });
       toast.info("Message sent successfully!");
     } finally {
       setLoading(false);

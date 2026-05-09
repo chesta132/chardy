@@ -1,5 +1,7 @@
-import { APP_NAME, APP_URL, REGION } from "@/config";
+import { APP_DOMAIN, APP_NAME, APP_URL, REGION } from "@/config";
 import { ContactFormPayload, ContactFormReplyPayload } from "./types";
+import { getTranslations } from "next-intl/server";
+import { Locale } from "@/i18n/types";
 
 const C = {
   shell: (content: string) => /* html */ `
@@ -145,51 +147,53 @@ const C = {
 };
 
 export class EmailTemplates {
-  static contactForm(payload: ContactFormPayload): string {
+  static async contactForm(payload: ContactFormPayload, locale: Locale): Promise<string> {
     const { fullName, email, subject, message, submittedAt = new Date() } = payload;
+    const t = await getTranslations({ locale, namespace: "Email.contactForm" });
 
     const date = submittedAt.toLocaleDateString(REGION, { weekday: "long", year: "numeric", month: "long", day: "numeric" });
     const time = submittedAt.toLocaleTimeString(REGION, { hour: "2-digit", minute: "2-digit", timeZoneName: "short" });
 
     return C.shell(
       `
-      ${C.header("New Inquiry")}
+      ${C.header(t("badge"))}
       ${C.subheaderBar(`${date} &nbsp;&middot;&nbsp; ${time}`)}
       ${C.body(`
-        ${C.label("Contact Form")}
-        ${C.heading("You got a new message")}
+        ${C.label(t("label"))}
+        ${C.heading(t("heading"))}
         ${C.divider()}
         ${C.metaTable([
-          { label: "From", value: fullName },
-          { label: "Email", value: email },
-          { label: "Subject", value: subject },
+          { label: t("meta.from"), value: fullName },
+          { label: t("meta.email"), value: email },
+          { label: t("meta.subject"), value: subject },
         ])}
         ${C.messageBlock(message)}
-        ${C.button(`mailto:${email}?subject=Re: ${encodeURIComponent(subject)}`, `Reply to ${fullName} &rarr;`, "primary")}
+        ${C.button(`mailto:${email}?subject=Re: ${encodeURIComponent(subject)}`, t("replyButton", { name: fullName }), "primary")}
       `)}
-      ${C.footer("This email was sent from the contact form on your website. If this looks suspicious, you can safely ignore it.")}
+      ${C.footer(t("footer", { domain: APP_DOMAIN }))}
     `,
     ).trim();
   }
 
-  static contactFormReply(payload: ContactFormReplyPayload): string {
+  static async contactFormReply(payload: ContactFormReplyPayload, locale: Locale): Promise<string> {
     const { fullName, subject } = payload;
     const firstName = fullName.trim().split(" ")[0];
+    const t = await getTranslations({ locale, namespace: "Email.contactFormReply" });
 
     return C.shell(
       `
-      ${C.header("Message Received")}
+      ${C.header(t("badge"))}
       ${C.accentStripe()}
       ${C.body(`
-        ${C.label("Thank you")}
-        ${C.heading(`Got your message, ${firstName}.`)}
+        ${C.label(t("label"))}
+        ${C.heading(t("heading", { firstName }))}
         ${C.divider()}
-        ${C.paragraph(`Your message regarding <strong style="color:#0a0a0a;font-weight:500;">&ldquo;${subject}&rdquo;</strong> has landed safely in my inbox. I'll read through it and get back to you as soon as I can.`)}
-        ${C.paragraph("In the meantime, feel free to check out my work below.")}
-        ${C.infoBox("What to expect", "I typically respond within 1&ndash;3 business days. If it's urgent, feel free to reach out directly via social links on my site.")}
-        ${C.button(APP_URL, "View my work &rarr;", "dark")}
+        ${C.paragraph(t("body.line1", { subject: `<strong style="color:#0a0a0a;font-weight:500;">&ldquo;${subject}&rdquo;</strong>` }))}
+        ${C.paragraph(t("body.line2"))}
+        ${C.infoBox(t("infoBox.title"), t("infoBox.text"))}
+        ${C.button(APP_URL, t("ctaButton"), "dark")}
       `)}
-      ${C.footer("You received this because you submitted the contact form on chardy.dev.")}
+      ${C.footer(t("footer", { domain: APP_DOMAIN }))}
     `,
     ).trim();
   }

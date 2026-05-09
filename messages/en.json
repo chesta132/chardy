@@ -78,5 +78,38 @@
     "twitter": {
       "description": "Web developer from {location}. TypeScript, React, Next.js, Golang, and more."
     }
+  },
+
+  "Email": {
+    "contactForm": {
+      "badge": "New Inquiry",
+      "subheader": {
+        "separator": "·"
+      },
+      "label": "Contact Form",
+      "heading": "You got a new message",
+      "meta": {
+        "from": "From",
+        "email": "Email",
+        "subject": "Subject"
+      },
+      "replyButton": "Reply to {name} →",
+      "footer": "This email was sent from the contact form on {domain}. If this looks suspicious, you can safely ignore it."
+    },
+    "contactFormReply": {
+      "badge": "Message Received",
+      "label": "Thank you",
+      "heading": "Got your message, {firstName}.",
+      "body": {
+        "line1": "Your message regarding \"{subject}\" has landed safely in my inbox. I'll read through it and get back to you as soon as I can.",
+        "line2": "In the meantime, feel free to check out my work below."
+      },
+      "infoBox": {
+        "title": "What to expect",
+        "text": "I typically respond within 1–3 business days. If it's urgent, feel free to reach out directly via social links on my site."
+      },
+      "ctaButton": "View my work →",
+      "footer": "You received this because you submitted the contact form on {domain}."
+    }
   }
 }
