@@ -20,7 +20,6 @@ export const GlobalErrorProvider = ({ children }: { children: ReactNode }) => {
   const [error, setError] = useState<GlobalError>(null);
   const clearError = () => setError(null);
 
-  // TODO: implement real error ui
   return <GlobalErrorContext.Provider value={{ error, setError, clearError }}>{children}</GlobalErrorContext.Provider>;
 };
 
@@ -43,21 +42,3 @@ export const ViewGlobalError = () => {
 
   return null;
 };
-
-// silent boundary
-
-type SilentBoundaryProps = {
-  children: ReactNode;
-  onError: (error: Error) => void;
-};
-
-class SilentErrorBoundary extends Component<SilentBoundaryProps> {
-  componentDidCatch(error: Error) {
-    this.props.onError(error);
-  }
-
-  render() {
-    // render children as is
-    return this.props.children;
-  }
-}

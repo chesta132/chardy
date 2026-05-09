@@ -65,7 +65,17 @@
     "live": "Live",
     "visitSite": "Visit site",
     "prevProject": "Previous project",
-    "nextProject": "Next project"
+    "nextProject": "Next project",
+    "invalid": {
+      "title": "Invalid Project",
+      "description": "Project is invalid due to missing datas. Please report to site's owner",
+      "action": "Back to project list"
+    },
+    "notFound": {
+      "title": "Project Not Found",
+      "description": "Project with id \"{id}\" is not exist.",
+      "action": "Back to project list"
+    }
   },
 
   "Metadata": {
@@ -150,6 +160,30 @@
     "Contact": {
       "TOO_MUCH_REQ": {
         "desc": "Please send another message later."
+      }
+    },
+
+    "Pages": {
+      "NotFound": {
+        "title": "Page Not Found",
+        "description": "The page you are looking for does not exist or has been moved to a different address.",
+        "action": "Back to Home"
+      },
+      "Unexpected": {
+        "title": "Something Went Wrong",
+        "description": "An unexpected error occurred on our end. We have been notified and are working on a fix.",
+        "action": "Back to Home",
+        "retry": "Try Again"
+      },
+      "Forbidden": {
+        "title": "Access Denied",
+        "description": "You do not have permission to view this page. Please check your credentials or contact the site owner.",
+        "action": "Back to Home"
+      },
+      "Custom": {
+        "title": "An Error Occurred",
+        "description": "Something went wrong. Please try again later or contact support if the issue persists.",
+        "action": "Back to Home"
       }
     }
   }

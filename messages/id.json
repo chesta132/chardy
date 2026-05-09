@@ -65,7 +65,17 @@
     "live": "Live",
     "visitSite": "Kunjungi situs",
     "prevProject": "Karya sebelumnya",
-    "nextProject": "Karya berikutnya"
+    "nextProject": "Karya berikutnya",
+    "invalid": {
+      "title": "Karya Tidak Valid",
+      "description": "Karya tidak valid karena ada kesalahan data. Silakan laporkan ke pemilik situs.",
+      "action": "Kembali ke daftar karya"
+    },
+    "notFound": {
+      "title": "Karya Tidak Ditemukan",
+      "description": "Tidak ada karya dengan id \"{id}\".",
+      "action": "Kembali ke daftar karya"
+    }
   },
 
   "Metadata": {
@@ -149,6 +159,30 @@
     "Contact": {
       "TOO_MUCH_REQ": {
         "desc": "Silakan kirim pesan lagi nanti."
+      }
+    },
+
+    "Pages": {
+      "NotFound": {
+        "title": "Halaman Tidak Ditemukan",
+        "description": "Halaman yang kamu cari tidak ada atau telah dipindahkan ke alamat lain.",
+        "action": "Kembali ke Beranda"
+      },
+      "Unexpected": {
+        "title": "Terjadi Kesalahan",
+        "description": "Terjadi kesalahan tak terduga di sisi kami. Kami telah diberitahu dan sedang mengatasinya.",
+        "action": "Kembali ke Beranda",
+        "retry": "Coba Lagi"
+      },
+      "Forbidden": {
+        "title": "Akses Ditolak",
+        "description": "Kamu tidak memiliki izin untuk melihat halaman ini. Periksa kredensialmu atau hubungi pemilik situs.",
+        "action": "Kembali ke Beranda"
+      },
+      "Custom": {
+        "title": "Terjadi Error",
+        "description": "Terjadi kesalahan. Silakan coba lagi atau hubungi dukungan jika masalah berlanjut.",
+        "action": "Kembali ke Beranda"
       }
     }
   }

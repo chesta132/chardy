@@ -5,14 +5,21 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { Media, Project } from "@/types/payload";
-import { notFound } from "next/navigation";
 import { RichText } from "@payloadcms/richtext-lexical/react";
+import { ErrorLayout, ErrorPageData } from "../error";
 
 export function ProjectDetail({ project, nextId, prevId }: { project: Project; prevId: number | null; nextId: number | null }) {
   const t = useTranslations("ProjectDetail");
-  // TODO: proper error page
-  if (typeof project.thumbnail === "number" || !project.thumbnail.cloudinary) return notFound();
-  if (project.screenshot && (typeof project.screenshot === "number" || !project.screenshot.cloudinary)) return notFound();
+  const error: ErrorPageData = {
+    code: "500",
+    title: t("invalid.title"),
+    description: t("invalid.description"),
+    actionLabel: t("invalid.action"),
+    actionHref: "/projects",
+    variant: "custom",
+  };
+  if (typeof project.thumbnail === "number" || !project.thumbnail.cloudinary) return <ErrorLayout data={error} />;
+  if (project.screenshot && (typeof project.screenshot === "number" || !project.screenshot.cloudinary)) return <ErrorLayout data={error} />;
 
   return (
     <main className="flex flex-col min-h-svh">
@@ -91,7 +98,6 @@ export function ProjectDetail({ project, nextId, prevId }: { project: Project; p
         </div>
 
         {/* ── Body text ── */}
-        {/* TODO: swap <p> with rich text renderer from Payload */}
         <div className="flex flex-col gap-5 mb-14 font-neue-montreal">
           <RichText data={project.description} />
         </div>
