@@ -1,7 +1,7 @@
 "use client";
 
-import { toastError } from "@/components/ui/Toaster";
-import { createContext, useContext, useState, Component, ReactNode, useEffect } from "react";
+import { toastError } from "@/libs/toast";
+import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 
 // context
 
