@@ -99,3 +99,11 @@ export const getSocials = async (payload: BasePayload) => {
   });
   return (await cache()).socials;
 };
+
+export const getFeaturedProjects = async (payload: BasePayload) => {
+  const locale = await getLocale();
+  const cache = withCache(() => payload.find({ collection: "featured-project", locale, sort: ["order"] }), ["featured-project", locale], {
+    revalidate: timeInSec({ day: 1 }),
+  });
+  return cache();
+};

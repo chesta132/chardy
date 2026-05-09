@@ -71,6 +71,7 @@ export interface Config {
     media: Media;
     project: Project;
     'contact-rate-limit': ContactRateLimit;
+    'featured-project': FeaturedProject;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -82,6 +83,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     project: ProjectSelect<false> | ProjectSelect<true>;
     'contact-rate-limit': ContactRateLimitSelect<false> | ContactRateLimitSelect<true>;
+    'featured-project': FeaturedProjectSelect<false> | FeaturedProjectSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -280,6 +282,18 @@ export interface ContactRateLimit {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "featured-project".
+ */
+export interface FeaturedProject {
+  id: number;
+  project: number | Project;
+  order: number;
+  span?: ('full' | 'wide' | 'normal') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -317,6 +331,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'contact-rate-limit';
         value: number | ContactRateLimit;
+      } | null)
+    | ({
+        relationTo: 'featured-project';
+        value: number | FeaturedProject;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -445,6 +463,17 @@ export interface ProjectSelect<T extends boolean = true> {
 export interface ContactRateLimitSelect<T extends boolean = true> {
   email?: T;
   sentAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "featured-project_select".
+ */
+export interface FeaturedProjectSelect<T extends boolean = true> {
+  project?: T;
+  order?: T;
+  span?: T;
   updatedAt?: T;
   createdAt?: T;
 }

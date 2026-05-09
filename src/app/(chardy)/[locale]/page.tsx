@@ -4,7 +4,7 @@ import { FeaturedProjects } from "@/components/home/FeaturedProjects";
 import { Hero } from "@/components/home/Hero";
 import { getPayload } from "payload";
 import config from "@payload-config";
-import { getAboutMe, getContactMe, getHero } from "@/cms/crud/read";
+import { getAboutMe, getContactMe, getFeaturedProjects, getHero } from "@/cms/crud/read";
 
 export default async function Home() {
   const payload = await getPayload({ config });
@@ -12,11 +12,12 @@ export default async function Home() {
   const heroData = await getHero(payload);
   const aboutMeData = await getAboutMe(payload);
   const contactMeData = await getContactMe(payload);
+  const featuredProjectsData = await getFeaturedProjects(payload);
 
   return (
     <main className="flex flex-col flex-1 items-center justify-center overflow-x-hidden">
       <Hero data={heroData} />
-      <FeaturedProjects />
+      <FeaturedProjects featuredProjectsData={featuredProjectsData.docs} />
       <AboutMe data={aboutMeData} githubUrl={contactMeData.socials.github} />
       <ContactMe data={contactMeData} />
     </main>

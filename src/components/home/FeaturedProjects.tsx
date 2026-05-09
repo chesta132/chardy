@@ -3,51 +3,13 @@
 import { Link } from "@/i18n/navigation";
 import { RollingLabel, rollingLabelGroupClass } from "../ui/Label";
 import { cn } from "@/libs/utils";
-import { ProjectCard, FeaturedProject } from "../projects/ProjectCard";
+import { ProjectCard } from "../projects/ProjectCard";
 import { useTextReveal } from "@/hooks/useTextReveal";
 import { useRef } from "react";
 import { useTranslations } from "next-intl";
+import { FeaturedProject } from "@/types/payload";
 
-// TODO: fetch real data from Payload CMS
-const FEATURED_PROJECTS: FeaturedProject[] = [
-  {
-    name: "Project 1",
-    tags: ["Web Development", "TypeScript"],
-    href: "/projects/project-1",
-    image: "/placeholder.jpg",
-    span: "wide",
-  },
-  {
-    name: "Project 2",
-    tags: ["Web Design & Development", "UI/UX"],
-    href: "/projects/project-2",
-    image: "/placeholder.jpg",
-    span: "normal",
-  },
-  {
-    name: "Project 5",
-    tags: ["Brand Identity", "Web Design & Development"],
-    href: "/projects/project-5",
-    image: "/placeholder.jpg",
-    span: "full",
-  },
-  {
-    name: "Project 3",
-    tags: ["Mobile App", "React Native"],
-    href: "/projects/project-3",
-    image: "/placeholder.jpg",
-    span: "normal",
-  },
-  {
-    name: "Project 4",
-    tags: ["Web Development", "TypeScript"],
-    href: "/projects/project-4",
-    image: "/placeholder.jpg",
-    span: "wide",
-  },
-];
-
-export const FeaturedProjects = () => {
+export const FeaturedProjects = ({ featuredProjectsData }: { featuredProjectsData: FeaturedProject[] }) => {
   const t = useTranslations("HomeProjects");
   const headerRef = useRef<HTMLDivElement>(null);
   useTextReveal(headerRef, { on: "enter-view", direction: "down" });
@@ -64,8 +26,8 @@ export const FeaturedProjects = () => {
 
       {/* Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 md:grid-rows-[360px_360px_520px] auto-rows-[260px] gap-4 w-full">
-        {FEATURED_PROJECTS.map((project) => (
-          <ProjectCard key={project.name} {...project} />
+        {featuredProjectsData.map((project) => (
+          <ProjectCard key={project.order} {...project} />
         ))}
       </div>
     </section>

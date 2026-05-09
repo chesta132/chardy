@@ -5,16 +5,13 @@ import { cn } from "@/libs/utils";
 import Image, { type StaticImageData } from "next/image";
 import { Link } from "@/i18n/navigation";
 import { useRef } from "react";
+import { FeaturedProject } from "@/types/payload";
 
-export type FeaturedProject = {
-  name: string;
-  tags: string[];
-  href: string;
-  image: string | StaticImageData;
-  span?: "wide" | "full" | "normal";
-};
+const MAX_TAGS = 3;
 
-export const ProjectCard = ({ name, tags, href, image, span }: FeaturedProject) => {
+export const ProjectCard = ({ span, project }: FeaturedProject) => {
+  if (typeof project === "number") return null;
+  if (typeof project.thumbnail === "number" || !project.thumbnail.cloudinary) return null;
   const cardRef = useRef<HTMLAnchorElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
 
@@ -59,7 +56,7 @@ export const ProjectCard = ({ name, tags, href, image, span }: FeaturedProject) 
   return (
     <Link
       ref={cardRef}
-      href={href}
+      href={`/projects/${project.id}`}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       className={cn(
@@ -72,16 +69,22 @@ export const ProjectCard = ({ name, tags, href, image, span }: FeaturedProject) 
     >
       {/* Image container */}
       <div ref={imageRef} className="absolute inset-0 z-0 will-change-transform">
-        <Image src={image} alt={name} fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+        <Image
+          src={project.thumbnail.cloudinary.secure_url!}
+          alt={project.thumbnail.alt}
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        />
         {/* Gradient overlay */}
         <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/10 to-transparent" />
       </div>
 
       {/* Info overlay */}
       <div className="relative z-10 flex flex-col gap-2 p-5 translate-y-1 transition-transform duration-300 group-hover:translate-y-0">
-        <h5 className="text-text-light font-medium text-lg leading-tight">{name}</h5>
+        <h5 className="text-text-light font-medium text-lg leading-tight">{project.title}</h5>
         <div className="flex flex-wrap gap-1.5 lg:opacity-0 lg:translate-y-2 transition-all duration-300 group-hover:opacity-100 translate-y-0 group-hover:translate-y-0">
-          {tags.map((tag) => (
+          {project.tags.slice(0, MAX_TAGS).map(({ tag }) => (
             <span
               key={tag}
               className="text-[11px] text-text-light/90 bg-background/15 backdrop-blur-sm border border-background/10 rounded-md px-2.5 py-0.5"

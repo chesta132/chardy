@@ -25,6 +25,7 @@ import { AboutMe } from "./cms/globals/AboutMe";
 import { ContactMe } from "./cms/globals/ContactMe";
 import { Project } from "./cms/collections/Project";
 import { ContactRateLimit } from "./cms/collections/ContactRateLimit";
+import { FeaturedProject } from "./cms/collections/FeaturedProject";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -36,7 +37,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Project, ContactRateLimit],
+  collections: [Users, Media, Project, ContactRateLimit, FeaturedProject],
   globals: [Hero, AboutMe, ContactMe],
   editor: lexicalEditor(),
   secret: PAYLOAD_SECRET || "",
