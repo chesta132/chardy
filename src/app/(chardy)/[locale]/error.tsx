@@ -28,8 +28,7 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
   useEffect(() => {
     if (isDevEnv()) {
       console.error("[ErrorPage]", error.message, error.digest);
-    }
-    notifyError(error.message, error.digest, window.location.href);
+    } else notifyError(error.message, error.digest, window.location.href);
   }, [error]);
 
   const data: ErrorPageData = {
