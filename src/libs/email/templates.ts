@@ -194,8 +194,8 @@ export class EmailTemplates {
         ${C.heading(t("heading", { firstName }))}
         ${C.divider()}
         ${C.paragraph(t("body.line1", { subject: `<strong style="color:#0a0a0a;font-weight:500;">&ldquo;${subject}&rdquo;</strong>` }))}
-        ${C.paragraph(t("body.line2"))}
         ${C.infoBox(t("infoBox.title"), t("infoBox.text"))}
+        ${C.paragraph(t("body.line2"))}
         ${C.button(APP_URL, t("ctaButton"), "dark")}
       `)}
       ${C.footer(t("footer", { domain: APP_DOMAIN }))}
