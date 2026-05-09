@@ -58,7 +58,7 @@ export const getProject = async (payload: BasePayload, id: number) => {
           },
         },
       }),
-    ["projects", locale],
+    ["projects", locale, id.toString()],
     {
       revalidate: timeInSec({ day: 1 }),
     },
