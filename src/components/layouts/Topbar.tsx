@@ -137,7 +137,7 @@ export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
       </div>
 
       {/* desktop menu */}
-      <div className="space-x-10 hidden lg:flex">
+      <div className="space-x-10 hidden lg:flex absolute left-1/2 -translate-x-1/2">
         {NAV_ITEMS.map((item) => (
           <Link
             key={item.href}
