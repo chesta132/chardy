@@ -7,8 +7,8 @@ import config from "@payload-config";
 import { timeInMs } from "@/libs/manipulate/number";
 import { ServerError } from "@/libs/error/server";
 import { Locale } from "@/i18n/types";
-import { getTranslations } from "next-intl/server";
-import { getServerTranslations } from "@/i18n/server";
+import { createTranslator } from "next-intl";
+import { getMessages } from "@/i18n/request";
 
 export abstract class ContactService {
   static readonly MAX_SEND_MESSAGE = 3; // per hour
@@ -28,8 +28,8 @@ export abstract class ContactService {
     });
 
     if (totalDocs >= this.MAX_SEND_MESSAGE) {
-      const t = await getServerTranslations(lang);
-      throw new ServerError("TOO_MUCH_REQ", { desc: t("Error.Contact.TOO_MUCH_REQ.desc") }).withLocale(lang);
+      const t = createTranslator({ locale: lang, messages: await getMessages(lang), namespace: "Error.Contact" });
+      throw new ServerError("TOO_MUCH_REQ", { desc: t("TOO_MUCH_REQ.desc") }).withLocale(lang);
     }
 
     await sendMail(await EmailTemplates.contactForm({ email, fullName, message, subject, submittedAt: submitTime }, lang), { to: OWNER_EMAIL! });

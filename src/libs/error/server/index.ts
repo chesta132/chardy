@@ -4,8 +4,8 @@ import { ErrorReplyType } from "../../reply/types";
 import { record } from "../../manipulate/object";
 import { ServerErrorMessages } from "./messages";
 import { Locale } from "@/i18n/types";
-import { getTranslations } from "next-intl/server";
-import { getServerTranslations } from "@/i18n/server";
+import { createTranslator } from "next-intl";
+import { getMessages } from "@/i18n/request";
 
 interface RestError extends Omit<ErrorReplyType, "message" | "code" | "field"> {
   debug?: any;
@@ -50,21 +50,21 @@ export class ServerError<C extends ServerErrorCode> extends ServerErrorMessages 
   }
 
   async exec(reply: Reply) {
-    const t = await getServerTranslations(this.locale);
+    const t = createTranslator({ locale: this.locale, messages: await getMessages(this.locale), namespace: "Error.ServerError" });
     const { deps, code } = { code: this.code, deps: this.deps } as ServerErrorConfig;
 
     switch (code) {
       case "CLIENT_FIELD":
-        reply.error({ ...deps[0], message: t("Error.ServerError.CLIENT_FIELD.message"), code: "CLIENT_FIELD" });
+        reply.error({ ...deps[0], message: t("CLIENT_FIELD.message"), code: "CLIENT_FIELD" });
         break;
       case "MISSING_FIELDS":
         const arrFields = Array.isArray(deps[0].field) ? [...new Set(deps[0].field)] : Object.keys(deps[0].field);
-        const fieldVal = t("Error.ServerError.MISSING_FIELDS.fieldVal");
+        const fieldVal = t("MISSING_FIELDS.fieldVal");
         const objFields = Array.isArray(deps[0].field) ? record(deps[0].field, fieldVal) : deps[0].field;
         reply.error({
           ...deps[0],
           title: "Missing Fields",
-          message: t("Error.ServerError.MISSING_FIELDS.message", { count: arrFields.length }),
+          message: t("MISSING_FIELDS.message", { count: arrFields.length }),
           code: "MISSING_FIELDS",
           field: objFields,
         });
@@ -72,16 +72,16 @@ export class ServerError<C extends ServerErrorCode> extends ServerErrorMessages 
       case "INVALID_AUTH":
         reply.error({
           ...deps[0],
-          title: t("Error.ServerError.INVALID_AUTH.title"),
-          message: t("Error.ServerError.INVALID_AUTH.message"),
+          title: t("INVALID_AUTH.title"),
+          message: t("INVALID_AUTH.message"),
           code: "INVALID_AUTH",
         });
         break;
       case "NOT_FOUND":
         reply.error({
           ...deps[0],
-          title: t("Error.ServerError.NOT_FOUND.title"),
-          message: `${t("Error.ServerError.NOT_FOUND.message", { item: deps[0].item })}${deps[0].desc ? ` ${capital(deps[0].desc)}` : ""}}`,
+          title: t("NOT_FOUND.title"),
+          message: `${t("NOT_FOUND.message", { item: deps[0].item })}${deps[0].desc ? ` ${capital(deps[0].desc)}` : ""}}`,
           // message: `${capital(deps[0].item)} not found.${deps[0].desc ? ` ${capital(deps[0].desc)}` : ""}`,
           code: "NOT_FOUND",
         });
@@ -89,16 +89,16 @@ export class ServerError<C extends ServerErrorCode> extends ServerErrorMessages 
       case "TOO_MUCH_REQ":
         reply.error({
           ...deps[0],
-          title: t("Error.ServerError.TOO_MUCH_REQ.title"),
-          message: `${t("Error.ServerError.TOO_MUCH_REQ.message")} ${capital(deps[0]?.desc || t("Error.ServerError.TOO_MUCH_REQ.desc"))}`,
+          title: t("TOO_MUCH_REQ.title"),
+          message: `${t("TOO_MUCH_REQ.message")} ${capital(deps[0]?.desc || t("TOO_MUCH_REQ.desc"))}`,
           code: "TOO_MUCH_REQUEST",
         });
         break;
       case "SERVER_ERROR":
         reply.error({
           ...deps[0],
-          title: t("Error.ServerError.SERVER_ERROR.title"),
-          message: deps[0].message || t("Error.ServerError.SERVER_ERROR.message"),
+          title: t("SERVER_ERROR.title"),
+          message: deps[0].message || t("SERVER_ERROR.message"),
           code: "SERVER_ERROR",
           details: deps[0].error?.message,
         });

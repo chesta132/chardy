@@ -1,8 +1,8 @@
 import { APP_DOMAIN, APP_NAME, APP_URL, REGION } from "@/config";
 import { ContactFormPayload, ContactFormReplyPayload } from "./types";
-import { getTranslations } from "next-intl/server";
 import { Locale } from "@/i18n/types";
-import { getServerTranslations } from "@/i18n/server";
+import { createTranslator } from "next-intl";
+import { getMessages } from "@/i18n/request";
 
 const C = {
   shell: (content: string) => /* html */ `
@@ -150,28 +150,28 @@ const C = {
 export class EmailTemplates {
   static async contactForm(payload: ContactFormPayload, locale: Locale): Promise<string> {
     const { fullName, email, subject, message, submittedAt = new Date() } = payload;
-    const t = await getServerTranslations(locale);
+    const t = createTranslator({ locale, messages: await getMessages(locale), namespace: "Email.contactForm" });
 
     const date = submittedAt.toLocaleDateString(REGION, { weekday: "long", year: "numeric", month: "long", day: "numeric" });
     const time = submittedAt.toLocaleTimeString(REGION, { hour: "2-digit", minute: "2-digit", timeZoneName: "short" });
 
     return C.shell(
       `
-      ${C.header(t("Email.contactForm.badge"))}
+      ${C.header(t("badge"))}
       ${C.subheaderBar(`${date} &nbsp;&middot;&nbsp; ${time}`)}
       ${C.body(`
-        ${C.label(t("Email.contactForm.label"))}
-        ${C.heading(t("Email.contactForm.heading"))}
+        ${C.label(t("label"))}
+        ${C.heading(t("heading"))}
         ${C.divider()}
         ${C.metaTable([
-          { label: t("Email.contactForm.meta.from"), value: fullName },
-          { label: t("Email.contactForm.meta.email"), value: email },
-          { label: t("Email.contactForm.meta.subject"), value: subject },
+          { label: t("meta.from"), value: fullName },
+          { label: t("meta.email"), value: email },
+          { label: t("meta.subject"), value: subject },
         ])}
         ${C.messageBlock(message)}
-        ${C.button(`mailto:${email}?subject=Re: ${encodeURIComponent(subject)}`, t("Email.contactForm.replyButton", { name: fullName }), "primary")}
+        ${C.button(`mailto:${email}?subject=Re: ${encodeURIComponent(subject)}`, t("replyButton", { name: fullName }), "primary")}
       `)}
-      ${C.footer(t("Email.contactForm.footer", { domain: APP_DOMAIN }))}
+      ${C.footer(t("footer", { domain: APP_DOMAIN }))}
     `,
     ).trim();
   }
@@ -179,22 +179,22 @@ export class EmailTemplates {
   static async contactFormReply(payload: ContactFormReplyPayload, locale: Locale): Promise<string> {
     const { fullName, subject } = payload;
     const firstName = fullName.trim().split(" ")[0];
-    const t = await getServerTranslations(locale);
+    const t = createTranslator({ locale, messages: await getMessages(locale), namespace: "Email.contactFormReply" });
 
     return C.shell(
       `
-      ${C.header(t("Email.contactFormReply.badge"))}
+      ${C.header(t("badge"))}
       ${C.accentStripe()}
       ${C.body(`
-        ${C.label(t("Email.contactFormReply.label"))}
-        ${C.heading(t("Email.contactFormReply.heading", { firstName }))}
+        ${C.label(t("label"))}
+        ${C.heading(t("heading", { firstName }))}
         ${C.divider()}
-        ${C.paragraph(t("Email.contactFormReply.body.line1", { subject: `<strong style="color:#0a0a0a;font-weight:500;">&ldquo;${subject}&rdquo;</strong>` }))}
-        ${C.paragraph(t("Email.contactFormReply.body.line2"))}
-        ${C.infoBox(t("Email.contactFormReply.infoBox.title"), t("Email.contactFormReply.infoBox.text"))}
-        ${C.button(APP_URL, t("Email.contactFormReply.ctaButton"), "dark")}
+        ${C.paragraph(t("body.line1", { subject: `<strong style="color:#0a0a0a;font-weight:500;">&ldquo;${subject}&rdquo;</strong>` }))}
+        ${C.paragraph(t("body.line2"))}
+        ${C.infoBox(t("infoBox.title"), t("infoBox.text"))}
+        ${C.button(APP_URL, t("ctaButton"), "dark")}
       `)}
-      ${C.footer(t("Email.contactFormReply.footer", { domain: APP_DOMAIN }))}
+      ${C.footer(t("footer", { domain: APP_DOMAIN }))}
     `,
     ).trim();
   }
