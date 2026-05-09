@@ -94,6 +94,9 @@
         "subject": "Subjek"
       },
       "replyButton": "Balas ke {name} →",
+      "messageBlock": {
+        "label": "Pesan"
+      },
       "footer": "Email ini dikirim dari formulir kontak di {domain}. Jika ini mencurigakan, kamu bisa abaikan saja."
     },
     "contactFormReply": {
@@ -101,8 +104,11 @@
       "label": "Terima kasih",
       "heading": "Pesanmu sudah sampai, {firstName}.",
       "body": {
-        "line1": "Pesanmu mengenai \"{subject}\" sudah masuk ke inbox saya. Saya akan membacanya dan membalasmu sesegera mungkin.",
+        "line1": "Pesanmu mengenai {subject} sudah masuk ke inbox saya. Saya akan membacanya dan membalasmu sesegera mungkin.",
         "line2": "Sementara itu, yuk lihat-lihat karya saya di bawah ini."
+      },
+      "messageBlock": {
+        "label": "Pesan"
       },
       "infoBox": {
         "title": "Yang bisa kamu harapkan",

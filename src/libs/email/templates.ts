@@ -139,8 +139,8 @@ const C = {
     `;
   },
 
-  messageBlock: (text: string) => /* html */ `
-    <p style="margin:0 0 10px;font-size:11px;color:#6b6560;letter-spacing:0.06em;text-transform:uppercase;">Message</p>
+  messageBlock: (text: string, label: string) => /* html */ `
+    <p style="margin:0 0 10px;font-size:11px;color:#6b6560;letter-spacing:0.06em;text-transform:uppercase;">${label}</p>
     <div style="background-color:#f5f0e9;border-radius:8px;padding:20px 24px;margin-bottom:28px;">
       <p style="margin:0;font-size:14px;color:#3a3630;line-height:1.75;white-space:pre-wrap;">${text}</p>
     </div>
@@ -152,8 +152,12 @@ export class EmailTemplates {
     const { fullName, email, subject, message, submittedAt = new Date() } = payload;
     const t = createTranslator({ locale, messages: await getMessages(locale), namespace: "Email.contactForm" });
 
-    const date = submittedAt.toLocaleDateString(REGION, { weekday: "long", year: "numeric", month: "long", day: "numeric" });
-    const time = submittedAt.toLocaleTimeString(REGION, { hour: "2-digit", minute: "2-digit", timeZoneName: "short" });
+    const regionMap: Record<Locale, string> = {
+      id: "id-ID",
+      en: "en-GB",
+    };
+    const date = submittedAt.toLocaleDateString(regionMap[locale], { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+    const time = submittedAt.toLocaleTimeString(regionMap[locale], { hour: "2-digit", minute: "2-digit", timeZoneName: "short" });
 
     return C.shell(
       `
@@ -168,7 +172,7 @@ export class EmailTemplates {
           { label: t("meta.email"), value: email },
           { label: t("meta.subject"), value: subject },
         ])}
-        ${C.messageBlock(message)}
+        ${C.messageBlock(message, t("messageBlock.label"))}
         ${C.button(`mailto:${email}?subject=Re: ${encodeURIComponent(subject)}`, t("replyButton", { name: fullName }), "primary")}
       `)}
       ${C.footer(t("footer", { domain: APP_DOMAIN }))}
