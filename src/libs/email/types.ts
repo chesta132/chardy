@@ -10,3 +10,11 @@ export type ContactFormReplyPayload = {
   fullName: string;
   subject: string;
 };
+
+export type ErrorNotificationPayload = {
+  errorMessage: string;
+  errorDigest?: string;
+  errorType?: string;
+  url?: string;
+  occurredAt?: Date;
+};

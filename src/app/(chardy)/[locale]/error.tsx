@@ -12,6 +12,8 @@ import { useTranslations } from "next-intl";
 import { ErrorLayout } from "@/components/error";
 import type { ErrorPageData } from "@/components/error";
 import { isDevEnv } from "@/config";
+import { useEffect } from "react";
+import { notifyError } from "@/libs/email/send";
 
 interface ErrorPageProps {
   /** The underlying error thrown at runtime */
@@ -23,9 +25,12 @@ interface ErrorPageProps {
 export default function ErrorPage({ error, reset }: ErrorPageProps) {
   const t = useTranslations("Error.Pages.Unexpected");
 
-  if (isDevEnv()) {
-    console.error("[ErrorPage]", error.message, error.digest);
-  }
+  useEffect(() => {
+    if (isDevEnv()) {
+      console.error("[ErrorPage]", error.message, error.digest);
+    }
+    notifyError(error.message, error.digest, window.location.href);
+  }, [error]);
 
   const data: ErrorPageData = {
     variant: "unexpected",
@@ -36,8 +41,6 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
     actionLabel: t("action"),
     actionHref: "/",
   };
-
-  // TODO: add email to owner about the error and cache it to make sure same error not notified more than 1 time
 
   return (
     <div>

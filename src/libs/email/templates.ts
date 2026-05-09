@@ -1,5 +1,5 @@
 import { APP_DOMAIN, APP_NAME, APP_URL, REGION } from "@/config";
-import { ContactFormPayload, ContactFormReplyPayload } from "./types";
+import { ContactFormPayload, ContactFormReplyPayload, ErrorNotificationPayload } from "./types";
 import { Locale } from "@/i18n/types";
 import { createTranslator } from "next-intl";
 import { getMessages } from "@/i18n/request";
@@ -51,6 +51,12 @@ const C = {
     </tr>
   `,
 
+  dangerStripe: () => /* html */ `
+    <tr>
+      <td style="background-color:#dc2626;padding:3px 0;"></td>
+    </tr>
+  `,
+
   subheaderBar: (text: string) => /* html */ `
     <tr>
       <td style="background-color:#ede7df;padding:10px 36px;border-left:0.5px solid #d4cfc8;border-right:0.5px solid #d4cfc8;">
@@ -77,6 +83,12 @@ const C = {
 
   label: (text: string) => /* html */ `
     <p style="margin:0 0 8px;font-size:10px;font-weight:500;color:#ff4d1d;letter-spacing:0.14em;text-transform:uppercase;">
+      ${text}
+    </p>
+  `,
+
+  dangerLabel: (text: string) => /* html */ `
+    <p style="margin:0 0 8px;font-size:10px;font-weight:500;color:#dc2626;letter-spacing:0.14em;text-transform:uppercase;">
       ${text}
     </p>
   `,
@@ -199,6 +211,37 @@ export class EmailTemplates {
         ${C.button(APP_URL, t("ctaButton"), "dark")}
       `)}
       ${C.footer(t("footer", { domain: APP_DOMAIN }))}
+    `,
+    ).trim();
+  }
+
+  static errorNotification(payload: ErrorNotificationPayload): string {
+    const { errorMessage, errorDigest, errorType = "Server Error", url, occurredAt = new Date() } = payload;
+
+    const date = occurredAt.toLocaleDateString("en-GB", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+    const time = occurredAt.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", timeZoneName: "short" });
+
+    const metaRows: { label: string; value: string; isLink?: boolean }[] = [
+      { label: "Error Type", value: errorType },
+      { label: "Occurred At", value: `${date} · ${time}` },
+      ...(errorDigest ? [{ label: "Digest", value: errorDigest }] : []),
+      ...(url ? [{ label: "URL", value: url, isLink: true }] : []),
+    ];
+
+    return C.shell(
+      `
+      ${C.header("Internal Alert")}
+      ${C.dangerStripe()}
+      ${C.subheaderBar(`${date} &nbsp;&middot;&nbsp; ${time}`)}
+      ${C.body(`
+        ${C.dangerLabel("Runtime Error")}
+        ${C.heading("Unhandled Error Detected")}
+        ${C.divider()}
+        ${C.metaTable(metaRows)}
+        ${C.messageBlock(errorMessage, "Error Message")}
+        ${C.button(`${APP_URL}`, "Open App", "dark")}
+      `)}
+      ${C.footer(`This is an automated alert from ${APP_DOMAIN}. Do not reply to this email.`)}
     `,
     ).trim();
   }

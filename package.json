@@ -16,6 +16,7 @@
     "@payloadcms/email-nodemailer": "^3.84.1",
     "@payloadcms/next": "^3.84.1",
     "@payloadcms/richtext-lexical": "^3.84.1",
+    "@upstash/redis": "^1.38.0",
     "axios": "^1.16.0",
     "clsx": "^2.1.1",
     "cobe": "0.4.2",

@@ -1,0 +1,45 @@
+"use server";
+
+import { isDevEnv, OWNER_EMAIL } from "@/config";
+import { sendMail } from ".";
+import { timeInSec } from "../manipulate/number";
+import { redis } from "../redis";
+import { EmailTemplates } from "./templates";
+
+export async function notifyError(message: string, digest?: string, url?: string): Promise<void> {
+  if (isDevEnv()) return;
+  try {
+    const cacheKey = digest ?? `msg:${simpleHash(message)}`;
+
+    const alreadyNotified = await redis.get(redisKey(cacheKey));
+    if (alreadyNotified) return;
+
+    const html = EmailTemplates.errorNotification({
+      errorMessage: message,
+      errorDigest: digest,
+      errorType: "Server Error",
+      url,
+      occurredAt: new Date(),
+    });
+
+    await sendMail(html, {
+      to: OWNER_EMAIL!,
+      subject: `Unhandled Error${digest ? ` · ${digest}` : ""}`,
+    });
+
+    await redis.set(redisKey(cacheKey), 1, { ex: timeInSec({ day: 1 }) });
+  } catch (sendErr) {
+    console.error("[notifyError] Failed to send error notification:", sendErr);
+  }
+}
+
+const redisKey = (cacheKey: string) => `error:notified:${cacheKey}`;
+
+// same input = same output
+function simpleHash(str: string): string {
+  let hash = 5381;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash * 33) ^ str.charCodeAt(i);
+  }
+  return (hash >>> 0).toString(16);
+}
