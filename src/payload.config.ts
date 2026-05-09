@@ -16,14 +16,15 @@ import {
 } from "./config";
 import { routing } from "./i18n/routing";
 import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
+import { extractAddress, extractName, transporter } from "./libs/email";
 
 import { Users } from "./cms/collections/Users";
 import { Media } from "./cms/collections/Media";
 import { Hero } from "./cms/globals/Hero";
 import { AboutMe } from "./cms/globals/AboutMe";
 import { ContactMe } from "./cms/globals/ContactMe";
-import { extractAddress, extractName, transporter } from "./libs/email";
 import { Project } from "./cms/collections/Project";
+import { ContactRateLimit } from "./cms/collections/ContactRateLimit";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -35,7 +36,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Project],
+  collections: [Users, Media, Project, ContactRateLimit],
   globals: [Hero, AboutMe, ContactMe],
   editor: lexicalEditor(),
   secret: PAYLOAD_SECRET || "",
