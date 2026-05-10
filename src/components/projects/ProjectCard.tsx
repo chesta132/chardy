@@ -74,7 +74,7 @@ export const ProjectCard = ({ span, project }: FeaturedProject) => {
           src={project.thumbnail.cloudinary.secure_url!}
           alt=""
           fill
-          className="object-cover"
+          className="object-contain"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
         {/* Gradient overlay */}
