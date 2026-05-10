@@ -17,6 +17,7 @@ export const getHero = async (payload: BasePayload) => {
   const locale = await getLocale();
   const cache = withCache(() => payload.findGlobal({ slug: "hero", locale }), ["hero", locale], {
     revalidate: timeInSec({ day: 1 }),
+    tags: ["hero"],
   });
   return cache();
 };
@@ -25,6 +26,7 @@ export const getAboutMe = async (payload: BasePayload) => {
   const locale = await getLocale();
   const cache = withCache(() => payload.findGlobal({ slug: "about-me", locale }), ["about-me", locale], {
     revalidate: timeInSec({ day: 1 }),
+    tags: ["about-me"],
   });
   return cache();
 };
@@ -33,6 +35,7 @@ export const getContactMe = async (payload: BasePayload) => {
   const locale = await getLocale();
   const cache = withCache(() => payload.findGlobal({ slug: "contact-me", locale }), ["contact-me", locale], {
     revalidate: timeInSec({ day: 1 }),
+    tags: ["contact-me"],
   });
   return cache();
 };
@@ -41,6 +44,7 @@ export const getProjects = async (payload: BasePayload) => {
   const locale = await getLocale();
   const cache = withCache(() => payload.find({ collection: "project", locale }), ["projects", locale], {
     revalidate: timeInSec({ day: 1 }),
+    tags: ["projects"],
   });
   return cache();
 };
@@ -61,6 +65,7 @@ export const getProject = async (payload: BasePayload, id: number) => {
     ["projects", locale, id.toString()],
     {
       revalidate: timeInSec({ day: 1 }),
+      tags: [`project-${id}`],
     },
   );
   const projects = (await cache()).docs;
@@ -79,7 +84,10 @@ export const getProjectWithNav = async (payload: BasePayload, id: number) => {
         sort: "id",
       }),
     ["project-nav", id.toString(), locale],
-    { revalidate: timeInSec({ day: 1 }) },
+    {
+      revalidate: timeInSec({ day: 1 }),
+      tags: [`project-${id}`, `project-${id - 1}`, `project-${id + 1}`],
+    },
   );
 
   const docs = (await cache()).docs;
@@ -96,6 +104,7 @@ export const getSocials = async (payload: BasePayload) => {
   const locale = await getLocale();
   const cache = withCache(() => payload.findGlobal({ slug: "contact-me", locale, select: { socials: true } }), ["contact-me", locale, "socials"], {
     revalidate: timeInSec({ day: 1 }),
+    tags: ["contact-me", "socials"],
   });
   return (await cache()).socials;
 };
@@ -104,6 +113,7 @@ export const getFeaturedProjects = async (payload: BasePayload) => {
   const locale = await getLocale();
   const cache = withCache(() => payload.find({ collection: "featured-project", locale, sort: ["order"] }), ["featured-project", locale], {
     revalidate: timeInSec({ day: 1 }),
+    tags: ["featured-project"],
   });
   return cache();
 };

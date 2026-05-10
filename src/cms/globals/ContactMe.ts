@@ -1,7 +1,15 @@
+import { revalidateTag } from "next/cache";
 import { GlobalConfig, TextFieldSingleValidation } from "payload";
 
 export const ContactMe: GlobalConfig = {
   slug: "contact-me",
+  hooks: {
+    afterChange: [
+      () => {
+        revalidateTag("contact-me", "max");
+      },
+    ],
+  },
   fields: [
     {
       name: "socials",

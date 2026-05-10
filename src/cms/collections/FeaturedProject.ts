@@ -1,7 +1,20 @@
+import { revalidateTag } from "next/cache";
 import { CollectionConfig } from "payload";
 
 export const FeaturedProject: CollectionConfig = {
   slug: "featured-project",
+  hooks: {
+    afterChange: [
+      () => {
+        revalidateTag("featured-project", "max");
+      },
+    ],
+    afterDelete: [
+      () => {
+        revalidateTag("featured-project", "max");
+      },
+    ],
+  },
 
   fields: [
     {

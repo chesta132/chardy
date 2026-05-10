@@ -1,7 +1,15 @@
+import { revalidateTag } from "next/cache";
 import { GlobalConfig } from "payload";
 
 export const AboutMe: GlobalConfig = {
   slug: "about-me",
+  hooks: {
+    afterChange: [
+      () => {
+        revalidateTag("about-me", "max");
+      },
+    ],
+  },
   fields: [
     {
       name: "stats",

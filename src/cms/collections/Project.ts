@@ -1,9 +1,24 @@
+import { revalidateTag } from "next/cache";
 import { CollectionConfig } from "payload";
 
 export const Project: CollectionConfig = {
   slug: "project",
   admin: {
     useAsTitle: "title",
+  },
+  hooks: {
+    afterChange: [
+      ({ doc }) => {
+        revalidateTag("projects", "max");
+        if (doc.id) revalidateTag(`project-${doc.id}`, "max");
+      },
+    ],
+    afterDelete: [
+      ({ doc }) => {
+        revalidateTag("projects", "max");
+        if (doc.id) revalidateTag(`project-${doc.id}`, "max");
+      },
+    ],
   },
   fields: [
     {
