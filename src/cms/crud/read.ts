@@ -40,9 +40,11 @@ export const getContactMe = async (payload: BasePayload) => {
   return cache();
 };
 
+const getProjectsSort = ["-year", "-id"];
+
 export const getProjects = async (payload: BasePayload) => {
   const locale = await getLocale();
-  const cache = withCache(() => payload.find({ collection: "project", locale }), ["projects", locale], {
+  const cache = withCache(() => payload.find({ collection: "project", locale, sort: getProjectsSort }), ["projects", locale], {
     revalidate: timeInSec({ day: 1 }),
     tags: ["projects"],
   });
@@ -81,7 +83,7 @@ export const getProjectWithNav = async (payload: BasePayload, id: number) => {
         locale,
         where: { id: { greater_than_equal: id - 1 } }, // from prev
         limit: 3, // prev, current, next
-        sort: "id",
+        sort: getProjectsSort,
       }),
     ["project-nav", id.toString(), locale],
     {
