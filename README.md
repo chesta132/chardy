@@ -47,7 +47,7 @@ src/
 │   └── ui/           # Button, Label, Globe, Loading, dll
 ├── hooks/            # useForm, useTextReveal, useScrollDirection, useAutosizeTextarea
 ├── libs/
-│   ├── email/        # sendMail(), templates, notifyError()
+│   ├── email/        # sendMail(), templates
 │   ├── error/
 │   │   ├── server/   # ServerError class + serialization
 │   │   └── client/   # handleError(), handleFormError()

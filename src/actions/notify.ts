@@ -1,12 +1,12 @@
 "use server";
 
 import { isDevEnv, OWNER_EMAIL } from "@/config";
-import { sendMail } from ".";
-import { timeInSec } from "../manipulate/number";
-import { redis } from "../redis";
-import { EmailTemplates } from "./templates";
+import { sendMail } from "../libs/email";
+import { timeInSec } from "../libs/manipulate/number";
+import { redis } from "../libs/redis";
+import { EmailTemplates } from "../libs/email/templates";
 
-export async function notifyError(message: string, digest?: string, url?: string): Promise<void> {
+export async function notifyErrorAction(type: string, message: string, digest?: string, url?: string): Promise<void> {
   if (isDevEnv()) return;
   try {
     const cacheKey = digest ?? `msg:${simpleHash(message)}`;
@@ -17,11 +17,12 @@ export async function notifyError(message: string, digest?: string, url?: string
     const html = EmailTemplates.errorNotification({
       errorMessage: message,
       errorDigest: digest,
-      errorType: "Server Error",
+      errorType: type,
       url,
       occurredAt: new Date(),
     });
 
+    console.error(`[notifyErrorAction] ${type}${digest ? ` · ${digest}` : ""}`, { message, digest, url });
     await sendMail(html, {
       to: OWNER_EMAIL!,
       subject: `Unhandled Error${digest ? ` · ${digest}` : ""}`,
@@ -29,7 +30,7 @@ export async function notifyError(message: string, digest?: string, url?: string
 
     await redis.set(redisKey(cacheKey), 1, { ex: timeInSec({ day: 1 }) });
   } catch (sendErr) {
-    console.error("[notifyError] Failed to send error notification:", sendErr);
+    console.error("[notifyErrorAction] Failed to send error notification:", sendErr);
   }
 }
 

@@ -13,7 +13,7 @@ import { ErrorLayout } from "@/components/error";
 import type { ErrorPageData } from "@/components/error";
 import { isDevEnv } from "@/config";
 import { useEffect } from "react";
-import { notifyError } from "@/libs/email/send";
+import { notifyErrorAction } from "@/actions/notify";
 
 interface ErrorPageProps {
   /** The underlying error thrown at runtime */
@@ -28,7 +28,7 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
   useEffect(() => {
     if (isDevEnv()) {
       console.error("[ErrorPage]", error.message, error.digest);
-    } else notifyError(error.message, error.digest, window.location.href);
+    } else notifyErrorAction("Client Error", error.message, error.digest, window.location.href);
   }, [error]);
 
   const data: ErrorPageData = {
