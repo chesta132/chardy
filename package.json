@@ -18,6 +18,7 @@
     "@payloadcms/next": "^3.84.1",
     "@payloadcms/richtext-lexical": "^3.84.1",
     "@upstash/redis": "^1.38.0",
+    "@vercel/analytics": "^2.0.1",
     "clsx": "^2.1.1",
     "cobe": "0.4.2",
     "graphql": "^16.14.0",
