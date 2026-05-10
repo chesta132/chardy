@@ -99,7 +99,7 @@ export function ProjectDetail({ project, nextId, prevId }: { project: Project; p
 
         {/* ── Body text ── */}
         <div className="flex flex-col gap-5 mb-14 font-neue-montreal">
-          <RichText data={project.description} />
+          <RichText data={project.description} className="rich-text" />
         </div>
 
         {/* ── Screenshot / extra image — optional ── */}
