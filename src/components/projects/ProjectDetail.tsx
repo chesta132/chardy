@@ -9,7 +9,7 @@ import { RichText } from "@payloadcms/richtext-lexical/react";
 import { ErrorLayout, ErrorPageData } from "../error";
 import { Main } from "../layouts/Wrapper";
 
-export function ProjectDetail({ project, nextId, prevId }: { project: Project; prevId: number | null; nextId: number | null }) {
+export function ProjectDetail({ project }: { project: Project }) {
   const t = useTranslations("ProjectDetail");
   const error: ErrorPageData = {
     code: "500",
@@ -117,35 +117,6 @@ export function ProjectDetail({ project, nextId, prevId }: { project: Project; p
             />
           </div>
         )}
-
-        {/* ── Prev / Next nav placeholder ── */}
-        <nav className="flex justify-between items-center border-t border-foreground/10 py-8 mb-0" aria-label="Project navigation">
-          {prevId !== null ? (
-            <Link
-              href={`/projects/${prevId}`}
-              aria-label="Go to previous project"
-              className={cn("flex items-center gap-2 text-foreground/40 hover:text-secondary transition-colors duration-300", rollingLabelGroupClass)}
-            >
-              <Arrow className="rotate-180 fill-foreground/40 group-hover:fill-secondary transition-colors duration-300" aria-hidden="true" />
-              <RollingLabel className="font-supply-mono text-[10px] tracking-widest uppercase">{t("prevProject")}</RollingLabel>
-            </Link>
-          ) : (
-            <span aria-hidden="true" />
-          )}
-
-          {nextId !== null ? (
-            <Link
-              href={`/projects/${nextId}`}
-              aria-label="Go to next project"
-              className={cn("flex items-center gap-2 text-foreground/40 hover:text-secondary transition-colors duration-300", rollingLabelGroupClass)}
-            >
-              <RollingLabel className="font-supply-mono text-[10px] tracking-widest uppercase">{t("nextProject")}</RollingLabel>
-              <Arrow className="fill-foreground/40 group-hover:fill-secondary transition-colors duration-300" aria-hidden="true" />
-            </Link>
-          ) : (
-            <span aria-hidden="true" />
-          )}
-        </nav>
       </article>
     </Main>
   );

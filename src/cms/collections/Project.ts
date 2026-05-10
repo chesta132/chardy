@@ -1,7 +1,5 @@
 import { revalidateTag } from "next/cache";
-import { CollectionConfig, getPayload } from "payload";
-import { getProjectWithNav, ProjectWithNav } from "../crud/read";
-import config from "@payload-config";
+import { CollectionConfig } from "payload";
 
 export const Project: CollectionConfig = {
   slug: "project",
@@ -14,34 +12,13 @@ export const Project: CollectionConfig = {
         revalidateTag("projects", "max");
         if (doc.id) {
           revalidateTag(`project-${doc.id}`, "max");
-          const payload = await getPayload({ config });
-          // safe if it's cached, except it's delete action
-          const { nextId, prevId } = await getProjectWithNav(payload, doc.id);
-          if (nextId) revalidateTag(`project-${nextId}`, "max");
-          if (prevId) revalidateTag(`project-${prevId}`, "max");
         }
       },
     ],
     afterDelete: [
-      async ({ doc, context }) => {
+      async ({ id }) => {
         revalidateTag("projects", "max");
-        if (doc.id) {
-          revalidateTag(`project-${doc.id}`, "max");
-        }
-        if (context.nav) {
-          const { nextId, prevId } = context.nav as ProjectWithNav;
-          if (nextId) revalidateTag(`project-${nextId}`, "max");
-          if (prevId) revalidateTag(`project-${prevId}`, "max");
-        }
-      },
-    ],
-    beforeDelete: [
-      async ({ context, id }) => {
-        if (!context) context = {};
-        if (typeof id === "number") {
-          const payload = await getPayload({ config });
-          context.nav = await getProjectWithNav(payload, id);
-        }
+        revalidateTag(`project-${id}`, "max");
       },
     ],
   },

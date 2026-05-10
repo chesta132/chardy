@@ -4,7 +4,6 @@ import { getLocale as getLocaleServer } from "next-intl/server";
 import { Locale } from "@/i18n/types";
 import { timeInSec } from "@/libs/manipulate/number";
 import { routing } from "@/i18n/routing";
-import { reverseSort } from "../utils";
 
 const getLocale = async (): Promise<Locale> => {
   try {
@@ -41,7 +40,6 @@ export const getContactMe = async (payload: BasePayload) => {
   return cache();
 };
 
-// to update this u need to update getProjectWithNav
 const getProjectsSort = ["-year", "-id"];
 
 export const getProjects = async (payload: BasePayload) => {
@@ -51,54 +49,6 @@ export const getProjects = async (payload: BasePayload) => {
     tags: ["projects"],
   });
   return cache();
-};
-
-const baseGetProjectWithNav = async (payload: BasePayload, id: number, locale: Locale) => {
-  const current = await payload.findByID({
-    collection: "project",
-    id,
-    locale,
-  });
-
-  const [prevResult, nextResult] = await Promise.all([
-    // prev
-    payload.find({
-      collection: "project",
-      locale,
-      where: {
-        or: [{ year: { less_than: current.year } }, { and: [{ year: { equals: current.year } }, { id: { less_than: id } }] }],
-      },
-      sort: getProjectsSort,
-      limit: 1,
-    }),
-    // next
-    payload.find({
-      collection: "project",
-      locale,
-      where: {
-        or: [{ year: { greater_than: current.year } }, { and: [{ year: { equals: current.year } }, { id: { greater_than: id } }] }],
-      },
-      sort: reverseSort(getProjectsSort),
-      limit: 1,
-    }),
-  ]);
-
-  return {
-    project: current,
-    prevId: (prevResult.docs[0]?.id ?? null) as number | null,
-    nextId: (nextResult.docs[0]?.id ?? null) as number | null,
-  };
-};
-
-export type ProjectWithNav = Awaited<ReturnType<typeof baseGetProjectWithNav>>;
-
-export const getProjectWithNav = async (payload: BasePayload, id: number) => {
-  const locale = await getLocale();
-  const cache = withCache(() => baseGetProjectWithNav(payload, id, locale), ["projects", locale, `project-${id}-nav`], {
-    revalidate: timeInSec({ day: 1 }),
-    tags: [`project-${id}`],
-  });
-  return await cache();
 };
 
 export const getProject = async (payload: BasePayload, id: number) => {
