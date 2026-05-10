@@ -1,6 +1,5 @@
 "use client";
 
-
 import { cn } from "@/libs/utils";
 import { Arrow } from "../ui/Arrow";
 import { Globe, WEST_JAVA } from "../ui/Globe";
@@ -15,7 +14,7 @@ import { useTranslations } from "next-intl";
 import { LOCATION, OWNER_FULLNAME } from "@/config";
 import { Media, type AboutMe as AboutMePayload } from "@/types/payload";
 import { extractUsername } from "@/libs/github";
-import { RichText } from '@payloadcms/richtext-lexical/react'
+import { RichText } from "@payloadcms/richtext-lexical/react";
 
 const getStats = (data: AboutMePayload["stats"]) =>
   [
@@ -47,14 +46,15 @@ export const AboutMe = ({ data, githubUrl }: { data: AboutMePayload; githubUrl: 
           </h2>
         </div>
         <div className="flex flex-col-reverse lg:flex-row justify-between gap-8">
-          <div className="flex lg:flex-col gap-3 justify-between items-center overflow-x-auto">
+          <div className="flex lg:flex-col gap-3 justify-between lg:justify-start items-stretch overflow-x-auto">
             {stats.map((stat, idx) => (
               <div
                 key={stat.t}
                 className={cn(
-                  "size-full aspect-square p-px from-background/0 to-primary/60 rounded-lg",
+                  "flex-1 lg:flex-none lg:w-full min-w-0 p-px from-background/0 to-primary/60 rounded-lg",
                   idx % 2 === 0 ? "bg-linear-to-tr" : "bg-linear-to-tl",
                 )}
+                style={{ aspectRatio: "1 / 1" }}
               >
                 <div className="p-8 text-center size-full items-center flex flex-col justify-center border border-background/10 rounded-lg bg-foreground">
                   <h3 className="text-[clamp(1rem,5vw,2.25rem)] font-neue-montreal">{stat.value}</h3>
