@@ -12,10 +12,17 @@ export default function RootLayout({
 }>) {
   return (
     <html
+      lang="en"
       className={cn("h-full", "antialiased", inter.variable, neueMontreal.variable, PPSuplySans.variable, PPSuplyMono.variable)}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col bg-background" suppressHydrationWarning>
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-9999 focus:px-4 focus:py-2 focus:bg-background focus:text-foreground focus:rounded-lg focus:border focus:border-foreground/20 focus:outline-none focus:ring-2 focus:ring-primary"
+        >
+          Skip to main content
+        </a>
         {children}
         <Analytics />
       </body>

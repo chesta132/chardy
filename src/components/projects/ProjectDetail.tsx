@@ -7,6 +7,7 @@ import { Link } from "@/i18n/navigation";
 import { Media, Project } from "@/types/payload";
 import { RichText } from "@payloadcms/richtext-lexical/react";
 import { ErrorLayout, ErrorPageData } from "../error";
+import { Main } from "../layouts/Wrapper";
 
 export function ProjectDetail({ project, nextId, prevId }: { project: Project; prevId: number | null; nextId: number | null }) {
   const t = useTranslations("ProjectDetail");
@@ -22,7 +23,7 @@ export function ProjectDetail({ project, nextId, prevId }: { project: Project; p
   if (project.screenshot && (typeof project.screenshot === "number" || !project.screenshot.cloudinary)) return <ErrorLayout data={error} />;
 
   return (
-    <main className="flex flex-col min-h-svh">
+    <Main className="flex flex-col min-h-svh">
       <article className="flex flex-col flex-1 px-5 md:px-10 lg:px-20 pt-32 pb-0 max-w-4xl mx-auto w-full">
         {/* Back link */}
         <Link
@@ -72,13 +73,14 @@ export function ProjectDetail({ project, nextId, prevId }: { project: Project; p
                   href={project.liveSite}
                   target="_blank"
                   rel="noreferrer"
+                  aria-label={`Visit live site for ${project.title} (opens in new tab)`}
                   className={cn(
                     "flex items-center gap-1.5 font-supply-mono text-[10px] tracking-wider uppercase text-secondary hover:underline underline-offset-4",
                     rollingLabelGroupClass,
                   )}
                 >
                   <RollingLabel>{t("visitSite")}</RollingLabel>
-                  <Arrow className="fill-secondary -rotate-45" />
+                  <Arrow className="fill-secondary -rotate-45" aria-hidden="true" />
                 </a>
               </div>
             )}
@@ -117,33 +119,34 @@ export function ProjectDetail({ project, nextId, prevId }: { project: Project; p
         )}
 
         {/* ── Prev / Next nav placeholder ── */}
-        <div className="flex justify-between items-center border-t border-foreground/10 py-8 mb-0">
+        <nav className="flex justify-between items-center border-t border-foreground/10 py-8 mb-0" aria-label="Project navigation">
           {prevId !== null ? (
             <Link
               href={`/projects/${prevId}`}
+              aria-label="Go to previous project"
               className={cn("flex items-center gap-2 text-foreground/40 hover:text-secondary transition-colors duration-300", rollingLabelGroupClass)}
             >
-              <Arrow className="rotate-180 fill-foreground/40 group-hover:fill-secondary transition-colors duration-300" />
+              <Arrow className="rotate-180 fill-foreground/40 group-hover:fill-secondary transition-colors duration-300" aria-hidden="true" />
               <RollingLabel className="font-supply-mono text-[10px] tracking-widest uppercase">{t("prevProject")}</RollingLabel>
             </Link>
           ) : (
-            // justify between trigger
-            <div></div>
+            <span aria-hidden="true" />
           )}
 
           {nextId !== null ? (
             <Link
               href={`/projects/${nextId}`}
+              aria-label="Go to next project"
               className={cn("flex items-center gap-2 text-foreground/40 hover:text-secondary transition-colors duration-300", rollingLabelGroupClass)}
             >
               <RollingLabel className="font-supply-mono text-[10px] tracking-widest uppercase">{t("nextProject")}</RollingLabel>
-              <Arrow className="fill-foreground/40 group-hover:fill-secondary transition-colors duration-300" />
+              <Arrow className="fill-foreground/40 group-hover:fill-secondary transition-colors duration-300" aria-hidden="true" />
             </Link>
           ) : (
-            <div></div>
+            <span aria-hidden="true" />
           )}
-        </div>
+        </nav>
       </article>
-    </main>
+    </Main>
   );
 }

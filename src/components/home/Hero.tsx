@@ -60,11 +60,11 @@ export const Hero = ({ data }: Props) => {
   );
 
   return (
-    <section className="flex flex-col flex-1 items-center justify-center overflow-x-hidden">
+    <section className="flex flex-col flex-1 items-center justify-center overflow-x-hidden" aria-label="Hero">
       <div className="h-dvh w-screen p-2 md:p-4">
         <div ref={containerRef} className="relative h-full w-full rounded-2xl overflow-hidden">
           {/* bg — static */}
-          <Image className="size-full object-cover" src={HeroBg} alt="Hero background" fill priority />
+          <Image className="size-full object-cover" src={HeroBg} alt="" role="presentation" fill priority />
 
           {/* Text overlay */}
           <div className="absolute inset-0 flex z-10 flex-col xl:justify-center p-8 xl:items-baseline items-center text-center xl:text-left mt-20 xl:mt-0">
@@ -89,11 +89,12 @@ export const Hero = ({ data }: Props) => {
           </div>
 
           {/* hero figure — parallax */}
-          <div ref={heroRef} className="absolute bottom-0 right-0">
+          <div ref={heroRef} className="absolute bottom-0 right-0" aria-hidden="true">
             <Image
               className="w-auto translate-y-[20%] xl:translate-y-[20%] lg:translate-y-[45%] md:translate-y-[40%] sm:translate-y-[30%] scale-125 md:scale-100"
               src={HeroFigure}
-              alt="Hero figure"
+              alt=""
+              role="presentation"
             />
           </div>
         </div>

@@ -80,12 +80,13 @@ export const Footer = ({ className, asChild, hideOnHomeWithXL, socials }: Footer
                 href={item.href}
                 target="_blank"
                 rel="noreferrer"
+                aria-label={`${item.label}${item.href.startsWith("mailto:") ? "" : " (opens in new tab)"}`}
                 className={cn(
                   "flex group gap-2 uppercase text-[0.7rem] leading-4 cursor-pointer text-foreground/60 hover:text-secondary",
                   rollingLabelGroupClass,
                 )}
               >
-                <item.icon className="text-foreground/40!" />
+                <item.icon className="text-foreground/40!" aria-hidden="true" />
                 <RollingLabel>{item.label}</RollingLabel>
               </a>
             ))}

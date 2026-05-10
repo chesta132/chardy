@@ -48,12 +48,13 @@ export const ContactMe = ({ data }: { data: ContactMePayload }) => {
                 href={item.href}
                 target="_blank"
                 rel="noreferrer"
+                aria-label={`${item.label}${item.href.startsWith('mailto:') ? '' : ' (opens in new tab)'}`}
                 className={cn(
                   "flex group gap-2 uppercase leading-4 cursor-pointer hover:text-secondary text-[clamp(0.2rem,3vw,0.8rem)] reveal-text",
                   rollingLabelGroupClass,
                 )}
               >
-                <item.icon className="text-text-dark!" />
+                <item.icon className="text-text-dark!" aria-hidden="true" />
                 <RollingLabel>{item.label}</RollingLabel>
               </a>
             ))}

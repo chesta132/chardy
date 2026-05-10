@@ -119,6 +119,7 @@ export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
     <nav
       ref={navRef}
       className="m-4 md:m-6 lg:m-8 p-4 lg:py-5 lg:px-7 lg:justify-between lg:flex lg:items-center fixed top-0 left-0 right-0 z-50 backdrop-blur-sm bg-foreground/35 rounded-xl border border-background/20"
+      aria-label="Main navigation"
     >
       <div className="flex items-center justify-between">
         <Link
@@ -131,7 +132,13 @@ export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
         >
           <ChardyLogo className="h-10" animateOnHover />
         </Link>
-        <button className="mr-2 lg:hidden" onClick={() => setOpen((prev) => !prev)}>
+        <button
+          className="mr-2 lg:hidden"
+          onClick={() => setOpen((prev) => !prev)}
+          aria-label={open ? "Close navigation menu" : "Open navigation menu"}
+          aria-expanded={open}
+          aria-controls="mobile-menu"
+        >
           <Hamburger open={open} />
         </button>
       </div>
@@ -153,8 +160,8 @@ export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
       </div>
 
       <div className="hidden lg:flex gap-2">
-        <Button withoutArrow onClick={handleNextLocale}>
-          <div className="flex gap-2 items-center">
+        <Button withoutArrow onClick={handleNextLocale} aria-label={`Switch language, current: ${LANG_MAP[locale as Locale]}`}>
+          <div className="flex gap-2 items-center" aria-hidden="true">
             <FaGlobe />
             {locale.toUpperCase()}
           </div>
@@ -165,14 +172,17 @@ export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
       </div>
 
       {/* mobile menu */}
-      <div ref={menuRef} className="overflow-hidden lg:hidden!">
+      <div ref={menuRef} id="mobile-menu" className="overflow-hidden lg:hidden!" aria-label="Mobile navigation menu">
         <div className="mt-10 space-y-10">
           <div className="flex flex-col space-y-2">
             {LANG_MAP_ENTRIES.map(([l, label], i) => (
-              <div
+              <button
                 key={l}
+                type="button"
+                aria-label={`Switch language to ${label}`}
+                aria-pressed={l === locale}
                 className={cn(
-                  "text-xs leading-4 cursor-pointer text-primary hover:text-secondary uppercase",
+                  "text-xs leading-4 cursor-pointer text-primary hover:text-secondary uppercase text-left",
                   rollingLabelGroupClass,
                   l === locale && "text-secondary",
                 )}
@@ -182,7 +192,7 @@ export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
                 }}
               >
                 <RollingLabel>{label}</RollingLabel>
-              </div>
+              </button>
             ))}
           </div>
           <div className="flex flex-col space-y-2">
@@ -210,12 +220,13 @@ export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
                 href={item.href}
                 target="_blank"
                 rel="noreferrer"
+                aria-label={`${item.label}${item.href.startsWith("mailto:") ? "" : " (opens in new tab)"}`}
                 ref={(el) => {
                   if (el) itemsRef.current[LANG_MAP_ENTRIES.length + NAV_ITEMS.length + i] = el;
                 }}
                 className={cn("flex gap-2 uppercase leading-4 text-xs cursor-pointer text-primary hover:text-secondary", rollingLabelGroupClass)}
               >
-                <item.icon className="text-primary!" />
+                <item.icon className="text-primary!" aria-hidden="true" />
                 <RollingLabel>{item.label}</RollingLabel>
               </a>
             ))}
@@ -231,7 +242,7 @@ const Line = ({ className }: { className?: string }) => (
 );
 
 const Hamburger = ({ open }: { open: boolean }) => (
-  <div className="space-y-2 w-5 cursor-pointer">
+  <div className="space-y-2 w-5 cursor-pointer" aria-hidden="true">
     <Line className={open ? "rotate-45 translate-y-1.25" : ""} />
     <Line className={open ? "-rotate-45 -translate-y-1.25" : ""} />
   </div>

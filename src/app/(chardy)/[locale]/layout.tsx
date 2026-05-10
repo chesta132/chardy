@@ -11,7 +11,7 @@ import { getMessages, getTranslations } from "next-intl/server";
 import { APP_NAME, APP_URL, LOCATION, OWNER_FULLNAME } from "@/config";
 import { Metadata } from "next";
 import { getPayload } from "payload";
-import config from '@payload-config'
+import config from "@payload-config";
 import { getSocials } from "@/cms/crud/read";
 
 type MetadataProps = {
@@ -110,8 +110,8 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
     notFound();
   }
 
-  const payload = await getPayload({config})
-  const socials = await getSocials(payload)
+  const payload = await getPayload({ config });
+  const socials = await getSocials(payload);
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>

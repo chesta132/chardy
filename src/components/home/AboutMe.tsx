@@ -72,7 +72,7 @@ export const AboutMe = ({ data, githubUrl }: { data: AboutMePayload; githubUrl: 
                 </h2>
                 <h3 className="uppercase font-supply-mono text-text-light/50 text-[clamp(0.2rem,3vw,0.75rem)] mt-2">{t("availableForWorldwide")}</h3>
               </div>
-              <Globe markers={[{ location: WEST_JAVA, size: 0.08 }]} />
+              <Globe markers={[{ location: WEST_JAVA, size: 0.08 }]} aria-hidden="true" />
             </div>
           </div>
         </div>

@@ -59,6 +59,7 @@ export const ProjectCard = ({ span, project }: FeaturedProject) => {
       href={`/projects/${project.id}`}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      aria-label={`View project: ${project.title}`}
       className={cn(
         "group relative flex flex-col justify-end overflow-hidden rounded-[10px]",
         "transition-transform duration-500 ease-out hover:scale-[0.985]",
@@ -68,22 +69,22 @@ export const ProjectCard = ({ span, project }: FeaturedProject) => {
       )}
     >
       {/* Image container */}
-      <div ref={imageRef} className="absolute inset-0 z-0 will-change-transform">
+      <div ref={imageRef} className="absolute inset-0 z-0 will-change-transform" aria-hidden="true">
         <Image
           src={project.thumbnail.cloudinary.secure_url!}
-          alt={project.thumbnail.alt}
+          alt=""
           fill
           className="object-cover"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
         {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/10 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/10 to-transparent" aria-hidden="true" />
       </div>
 
       {/* Info overlay */}
       <div className="relative z-10 flex flex-col gap-2 p-5 translate-y-1 transition-transform duration-300 group-hover:translate-y-0">
-        <h5 className="text-text-light font-medium text-lg leading-tight">{project.title}</h5>
-        <div className="flex flex-wrap gap-1.5 lg:opacity-0 lg:translate-y-2 transition-all duration-300 group-hover:opacity-100 translate-y-0 group-hover:translate-y-0">
+        <h3 className="text-text-light font-medium text-lg leading-tight">{project.title}</h3>
+        <div className="flex flex-wrap gap-1.5 lg:opacity-0 lg:translate-y-2 transition-all duration-300 group-hover:opacity-100 translate-y-0 group-hover:translate-y-0" aria-label={`Tags: ${project.tags.slice(0, MAX_TAGS).map(t => t.tag).join(', ')}`}>
           {project.tags.slice(0, MAX_TAGS).map(({ tag }) => (
             <span
               key={tag}

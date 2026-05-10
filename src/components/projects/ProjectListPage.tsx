@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { ProjectList } from "./ProjectList";
 import { Project } from "@/types/payload";
+import { Main } from "../layouts/Wrapper";
 
 const MAX_FILTERS = 10;
 
@@ -20,7 +21,7 @@ export function ProjectListPage({ projects }: { projects: Project[] }) {
   }, [projects, activeFilter]);
 
   return (
-    <main className="flex flex-col min-h-svh px-5 pt-32 pb-16">
+    <Main className="flex flex-col min-h-svh px-5 pt-32 pb-16">
       {/* Header */}
       <div className="flex flex-col items-center gap-3 mb-12">
         <h2 className="font-supply-mono text-text-dark/60 flex items-center gap-2 uppercase text-xs tracking-widest">
@@ -35,11 +36,12 @@ export function ProjectListPage({ projects }: { projects: Project[] }) {
       {/* Filters */}
       {/* TODO: add complex filter with multiple filter and tag input with autocorrect */}
       {/* like tag input in Homedy project */}
-      <div className="flex gap-2 flex-wrap mb-6">
+      <div className="flex gap-2 flex-wrap mb-6" role="group" aria-label={"Filter projects by tag"}>
         {filters.map((f) => (
           <button
             key={f}
             onClick={() => setActiveFilter(f)}
+            aria-pressed={activeFilter === f}
             className={cn(
               "font-supply-mono text-[10px] tracking-widest uppercase px-4 py-1.5 rounded-full border transition-all duration-300",
               activeFilter === f
@@ -55,6 +57,11 @@ export function ProjectListPage({ projects }: { projects: Project[] }) {
       {/* Divider */}
       <div className="w-full h-px bg-foreground/10 mb-0" />
 
+      {/* Live region for screen readers */}
+      <div aria-live="polite" aria-atomic="true" className="sr-only">
+        {`Showing ${filtered.length} project${filtered.length !== 1 ? "s" : ""}${activeFilter !== "all" ? ` tagged ${activeFilter}` : ""}`}
+      </div>
+
       {/* List */}
       <ProjectList projects={filtered} />
 
@@ -62,6 +69,6 @@ export function ProjectListPage({ projects }: { projects: Project[] }) {
       <p className="font-supply-mono text-[10px] text-foreground/35 mt-6 tracking-widest">
         {t("total", { count: String(filtered.length).padStart(2, "0") })}
       </p>
-    </main>
+    </Main>
   );
 }
