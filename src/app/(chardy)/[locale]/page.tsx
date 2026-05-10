@@ -10,13 +10,15 @@ import { Main } from "@/components/layouts/Wrapper";
 export default async function Home() {
   const payload = await getPayload({ config });
 
-  const heroData = await getHero(payload);
-  const aboutMeData = await getAboutMe(payload);
-  const contactMeData = await getContactMe(payload);
-  const featuredProjectsData = await getFeaturedProjects(payload);
+  const [heroData, aboutMeData, contactMeData, featuredProjectsData] = await Promise.all([
+    getHero(payload),
+    getAboutMe(payload),
+    getContactMe(payload),
+    getFeaturedProjects(payload),
+  ]);
 
   return (
-    <Main  className="flex flex-col flex-1 items-center justify-center overflow-x-hidden">
+    <Main className="flex flex-col flex-1 items-center justify-center overflow-x-hidden">
       <Hero data={heroData} />
       <FeaturedProjects featuredProjectsData={featuredProjectsData.docs} />
       <AboutMe data={aboutMeData} githubUrl={contactMeData.socials.github} />
