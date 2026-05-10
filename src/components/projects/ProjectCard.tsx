@@ -60,7 +60,7 @@ export const ProjectCard = ({ span, project }: FeaturedProject) => {
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       className={cn(
-        "group relative flex flex-col justify-end overflow-hidden rounded-[10px] bg-foreground",
+        "group relative flex flex-col justify-end overflow-hidden rounded-[10px]",
         "transition-transform duration-500 ease-out hover:scale-[0.985]",
         "col-span-1 h-full min-h-65",
         span === "wide" && "md:col-span-2",
