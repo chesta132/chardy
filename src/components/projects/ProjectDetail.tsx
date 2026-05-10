@@ -86,13 +86,13 @@ export function ProjectDetail({ project, nextId, prevId }: { project: Project; p
         </header>
 
         {/* ── Thumbnail image ── */}
-        <div className="relative w-full aspect-video rounded-2xl overflow-hidden mb-14">
+        <div className="rounded-2xl overflow-hidden mb-14">
           <Image
             src={project.thumbnail.cloudinary.secure_url!}
             alt={project.thumbnail.alt}
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, 896px"
+            width={1280}
+            height={720}
+            className="size-full"
             priority
           />
         </div>
@@ -103,11 +103,11 @@ export function ProjectDetail({ project, nextId, prevId }: { project: Project; p
         </div>
 
         {/* ── Screenshot / extra image — optional ── */}
-        {project.screenshot && (
+        {project.screenshot && typeof project.screenshot !== "number" && (
           <div className="relative w-full rounded-2xl overflow-hidden mb-14" style={{ height: "auto" }}>
             <Image
-              src={(project.screenshot as Media).cloudinary?.secure_url!}
-              alt={`Screenshot of ${(project.screenshot as Media).alt}`}
+              src={project.screenshot.cloudinary?.secure_url!}
+              alt={`Screenshot of ${project.screenshot.alt}`}
               width={1280}
               height={720}
               className="w-full h-auto rounded-2xl"

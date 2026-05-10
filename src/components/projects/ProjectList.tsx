@@ -58,7 +58,7 @@ export function ProjectList({ projects }: { projects: Project[] }) {
               src={(projects[hoveredIndex].thumbnail as Media).cloudinary?.secure_url!}
               alt={(projects[hoveredIndex].thumbnail as Media).alt}
               fill
-              className="object-cover"
+              className="object-contain"
               sizes="208px"
             />
           )}
