@@ -7,17 +7,32 @@ import { useMemo, useState } from "react";
 import { ProjectList } from "./ProjectList";
 import { Project } from "@/types/payload";
 import { Main } from "../layouts/Wrapper";
-
-const MAX_FILTERS = 10;
+import { TagInput } from "../ui/TagInput";
 
 export function ProjectListPage({ projects }: { projects: Project[] }) {
   const t = useTranslations("Projects");
-  const [activeFilter, setActiveFilter] = useState("all");
-  const filters = [...new Set(["all", ...projects.flatMap((p) => p.tags.map((t) => t.tag))])].slice(0, MAX_FILTERS);
+  const [activeFilter, setActiveFilter] = useState(new Set<string>());
+
+  // tags to filter, sorted from the most frequently appearing
+  const filters = useMemo(() => {
+    const tags = projects.flatMap((p) => p.tags.map((t) => t.tag));
+    const counts = tags.reduce(
+      (acc, tag) => {
+        acc[tag] = (acc[tag] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
+    const sorted = Object.keys(counts).sort((a, b) => {
+      return counts[b] - counts[a]; // Sort descending
+    });
+
+    return [...new Set(sorted)];
+  }, [projects]);
 
   const filtered = useMemo(() => {
     const valid = projects.filter((p) => typeof p.thumbnail !== "number" && p.thumbnail.cloudinary);
-    return activeFilter === "all" ? valid : valid.filter((p) => p.tags.some((t) => t.tag === activeFilter));
+    return activeFilter.size === 0 ? valid : valid.filter((p) => p.tags.some((t) => activeFilter.has(t.tag)));
   }, [projects, activeFilter]);
 
   return (
@@ -34,24 +49,8 @@ export function ProjectListPage({ projects }: { projects: Project[] }) {
       </div>
 
       {/* Filters */}
-      {/* TODO: add complex filter with multiple filter and tag input with autocorrect */}
-      {/* like tag input in Homedy project */}
       <div className="flex gap-2 flex-wrap mb-6" role="group" aria-label={"Filter projects by tag"}>
-        {filters.map((f) => (
-          <button
-            key={f}
-            onClick={() => setActiveFilter(f)}
-            aria-pressed={activeFilter === f}
-            className={cn(
-              "font-supply-mono text-[10px] tracking-widest uppercase px-4 py-1.5 rounded-full border transition-all duration-300",
-              activeFilter === f
-                ? "bg-foreground text-background border-foreground"
-                : "bg-transparent text-foreground/60 border-foreground/25 hover:border-foreground/50 hover:text-foreground",
-            )}
-          >
-            {f}
-          </button>
-        ))}
+        <TagInput options={filters} onChange={(tags) => setActiveFilter(new Set(tags))} value={[...activeFilter]} placeholder="Filter" />
       </div>
 
       {/* Divider */}
@@ -59,7 +58,7 @@ export function ProjectListPage({ projects }: { projects: Project[] }) {
 
       {/* Live region for screen readers */}
       <div aria-live="polite" aria-atomic="true" className="sr-only">
-        {`Showing ${filtered.length} project${filtered.length !== 1 ? "s" : ""}${activeFilter !== "all" ? ` tagged ${activeFilter}` : ""}`}
+        {`Showing ${filtered.length} project${filtered.length !== 1 ? "s" : ""}${activeFilter.size > 0 ? ` tagged ${activeFilter}` : ""}`}
       </div>
 
       {/* List */}
