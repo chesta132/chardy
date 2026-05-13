@@ -23,7 +23,6 @@ const getStats = (data: AboutMePayload["stats"]) =>
     { t: "technologiesUsed", value: `${data.technologiesUsed}+` },
   ] as const;
 
-// TODO: use cld
 type Tool = { name: string; href?: string; imgUrl: string };
 
 const getTools = (data: AboutMePayload["tools"]) =>
