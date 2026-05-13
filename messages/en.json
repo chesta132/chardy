@@ -191,7 +191,8 @@
   "Form": {
     "error": {
       "INVALID_EMAIL": "Invalid email address.",
-      "REQUIRED_FIELD": "This field is required."
+      "REQUIRED_FIELD": "This field is required.",
+      "INVALID_ENUM": "Invalid enum."
     }
   }
 }

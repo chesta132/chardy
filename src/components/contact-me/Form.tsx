@@ -11,6 +11,7 @@ import { Loading } from "../ui/Loading";
 import { useLocale, useTranslations } from "next-intl";
 import { Locale } from "@/i18n/types";
 import { sendMessageAction } from "@/actions/contact";
+import { nectAction } from "nectify-js/actions";
 
 export const ContactMeForm = () => {
   const t = useTranslations("HomeContact.mail");
@@ -28,8 +29,9 @@ export const ContactMeForm = () => {
   const handleSendMessage = async (_: unknown, form: ContactPayload.SendMessage) => {
     try {
       setLoading(true);
-      await sendMessageAction(form, locale as Locale);
-      toast.info("Message sent successfully!");
+      // unsafe but handled in form layout
+      await nectAction({ action: sendMessageAction, unsafe: true }, form, locale as Locale);
+      toast.info("Message sent successfully!"); // TODO: localize
     } finally {
       setLoading(false);
     }
@@ -39,7 +41,10 @@ export const ContactMeForm = () => {
     <FormLayout form={formGroup} onFormSubmit={handleSendMessage} className="space-y-4 w-full lg:w-2xl p-5 font-neue-montreal" noValidate>
       <div className="flex flex-col">
         <label htmlFor="fullName" className="font-neue-montreal reveal-text">
-          {t("fullName")} <span aria-hidden="true" className="text-red-400">*</span>
+          {t("fullName")}{" "}
+          <span aria-hidden="true" className="text-red-400">
+            *
+          </span>
         </label>
         <FormLayout.input
           id="fullName"
@@ -54,7 +59,10 @@ export const ContactMeForm = () => {
       </div>
       <div className="flex flex-col">
         <label htmlFor="email" className="font-neue-montreal reveal-text">
-          {t("email")} <span aria-hidden="true" className="text-red-400">*</span>
+          {t("email")}{" "}
+          <span aria-hidden="true" className="text-red-400">
+            *
+          </span>
         </label>
         <FormLayout.input
           id="email"
@@ -69,7 +77,10 @@ export const ContactMeForm = () => {
       </div>
       <div className="flex flex-col">
         <label htmlFor="subject" className="font-neue-montreal reveal-text">
-          {t("subject")} <span aria-hidden="true" className="text-red-400">*</span>
+          {t("subject")}{" "}
+          <span aria-hidden="true" className="text-red-400">
+            *
+          </span>
         </label>
         <FormLayout.input
           id="subject"
@@ -83,7 +94,10 @@ export const ContactMeForm = () => {
       </div>
       <div className="flex flex-col">
         <label htmlFor="message" className="font-neue-montreal reveal-text">
-          {t("message")} <span aria-hidden="true" className="text-red-400">*</span>
+          {t("message")}{" "}
+          <span aria-hidden="true" className="text-red-400">
+            *
+          </span>
         </label>
         <FormLayout.textarea
           ref={textAreaRef}

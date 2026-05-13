@@ -1,22 +1,16 @@
 import { SetGlobalError } from "@/contexts/GlobalError";
 import { flattenError, ZodError } from "zod";
-import { FlattenedServerError, isServerError, ServerError } from "../server";
 import { capital } from "@/libs/manipulate/string";
+import { NectOutcomeError } from "nectify-js/actions";
 
 /**
  * Maps any caught error to the global error state.
  */
 export const handleError = (err: unknown, setError: SetGlobalError) => {
-  if (isServerError(err)) {
-    setError(new Error(err.message));
-    return;
-  }
-  if (err instanceof Error) {
-    const flattened = ServerError.flattenFromString(err.message);
-    if (flattened) {
-      setError(new Error(flattened.message));
-      return;
-    } else if (err.message.toLowerCase().includes("network")) {
+  if (err instanceof NectOutcomeError) {
+    setError(new Error(err.data.message));
+  } else if (err instanceof Error) {
+    if (err.message.toLowerCase().includes("network")) {
       setError(new Error("Unable to connect to server. Check your connection."));
     } else {
       setError(new Error(err.message));
@@ -34,21 +28,10 @@ export const handleFormError = <T extends Record<string, string>>(
   setFormError: React.Dispatch<React.SetStateAction<T>>,
   setError: SetGlobalError,
 ) => {
-  const handleFlattenedError = (err: FlattenedServerError) => {
-    if (err.field) {
-      const formattedFields = Object.entries(err.field).reduce((acc, [field, value]) => ({ ...acc, [field]: capital(value || "") }), {});
+  if (err instanceof NectOutcomeError) {
+    if (err.data.fields) {
+      const formattedFields = Object.entries(err.data.fields).reduce((acc, [field, value]) => ({ ...acc, [field]: capital(value || "") }), {});
       setFormError((prev) => ({ ...prev, ...formattedFields }));
-      return;
-    }
-  };
-
-  if (isServerError(err)) {
-    handleFlattenedError(err);
-    return;
-  } else if (err instanceof Error) {
-    const flattened = ServerError.flattenFromString(err.message);
-    if (flattened && flattened.field) {
-      handleFlattenedError(flattened);
       return;
     }
   } else if (err instanceof ZodError) {

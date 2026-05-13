@@ -1,7 +1,10 @@
 "use server";
 
+import { Payload } from "@/payloads";
+import { ContactPayload } from "@/payloads/contact";
 import { ContactService } from "@/services/contact";
+import { createNectAction } from "nectify-js/actions";
 
-export async function sendMessageAction(...args: Parameters<typeof ContactService.sendMessage>) {
-  return ContactService.sendMessage(...args);
-}
+export const sendMessageAction = createNectAction()
+  .option({ validator: { args: [ContactPayload.sendMessage, Payload.locale] as const } })
+  .handle(ContactService.sendMessage);

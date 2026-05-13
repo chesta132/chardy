@@ -3,6 +3,7 @@ import { record } from "../../manipulate/object";
 import { Locale } from "@/i18n/types";
 import { createTranslator } from "next-intl";
 import { getMessages } from "@/i18n/request";
+import { ErrorOutcomeType } from "nectify-js/actions";
 
 interface RestError {
   debug?: any;
@@ -30,10 +31,7 @@ export type ServerErrorConfig =
 export type ServerErrorCode = ServerErrorConfig["code"];
 export type FlattenedServerError = {
   code: CodeError;
-  message: string;
-  field?: Record<string, string>;
-  details?: string;
-};
+} & Omit<ErrorOutcomeType, "code">;
 
 type Config<C> = Extract<ServerErrorConfig, { code: C }>;
 type DepsOf<C extends ServerErrorCode> = Config<C>["deps"];
@@ -76,7 +74,7 @@ export class ServerError<C extends ServerErrorCode> {
           ...deps[0],
           message: t("MISSING_FIELDS.message", { count: arrFields.length }),
           code: "MISSING_FIELDS",
-          field: objFields,
+          fields: objFields,
         } as const;
       case "INVALID_AUTH":
         return {
@@ -101,28 +99,11 @@ export class ServerError<C extends ServerErrorCode> {
           ...deps[0],
           message: deps[0].message || t("SERVER_ERROR.message"),
           code: "SERVER_ERROR",
-          details: deps[0].error?.message,
+          information: deps[0].error?.message,
         } as const;
       case "FORBIDDEN":
       case "CONFLICT":
         return { ...deps[0], code } as const;
     }
   }
-
-  async flattenToString() {
-    return JSON.stringify(await this.flatten());
-  }
-
-  static flattenFromString(str: string) {
-    try {
-      const parsed = JSON.parse(str);
-      return isServerError(parsed) ? parsed : null;
-    } catch {
-      return null;
-    }
-  }
-}
-
-export function isServerError(err: unknown): err is FlattenedServerError {
-  return typeof err === "object" && err !== null && "code" in err;
 }

@@ -2,7 +2,6 @@ import z from "zod";
 import { Payload } from ".";
 
 export abstract class ContactPayload {
-  // TODO: add i18n
   static readonly sendMessage = z.object({
     fullName: z.string().min(1, Payload.LOCALIZATION.REQUIRED_FIELD),
     email: z.email(Payload.LOCALIZATION.INVALID_EMAIL),

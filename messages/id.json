@@ -190,7 +190,8 @@
   "Form": {
     "error": {
       "INVALID_EMAIL": "Alamat email tidak valid.",
-      "REQUIRED_FIELD": "Bidang ini wajib diisi."
+      "REQUIRED_FIELD": "Bidang ini wajib diisi.",
+      "INVALID_ENUM": "Pilihan tidak valid."
     }
   }
 }
