@@ -36,7 +36,7 @@
   "HomeContact": {
     "title": "Contact Me",
     "emailDirectly": "Email me directly",
-    "mail": {
+    "cta": {
       "fullName": "Your Full Name",
       "email": "Your Email",
       "subject": "Subject",
@@ -48,7 +48,8 @@
         "email": "example@email.com",
         "subject": "What's on your mind?",
         "message": "Tell me more..."
-      }
+      },
+      "messageSent": "Message sent successfully!"
     }
   },
 

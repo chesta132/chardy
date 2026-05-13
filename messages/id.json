@@ -36,7 +36,7 @@
   "HomeContact": {
     "title": "Hubungi Saya",
     "emailDirectly": "Kirim email langsung",
-    "mail": {
+    "cta": {
       "fullName": "Nama Lengkap",
       "email": "Email Kamu",
       "subject": "Subjek",
@@ -48,7 +48,8 @@
         "email": "contoh@email.com",
         "subject": "Apa yang kamu pikirkan?",
         "message": "Beri tahu lebih lanjut..."
-      }
+      },
+      "messageSent": "Pesan berhasil dikirim!"
     }
   },
 

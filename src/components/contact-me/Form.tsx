@@ -14,7 +14,7 @@ import { sendMessageAction } from "@/actions/contact";
 import { nectAction } from "nectify-js/actions";
 
 export const ContactMeForm = () => {
-  const t = useTranslations("HomeContact.mail");
+  const t = useTranslations("HomeContact.cta");
   const locale = useLocale();
 
   const formGroup = useForm({ email: "", fullName: "", message: "", subject: "" }, ContactPayload.sendMessage);
@@ -31,7 +31,7 @@ export const ContactMeForm = () => {
       setLoading(true);
       // unsafe but handled in form layout
       await nectAction({ action: sendMessageAction, unsafe: true }, form, locale as Locale);
-      toast.info("Message sent successfully!"); // TODO: localize
+      toast.info(t("messageSent"));
     } finally {
       setLoading(false);
     }
