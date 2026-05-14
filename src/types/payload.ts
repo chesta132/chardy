@@ -248,6 +248,15 @@ export interface Project {
   year: number;
   thumbnail: number | Media;
   liveSite?: string | null;
+  sites?:
+    | {
+        site: {
+          label: string;
+          url: string;
+        };
+        id?: string | null;
+      }[]
+    | null;
   description: {
     root: {
       type: string;
@@ -434,6 +443,17 @@ export interface ProjectSelect<T extends boolean = true> {
   year?: T;
   thumbnail?: T;
   liveSite?: T;
+  sites?:
+    | T
+    | {
+        site?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+            };
+        id?: T;
+      };
   description?: T;
   screenshot?: T;
   updatedAt?: T;

@@ -54,6 +54,29 @@ export const Project: CollectionConfig = {
       type: "text",
     },
     {
+      name: "sites",
+      type: "array",
+      label: "Sites",
+      fields: [
+        {
+          name: "site",
+          type: "group",
+          required: true,
+          fields: [
+            {
+              name: "label",
+              type: "text",
+              required: true,
+              label: "Label",
+              localized: true,
+              defaultValue: ({ locale }) => (locale === "en" ? "Visit site" : "Kunjungi situs"),
+            },
+            { name: "url", type: "text", required: true, label: "URL" },
+          ],
+        },
+      ],
+    },
+    {
       name: "description",
       type: "richText",
       required: true,

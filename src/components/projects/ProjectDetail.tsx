@@ -8,6 +8,7 @@ import { Media, Project } from "@/types/payload";
 import { RichText } from "@payloadcms/richtext-lexical/react";
 import { ErrorLayout, ErrorPageData } from "../error";
 import { Main } from "../layouts/Wrapper";
+import { ProjectDetailSites } from "./ProjectDetailSites";
 
 export function ProjectDetail({ project }: { project: Project }) {
   const t = useTranslations("ProjectDetail");
@@ -65,25 +66,33 @@ export function ProjectDetail({ project }: { project: Project }) {
               </div>
             </div>
 
-            {/* Live link — optional */}
-            {project.liveSite && (
-              <div className="flex flex-col gap-1 ml-auto">
-                <span className="font-supply-mono text-[9px] tracking-widest uppercase text-foreground/35">{t("live")}</span>
-                <a
-                  href={project.liveSite}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label={`Visit live site for ${project.title} (opens in new tab)`}
-                  className={cn(
-                    "flex items-center gap-1.5 font-supply-mono text-[10px] tracking-wider uppercase text-secondary hover:underline underline-offset-4",
-                    rollingLabelGroupClass,
-                  )}
-                >
-                  <RollingLabel>{t("visitSite")}</RollingLabel>
-                  <Arrow className="fill-secondary -rotate-45" aria-hidden="true" />
-                </a>
-              </div>
-            )}
+            {/* Right: Live link / Sites — always pinned to the right */}
+            <div className="shrink-0">
+              {/* Live link — optional */}
+              {/* TODO: update liveSite to links (obj) */}
+              {/* if only one link, show <a> */}
+              {/* else, show button that open a modal */}
+              {project.liveSite && (
+                <div className="flex flex-col gap-1">
+                  <span className="font-supply-mono text-[9px] tracking-widest uppercase text-foreground/35">{t("live")}</span>
+                  <a
+                    href={project.liveSite}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={`Visit live site for ${project.title} (opens in new tab)`}
+                    className={cn(
+                      "flex items-center gap-1.5 font-supply-mono text-[10px] tracking-wider uppercase text-secondary hover:underline underline-offset-4",
+                      rollingLabelGroupClass,
+                    )}
+                  >
+                    <RollingLabel>{t("visitSite")}</RollingLabel>
+                    <Arrow className="fill-secondary -rotate-45" aria-hidden="true" />
+                  </a>
+                </div>
+              )}
+
+              <ProjectDetailSites project={project} />
+            </div>
           </div>
         </header>
 

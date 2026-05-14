@@ -65,6 +65,8 @@
     "tags": "Stack / Type",
     "live": "Live",
     "visitSite": "Visit site",
+    "siteLabel": "Available {count, plural, =1 {site} other {sites}}",
+    "site": "{count, plural, =1 {site} other {# sites}}",
     "prevProject": "Previous project",
     "nextProject": "Next project",
     "invalid": {
@@ -136,7 +138,7 @@
         "message": "Invalid values."
       },
       "MISSING_FIELDS": {
-        "message": "{count, plural, one {# field}, other {# fields}} is required.",
+        "message": "{count, plural, one {# field} other {# fields}} is required.",
         "fieldVal": "This field is required."
       },
       "INVALID_AUTH": {
