@@ -232,7 +232,7 @@ export function TagInput({ value, onChange, options, placeholder = "Select...", 
         className={cn("absolute z-50 mt-1 w-full rounded-md border border-foreground/15 bg-primary shadow-sm overflow-hidden", !open && "hidden")}
       >
         {filtered.length > 0 ? (
-          <div className="max-h-48 overflow-y-auto py-1">
+          <div className="max-h-48 overflow-y-auto py-1" data-lenis-prevent>
             {filtered.map((opt, i) => (
               <li
                 key={opt}

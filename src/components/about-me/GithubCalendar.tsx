@@ -11,7 +11,7 @@ export const GithubCalendar = ({ username }: { username: string }) => {
 
   return (
     <div className="flex flex-col xl:flex-row gap-2 items-center w-full">
-      <div className="w-full overflow-x-auto">
+      <div className="w-full overflow-x-auto" data-lenis-prevent>
         <GitHubCalendar username={username} year={ghYear} />
       </div>
       <div className="flex flex-wrap gap-5">
