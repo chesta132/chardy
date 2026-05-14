@@ -172,7 +172,7 @@ export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
       </div>
 
       {/* mobile menu */}
-      <div ref={menuRef} id="mobile-menu" className="overflow-hidden lg:hidden!" aria-label="Mobile navigation menu">
+      <div ref={menuRef} id="mobile-menu" style={{ display: "none" }} className="overflow-hidden lg:hidden!" aria-label="Mobile navigation menu">
         <div className="mt-10 space-y-10">
           <div className="flex flex-col space-y-2">
             {LANG_MAP_ENTRIES.map(([l, label], i) => (
