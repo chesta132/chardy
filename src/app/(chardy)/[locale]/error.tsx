@@ -14,7 +14,7 @@ import type { ErrorPageData } from "@/components/error";
 import { isDevEnv } from "@/config";
 import { useEffect } from "react";
 import { notifyErrorAction } from "@/actions/notify";
-import { nectAction } from "nectify-js/actions";
+import { nectAction } from "nectic/actions";
 
 interface ErrorPageProps {
   /** The underlying error thrown at runtime */
@@ -30,7 +30,10 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
     if (isDevEnv()) {
       console.error("[ErrorPage]", error.message, error.digest);
     } else {
-      nectAction({ action: notifyErrorAction }, { message: error.message, digest: error.digest, url: window.location.href, type: "Client Error" });
+      nectAction(
+        { action: notifyErrorAction, fromCSR: true },
+        { message: error.message, digest: error.digest, url: window.location.href, type: "Client Error" },
+      );
     }
   }, [error]);
 

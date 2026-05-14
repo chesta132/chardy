@@ -1,7 +1,7 @@
 import { SetGlobalError } from "@/contexts/GlobalError";
 import { flattenError, ZodError } from "zod";
 import { capital } from "@/libs/manipulate/string";
-import { NectOutcomeError } from "nectify-js/actions";
+import { NectOutcomeError } from "nectic/actions";
 
 /**
  * Maps any caught error to the global error state.

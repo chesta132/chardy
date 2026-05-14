@@ -3,12 +3,16 @@ import { sendMail } from "../libs/email";
 import { timeInSec } from "../libs/manipulate/number";
 import { redis } from "../libs/redis";
 import { EmailTemplates } from "../libs/email/templates";
-import { ActionFunc } from "nectify-js/actions";
+import { ActionFunc } from "nectic/actions";
 
-export const notifyError: ActionFunc<[{ type: string; message: string; digest?: string; url?: string }], any[], void> = async (
-  { outcome },
-  { message, type, digest, url },
-) => {
+type NotifyErrorProps = {
+  type: string;
+  message: string;
+  digest?: string;
+  url?: string;
+};
+
+export const notifyError: ActionFunc<[NotifyErrorProps], [], void> = async ({ outcome }, { message, type, digest, url }) => {
   const out = () => outcome.success(undefined).ok();
   if (isDevEnv()) return out();
   try {

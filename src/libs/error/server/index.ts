@@ -3,7 +3,7 @@ import { record } from "../../manipulate/object";
 import { Locale } from "@/i18n/types";
 import { createTranslator } from "next-intl";
 import { getMessages } from "@/i18n/request";
-import { ErrorOutcomeType } from "nectify-js/actions";
+import { ErrorOutcomeType } from "nectic/actions";
 
 interface RestError {
   debug?: any;

@@ -8,7 +8,7 @@ import { Locale } from "@/i18n/types";
 import { createTranslator } from "next-intl";
 import { getMessages } from "@/i18n/request";
 import { redis } from "@/libs/redis";
-import { ActionFunc } from "nectify-js/actions";
+import { ActionFunc } from "nectic/actions";
 
 export abstract class ContactService {
   static readonly MAX_SEND_MESSAGE = 3; // per hour

@@ -11,7 +11,7 @@ import { Loading } from "../ui/Loading";
 import { useLocale, useTranslations } from "next-intl";
 import { Locale } from "@/i18n/types";
 import { sendMessageAction } from "@/actions/contact";
-import { nectAction } from "nectify-js/actions";
+import { nectAction } from "nectic/actions";
 
 export const ContactMeForm = () => {
   const t = useTranslations("HomeContact.cta");
