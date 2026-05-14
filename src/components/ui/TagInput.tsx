@@ -2,6 +2,8 @@ import { useState, useRef, useEffect, useId, type KeyboardEvent } from "react";
 import { cn } from "@/libs/utils";
 import { FaX } from "react-icons/fa6";
 import { FaCheck, FaChevronDown } from "react-icons/fa";
+import gsap from "gsap";
+import { useTranslations } from "next-intl";
 
 export interface TagInputProps {
   value: string[];
@@ -14,6 +16,8 @@ export interface TagInputProps {
 }
 
 export function TagInput({ value, onChange, options, placeholder = "Select...", className, error, label }: TagInputProps) {
+  const t = useTranslations("Form.components.TagInput");
+
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
 
@@ -21,6 +25,7 @@ export function TagInput({ value, onChange, options, placeholder = "Select...", 
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
   const announceRef = useRef<HTMLDivElement>(null);
+  const isAnimatingRef = useRef(false);
 
   const uid = useId();
   const listboxId = `${uid}-listbox`;
@@ -39,6 +44,87 @@ export function TagInput({ value, onChange, options, placeholder = "Select...", 
     }, 10);
   };
 
+  // GSAP open animation
+  const animateOpen = () => {
+    const list = listRef.current;
+    if (!list) return;
+
+    list.hidden = false;
+    isAnimatingRef.current = true;
+
+    const items = list.querySelectorAll("[role='option']");
+
+    gsap.fromTo(
+      list,
+      { opacity: 0, scaleY: 0.85, transformOrigin: "top center" },
+      {
+        opacity: 1,
+        scaleY: 1,
+        duration: 0.2,
+        ease: "power2.out",
+        onComplete: () => {
+          isAnimatingRef.current = false;
+        },
+      },
+    );
+
+    gsap.fromTo(
+      items,
+      { opacity: 0, y: -6 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.18,
+        ease: "power2.out",
+        stagger: 0.03,
+        delay: 0.04,
+      },
+    );
+  };
+
+  // GSAP close animation
+  const animateClose = (onComplete: () => void) => {
+    const list = listRef.current;
+    if (!list) {
+      onComplete();
+      return;
+    }
+
+    isAnimatingRef.current = true;
+
+    gsap.to(list, {
+      opacity: 0,
+      scaleY: 0.85,
+      transformOrigin: "top center",
+      duration: 0.15,
+      ease: "power2.in",
+      onComplete: () => {
+        list.hidden = true;
+        isAnimatingRef.current = false;
+        onComplete();
+      },
+    });
+  };
+
+  // Sync open state → GSAP
+  useEffect(() => {
+    if (open) {
+      animateOpen();
+    } else {
+      animateClose(() => {});
+    }
+  }, [open, filtered.length]); // re-run on filtered so stagger refreshes on search
+
+  const openDropdown = () => {
+    if (!open) setOpen(true);
+  };
+
+  const closeDropdown = () => {
+    if (open) {
+      animateClose(() => setOpen(false));
+    }
+  };
+
   const addTag = (tag: string) => {
     if (!value.includes(tag)) {
       onChange([...value, tag]);
@@ -54,65 +140,53 @@ export function TagInput({ value, onChange, options, placeholder = "Select...", 
     inputRef.current?.focus();
   };
 
-  // Keyboard handler for the text input
   const handleInputKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Escape") {
-      setOpen(false);
+      closeDropdown();
       return;
     }
-
     if (e.key === "ArrowDown") {
       e.preventDefault();
       if (!open) {
         setOpen(true);
-        setTimeout(() => getOptions()[0]?.focus(), 0);
+        setTimeout(() => getOptions()[0]?.focus(), 50);
       } else {
         getOptions()[0]?.focus();
       }
       return;
     }
-
     if (e.key === "Enter") {
       e.preventDefault();
       if (filtered.length === 1) addTag(filtered[0]);
       return;
     }
-
     if (e.key === "Backspace" && search === "" && value.length > 0) {
       removeTag(value[value.length - 1]);
     }
   };
 
-  // Keyboard handler for each <li> option
   const handleOptionKeyDown = (e: KeyboardEvent<HTMLLIElement>, opt: string, index: number) => {
     if (e.key === " " || e.key === "Enter") {
       e.preventDefault();
       addTag(opt);
       return;
     }
-
     if (e.key === "Escape") {
-      setOpen(false);
+      closeDropdown();
       inputRef.current?.focus();
       return;
     }
-
     if (e.key === "ArrowDown") {
       e.preventDefault();
       getOptions()[index + 1]?.focus();
       return;
     }
-
     if (e.key === "ArrowUp") {
       e.preventDefault();
-      if (index === 0) {
-        inputRef.current?.focus();
-      } else {
-        getOptions()[index - 1]?.focus();
-      }
+      if (index === 0) inputRef.current?.focus();
+      else getOptions()[index - 1]?.focus();
       return;
     }
-
     if (e.key === "Tab") {
       const opts = getOptions();
       if (!e.shiftKey) {
@@ -120,15 +194,12 @@ export function TagInput({ value, onChange, options, placeholder = "Select...", 
           e.preventDefault();
           opts[index + 1]?.focus();
         } else {
-          setOpen(false);
+          closeDropdown();
         }
       } else {
         e.preventDefault();
-        if (index === 0) {
-          inputRef.current?.focus();
-        } else {
-          opts[index - 1]?.focus();
-        }
+        if (index === 0) inputRef.current?.focus();
+        else opts[index - 1]?.focus();
       }
     }
   };
@@ -137,27 +208,24 @@ export function TagInput({ value, onChange, options, placeholder = "Select...", 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-        setOpen(false);
+        closeDropdown();
         setSearch("");
       }
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
-  }, []);
+  }, [open]);
 
   return (
     <div ref={containerRef} className={cn("w-full relative", className)}>
-      {/* Live region */}
       <div ref={announceRef} role="status" aria-live="polite" aria-atomic="true" className="sr-only" />
 
-      {/* Optional label */}
       {label && (
         <label id={labelId} className="block mb-1 text-sm font-medium text-foreground/70">
           {label}
         </label>
       )}
 
-      {/* Combobox wrapper */}
       <div
         role="combobox"
         aria-expanded={open}
@@ -168,15 +236,14 @@ export function TagInput({ value, onChange, options, placeholder = "Select...", 
         aria-invalid={!!error}
         className={cn(
           "flex min-h-9 w-full flex-wrap items-center gap-1.5 rounded-md border border-foreground/15 bg-primary px-2 py-1.5 cursor-text",
-          "focus-within:border-foreground/40 transition-colors",
           error && "border-red-500/60 focus-within:border-red-500/60",
+          open && "rounded-b-none",
         )}
         onClick={() => {
-          setOpen(true);
+          openDropdown();
           inputRef.current?.focus();
         }}
       >
-        {/* Tags */}
         {value.map((tag) => (
           <span
             key={tag}
@@ -199,7 +266,6 @@ export function TagInput({ value, onChange, options, placeholder = "Select...", 
           </span>
         ))}
 
-        {/* Input */}
         <div className="flex items-center flex-1 min-w-20 gap-1">
           <input
             ref={inputRef}
@@ -210,26 +276,30 @@ export function TagInput({ value, onChange, options, placeholder = "Select...", 
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
-              setOpen(true);
+              openDropdown();
             }}
-            onFocus={() => setOpen(true)}
+            onFocus={openDropdown}
             onKeyDown={handleInputKeyDown}
             placeholder={value.length === 0 ? placeholder : ""}
             className="flex-1 bg-transparent text-sm text-foreground placeholder:text-foreground/35 outline-none min-w-15"
           />
-          <FaChevronDown aria-hidden="true" className={cn("h-3.5 w-3.5 text-foreground/40 shrink-0 transition-transform", open && "rotate-180")} />
+          <FaChevronDown
+            aria-hidden="true"
+            className={cn("h-3.5 w-3.5 text-foreground/40 shrink-0 transition-transform duration-200", open && "rotate-180")}
+          />
         </div>
       </div>
 
-      {/* Listbox */}
+      {/* Listbox — hidden attr controlled by GSAP, not React conditional */}
       <ul
         ref={listRef}
         id={listboxId}
         role="listbox"
         aria-label={label ? `${label} options` : "Options"}
         aria-multiselectable="true"
-        hidden={!open}
-        className={cn("absolute z-50 mt-1 w-full rounded-md border border-foreground/15 bg-primary shadow-sm overflow-hidden", !open && "hidden")}
+        hidden={true} // GSAP will toggle this
+        className={cn("absolute z-50 w-full rounded-b-md border border-foreground/15 bg-primary shadow-sm overflow-hidden")}
+        style={{ transformOrigin: "top center" }}
       >
         {filtered.length > 0 ? (
           <div className="max-h-48 overflow-y-auto py-1" data-lenis-prevent>
@@ -260,12 +330,11 @@ export function TagInput({ value, onChange, options, placeholder = "Select...", 
           </div>
         ) : (
           <li role="option" aria-selected={false} className="px-3 py-2 text-sm text-foreground/40">
-            No options found
+            {t("noOptions")}
           </li>
         )}
       </ul>
 
-      {/* Error */}
       {error && (
         <p id={errorId} role="alert" className="mt-1 text-xs text-red-500">
           {error}
