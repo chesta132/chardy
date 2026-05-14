@@ -4,7 +4,7 @@ import { cn } from "@/libs/utils";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
-import { Media, Project } from "@/types/payload";
+import { Project } from "@/types/payload";
 import { RichText } from "@payloadcms/richtext-lexical/react";
 import { ErrorLayout, ErrorPageData } from "../error";
 import { Main } from "../layouts/Wrapper";
@@ -44,25 +44,28 @@ export function ProjectDetail({ project }: { project: Project }) {
           <h1 className="font-neue-montreal text-[clamp(2rem,6vw,4rem)] font-medium uppercase leading-[1.05] tracking-tight">{project.title}</h1>
 
           {/* Meta row */}
-          <div className="flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-b border-foreground/10 py-4">
-            {/* Year */}
-            <div className="flex flex-col gap-1">
-              <span className="font-supply-mono text-[9px] tracking-widest uppercase text-foreground/35">{t("year")}</span>
-              <span className="font-supply-mono text-xs text-foreground/70">{project.year}</span>
-            </div>
+          <div className="flex items-start justify-between gap-x-8 gap-y-3 border-t border-b border-foreground/10 py-4">
+            {/* Left: Year + Tags */}
+            <div className="flex flex-wrap items-start gap-x-8 gap-y-3 flex-1 min-w-0">
+              {/* Year */}
+              <div className="flex flex-col gap-1 shrink-0">
+                <span className="font-supply-mono text-[9px] tracking-widest uppercase text-foreground/35">{t("year")}</span>
+                <span className="font-supply-mono text-xs text-foreground/70">{project.year}</span>
+              </div>
 
-            {/* Tags */}
-            <div className="flex flex-col gap-1.5">
-              <span className="font-supply-mono text-[9px] tracking-widest uppercase text-foreground/35">{t("tags")}</span>
-              <div className="flex flex-wrap gap-1.5">
-                {project.tags.map(({ tag }) => (
-                  <span
-                    key={tag}
-                    className="font-supply-mono text-[10px] tracking-wider uppercase text-foreground/55 border border-foreground/20 rounded-full px-2.5 py-0.5"
-                  >
-                    {tag}
-                  </span>
-                ))}
+              {/* Tags */}
+              <div className="flex flex-col gap-1.5 min-w-0">
+                <span className="font-supply-mono text-[9px] tracking-widest uppercase text-foreground/35">{t("tags")}</span>
+                <div className="flex flex-wrap gap-1.5">
+                  {project.tags.map(({ tag }) => (
+                    <span
+                      key={tag}
+                      className="font-supply-mono text-[10px] tracking-wider uppercase text-foreground/55 border border-foreground/20 rounded-full px-2.5 py-0.5"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
 

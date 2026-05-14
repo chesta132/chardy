@@ -8,6 +8,8 @@ import { Arrow } from "../ui/Arrow";
 import { cn } from "@/libs/utils";
 import { gsap } from "@/libs/gsap/register";
 
+const MAX_TAGS = 5;
+
 export function ProjectList({ projects }: { projects: Project[] }) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const cursorImgRef = useRef<HTMLDivElement>(null);
@@ -86,7 +88,7 @@ export function ProjectList({ projects }: { projects: Project[] }) {
                   {project.title}
                 </span>
                 <div className="flex flex-wrap gap-1.5">
-                  {project.tags.map(({ tag }) => (
+                  {project.tags.slice(0, MAX_TAGS).map(({ tag }) => (
                     <span
                       key={tag}
                       className="font-supply-mono text-[10px] tracking-wider uppercase text-foreground/50 border border-foreground/20 rounded-full px-2.5 py-0.5"
