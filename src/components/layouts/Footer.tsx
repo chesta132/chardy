@@ -27,9 +27,9 @@ export const Footer = ({ className, asChild, hideOnHomeWithXL, socials }: Footer
 
   const handleNavClick = (item: (typeof NAV_ITEMS)[number], e: React.MouseEvent<HTMLAnchorElement>) => {
     if (item.href.startsWith("/#") && pathname === "/") {
-      lenis.scrollTo(item.href.substring(1), { duration: 1.2 });
+      lenis?.scrollTo(item.href.substring(1), { duration: 1.2 });
     } else if (item.href === pathname) {
-      lenis.scrollTo(0, { duration: 1.2 });
+      lenis?.scrollTo(0, { duration: 1.2 });
     }
   };
 

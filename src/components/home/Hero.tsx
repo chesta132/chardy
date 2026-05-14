@@ -77,7 +77,7 @@ export const Hero = ({ data }: Props) => {
             <p className="reveal-text text-[clamp(0.875rem,1.5vw,1.25rem)]/[clamp(1.1rem,2vw,1.1875rem)] text-neutral-200 max-w-lg font-neue-montreal">
               {data.subtitle}
             </p>
-            <Link href={"#featured-projects"} onClick={() => lenis.scrollTo("#featured-projects", { duration: 1.2 })}>
+            <Link href={"#featured-projects"} onClick={() => lenis?.scrollTo("#featured-projects", { duration: 1.2 })}>
               <Button className="reveal-text mt-8">{t("viewProjects")}</Button>
             </Link>
           </div>

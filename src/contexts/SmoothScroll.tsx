@@ -3,10 +3,10 @@
 import { createContext, useContext, useLayoutEffect, useState } from "react";
 import Lenis from "lenis";
 
-const smoothScrollContext = createContext<Lenis | null>(null);
+const smoothScrollContext = createContext<Lenis | null | undefined>(null);
 
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
-  const [lenis, setLenis] = useState<Lenis | null>(null);
+  const [lenis, setLenis] = useState<Lenis | undefined>();
 
   useLayoutEffect(() => {
     const lenisInstance = new Lenis({
@@ -26,13 +26,11 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
     };
   }, []);
 
-  if (!lenis) return null;
-
   return <smoothScrollContext.Provider value={lenis}>{children}</smoothScrollContext.Provider>;
 }
 
 export const useSmoothScroll = () => {
   const context = useContext(smoothScrollContext);
-  if (!context) throw new Error("useSmoothScroll must be used within a SmoothScrollProvider");
+  if (context === null) throw new Error("useSmoothScroll must be used within a SmoothScrollProvider");
   return context;
 };
