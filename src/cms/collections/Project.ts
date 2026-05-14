@@ -50,10 +50,6 @@ export const Project: CollectionConfig = {
       label: "Thumbnail",
     },
     {
-      name: "liveSite",
-      type: "text",
-    },
-    {
       name: "sites",
       type: "array",
       label: "Sites",
