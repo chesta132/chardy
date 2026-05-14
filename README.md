@@ -182,12 +182,12 @@ Semua routes ada prefix locale: `/en/...` dan `/id/...`. Default locale `en`. Tr
 
 ### Collections
 
-| Slug               | Fields                                                                                    |
-| ------------------ | ----------------------------------------------------------------------------------------- |
-| `project`          | `title`, `tags`, `year`, `thumbnail`, `liveSite`, `description` (localized), `screenshot` |
-| `featured-project` | `project` (relation), `order` (unique), `span` (full/wide/normal)                         |
-| `media`            | Cloudinary-backed upload                                                                  |
-| `users`            | Payload auth                                                                              |
+| Slug               | Fields                                                                                 |
+| ------------------ | -------------------------------------------------------------------------------------- |
+| `project`          | `title`, `tags`, `year`, `thumbnail`, `sites`, `description` (localized), `screenshot` |
+| `featured-project` | `project` (relation), `order` (unique), `span` (full/wide/normal)                      |
+| `media`            | Cloudinary-backed upload                                                               |
+| `users`            | Payload auth                                                                           |
 
 ---
 

@@ -63,7 +63,6 @@
     "allProjects": "Semua karya",
     "year": "Tahun",
     "tags": "Stack / Tipe",
-    "live": "Live",
     "visitSite": "Kunjungi situs",
     "siteLabel": "Situs yang terdaftar",
     "site": "{count, plural, =1 {situs} other {# situs}}",

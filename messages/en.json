@@ -63,7 +63,6 @@
     "allProjects": "All projects",
     "year": "Year",
     "tags": "Stack / Type",
-    "live": "Live",
     "visitSite": "Visit site",
     "siteLabel": "Available {count, plural, =1 {site} other {sites}}",
     "site": "{count, plural, =1 {site} other {# sites}}",
