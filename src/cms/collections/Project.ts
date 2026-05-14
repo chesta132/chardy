@@ -1,5 +1,13 @@
 import { revalidateTag } from "next/cache";
-import { CollectionConfig } from "payload";
+import { BasePayload, CollectionConfig } from "payload";
+import { getFeaturedProjects } from "../crud/read";
+
+const revalidateFeatured = async (id: string | number, payload: BasePayload) => {
+  const featured = await getFeaturedProjects(payload);
+  if (featured.docs.some((item) => (typeof item.project === "number" ? item.project === id : item.project.id === id))) {
+    revalidateTag("featured-project", "max");
+  }
+};
 
 export const Project: CollectionConfig = {
   slug: "project",
@@ -8,10 +16,11 @@ export const Project: CollectionConfig = {
   },
   hooks: {
     afterChange: [
-      async ({ doc }) => {
+      async ({ doc, operation, req: { payload } }) => {
         revalidateTag("projects", "max");
         if (doc.id) {
           revalidateTag(`project-${doc.id}`, "max");
+          if (operation === "update") await revalidateFeatured(doc.id, payload);
         }
       },
     ],
@@ -19,6 +28,7 @@ export const Project: CollectionConfig = {
       async ({ id }) => {
         revalidateTag("projects", "max");
         revalidateTag(`project-${id}`, "max");
+        // skip revalidate featured because project can not be deleted if registered in featured project
       },
     ],
   },
