@@ -89,6 +89,20 @@
     },
     "twitter": {
       "description": "Web developer dari {location}. TypeScript, React, Next.js, Golang, dan masih banyak lagi."
+    },
+
+    "ProjectDetail": {
+      "title": "{title} - {name} - Portofolio Pribadi",
+      "description": "Jelajahi {title}, sebuah karya oleh {name}.",
+      "notFoundDescription": "Karya yang Anda cari tidak dapat ditemukan."
+    },
+    "ProjectList": {
+      "title": "Daftar Karya - {name} - Portofolio Pribadi",
+      "description": "Jelajahi kumpulan karya dan proyek oleh {name}."
+    },
+    "NotFound": {
+      "title": "Tidak Ditemukan - {name} - Portofolio Pribadi",
+      "description": "Halaman ini tidak ditemukan di situs ini."
     }
   },
 

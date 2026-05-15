@@ -89,6 +89,20 @@
     },
     "twitter": {
       "description": "Web developer from {location}. TypeScript, React, Next.js, Golang, and more."
+    },
+
+    "ProjectDetail": {
+      "title": "{title} - {name} - Personal Portfolio",
+      "description": "Explore {title}, a project by {name}.",
+      "notFoundDescription": "The project you are looking for could not be found."
+    },
+    "ProjectList": {
+      "title": "Project List - {name} - Personal Portfolio",
+      "description": "Explore a collection of projects and works by {name}."
+    },
+    "NotFound": {
+      "title": "Not Found - {name} - Personal Portfolio",
+      "description": "This page is not found on this site."
     }
   },
 

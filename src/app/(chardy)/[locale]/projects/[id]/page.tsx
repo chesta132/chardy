@@ -4,8 +4,41 @@ import { ProjectDetail } from "@/components/projects/ProjectDetail";
 import { ErrorLayout, ErrorPageData } from "@/components/error";
 import { getTranslations } from "next-intl/server";
 import { getProject } from "@/cms/crud/read";
+import { hasLocale } from "next-intl";
+import { routing } from "@/i18n/routing";
+import { APP_NAME, OWNER_FULLNAME } from "@/config";
+import { defaultMetadata } from "@/libs/metadata";
+import { generateMetadata as generateNotFoundMetadata } from "../../[...notFound]/page";
+import { Metadata } from "next";
 
-export default async function ProjectDetailPage({ params }: PageProps<"/[locale]/projects/[id]">) {
+type Props = PageProps<"/[locale]/projects/[id]">;
+
+export const generateMetadata = async ({ params }: Props): Promise<Metadata> => {
+  let { locale, id } = await params;
+  if (!hasLocale(routing.locales, locale)) locale = "en";
+  const t = await getTranslations({ locale, namespace: "Metadata.ProjectDetail" });
+
+  const payload = await getPayload({ config });
+  const project = await getProject(payload, Number(id));
+  if (!project) {
+    return {
+      ...(await generateNotFoundMetadata()),
+      description: t("notFoundDescription"),
+    };
+  }
+
+  return {
+    title: {
+      default: t("title", { name: OWNER_FULLNAME, title: project.title }),
+      template: `%s | ${APP_NAME}`,
+    },
+    description: t("description", { name: OWNER_FULLNAME, title: project.title }),
+    keywords: [OWNER_FULLNAME, APP_NAME, ...project.tags.map(({ tag }) => tag)],
+    ...(await defaultMetadata(locale)),
+  };
+};
+
+export default async function ProjectDetailPage({ params }: Props) {
   const { id } = await params;
   const t = await getTranslations("ProjectDetail");
 
