@@ -55,7 +55,7 @@ export abstract class AIService {
 
     const contents: Content[] = [...history, { role: "user", parts: [{ text: message }] }];
     const { generator } = await runAgentLoop(contents, aiConfig.systemPrompt, aiConfig.model).catch((err) => {
-      if (err?.status === 429) throw new ServerError("TOO_MUCH_REQ", { desc: t("TOO_MUCH_REQ.desc") });
+      if (err?.status === 429) throw new ServerError("TOO_MUCH_REQ", { desc: t("TOO_MUCH_REQ.desc") }).withLocale(lang);
       else throw new ServerError("SERVER_ERROR", { message: err?.message });
     });
 
