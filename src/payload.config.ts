@@ -25,6 +25,7 @@ import { AboutMe } from "./cms/globals/AboutMe";
 import { ContactMe } from "./cms/globals/ContactMe";
 import { Project } from "./cms/collections/Project";
 import { FeaturedProject } from "./cms/collections/FeaturedProject";
+import { AIConfig } from "./cms/globals/AIConfig";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -37,7 +38,7 @@ export default buildConfig({
     },
   },
   collections: [Users, Media, Project, FeaturedProject],
-  globals: [Hero, AboutMe, ContactMe],
+  globals: [Hero, AboutMe, ContactMe, AIConfig],
   editor: lexicalEditor(),
   secret: PAYLOAD_SECRET || "",
   typescript: {

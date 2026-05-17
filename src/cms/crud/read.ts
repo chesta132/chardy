@@ -91,3 +91,12 @@ export const getFeaturedProjects = async (payload: BasePayload) => {
   });
   return cache();
 };
+
+export const getAIConfig = async (payload: BasePayload) => {
+  const locale = await getLocale();
+  const cache = withCache(() => payload.findGlobal({ slug: "ai-config", locale }), ["ai-config", locale], {
+    revalidate: timeInSec({ day: 1 }),
+    tags: ["ai-config"],
+  });
+  return cache();
+};

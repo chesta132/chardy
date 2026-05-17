@@ -1,9 +1,11 @@
-import { GEMINI_MODEL } from "@/config";
-import { ai } from "@/libs/ai/client";
 import { timeInSec } from "@/libs/manipulate/number";
 import { redis } from "@/libs/redis";
 import { Chat, Conversation } from "@/payloads/ai";
 import { Content } from "@google/genai";
+import { getPayload } from "payload";
+import config from "@payload-config";
+import { getAIConfig } from "@/cms/crud/read";
+import { runAgentLoop } from "@/libs/ai/gemini";
 
 const redisKey = (id: string) => `ai:conversation:session:${id}`;
 
@@ -42,12 +44,11 @@ export abstract class AIService {
     const conversation = await this.getConversation(id);
     const history = this.toGemini(conversation);
 
+    const payload = await getPayload({ config });
+    const aiConfig = await getAIConfig(payload);
+
     const contents: Content[] = [...history, { role: "user", parts: [{ text: message }] }];
-    const generator = await ai.models.generateContentStream({
-      contents,
-      model: GEMINI_MODEL,
-      // TODO: CONFIG
-    });
+    const { generator } = await runAgentLoop(contents, aiConfig.systemPrompt, aiConfig.model);
 
     let fullContent = "";
     const stream = new ReadableStream({

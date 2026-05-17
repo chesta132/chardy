@@ -95,11 +95,13 @@ export interface Config {
     hero: Hero;
     'about-me': AboutMe;
     'contact-me': ContactMe;
+    'ai-config': AiConfig;
   };
   globalsSelect: {
     hero: HeroSelect<false> | HeroSelect<true>;
     'about-me': AboutMeSelect<false> | AboutMeSelect<true>;
     'contact-me': ContactMeSelect<false> | ContactMeSelect<true>;
+    'ai-config': AiConfigSelect<false> | AiConfigSelect<true>;
   };
   locale: 'en' | 'id';
   widgets: {
@@ -568,6 +570,17 @@ export interface ContactMe {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ai-config".
+ */
+export interface AiConfig {
+  id: number;
+  systemPrompt: string;
+  model: string;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "hero_select".
  */
 export interface HeroSelect<T extends boolean = true> {
@@ -612,6 +625,17 @@ export interface ContactMeSelect<T extends boolean = true> {
         linkedin?: T;
         email?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ai-config_select".
+ */
+export interface AiConfigSelect<T extends boolean = true> {
+  systemPrompt?: T;
+  model?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

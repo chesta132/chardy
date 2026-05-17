@@ -34,8 +34,8 @@ export const OWNER_LASTNAME = "Ardiona";
 export const OWNER_FULLNAME = OWNER_FIRSTNAME + " " + OWNER_LASTNAME;
 
 // ai
-export const GEMINI_MODEL = "gemini-2.5-flash"
-export const AI_NAME = "Futa"
+export const DEFAULT_GEMINI_MODEL = "gemini-2.5-flash-lite";
+export const AI_NAME = "Futa";
 
 // helpers
 export const isDevEnv = () => process.env.NODE_ENV === "development";
