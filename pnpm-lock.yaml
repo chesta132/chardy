@@ -51,8 +51,8 @@ importers:
         specifier: ^1.3.23
         version: 1.3.23(react@19.2.4)
       nectic:
-        specifier: ^0.0.3
-        version: 0.0.3(next@16.2.6(@babel/core@7.29.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(sass@1.77.4))(zod@4.4.3)
+        specifier: ^0.0.4
+        version: 0.0.4(next@16.2.6(@babel/core@7.29.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(sass@1.77.4))(zod@4.4.3)
       next:
         specifier: 16.2.6
         version: 16.2.6(@babel/core@7.29.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(sass@1.77.4)
@@ -3606,8 +3606,8 @@ packages:
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
 
-  nectic@0.0.3:
-    resolution: {integrity: sha512-klQNwfBmi1V84HzQphgH1kYgoi3jNuaPgSHdwJEILPs/s0Nl5ZA/Q+ym+f2q9hIeEinD3pvKJ/bHiH47U/cL9g==}
+  nectic@0.0.4:
+    resolution: {integrity: sha512-JqFy4y/sXw0ItGH2iulYiJIJNfDqcXs/i+IOnDaQ4gz9UQgMx4apY6ZRo57ympeaaMa2bDsj8yjW4xpzsCAK+g==}
     peerDependencies:
       next: '>=16.2.6'
       zod: '>=4.4.3'
@@ -8076,7 +8076,7 @@ snapshots:
 
   natural-compare@1.4.0: {}
 
-  nectic@0.0.3(next@16.2.6(@babel/core@7.29.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(sass@1.77.4))(zod@4.4.3):
+  nectic@0.0.4(next@16.2.6(@babel/core@7.29.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(sass@1.77.4))(zod@4.4.3):
     dependencies:
       busboy: 1.6.0
       cookie: 1.1.1
