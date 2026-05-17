@@ -62,12 +62,12 @@ export const AIChatProvider = ({ children }: { children: React.ReactNode }) => {
       content: message,
       createdAt: Date.now(),
     };
-
-    setMessages((prev) => [...prev, userMsg]);
-    setStatus("loading");
-
     const modelMsgId = uuid();
 
+    // append user message and model thinking (handled in MessageBubble)
+    setMessages((prev) => [...prev, userMsg, { id: modelMsgId, role: "model", content: "", createdAt: Date.now() }]);
+
+    setStatus("loading");
     try {
       const res = await fetch(`/api/ai/chat?lang=${locale}`, {
         method: "POST",
@@ -87,9 +87,6 @@ export const AIChatProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       setStatus("streaming");
-
-      // Append placeholder model message
-      setMessages((prev) => [...prev, { id: modelMsgId, role: "model", content: "", createdAt: Date.now() }]);
 
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
