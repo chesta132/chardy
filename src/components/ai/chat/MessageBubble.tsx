@@ -4,6 +4,7 @@ import { Chat } from "@/payloads/ai";
 import { useTranslations } from "next-intl";
 import { memo } from "react";
 import { RiRobot2Line } from "react-icons/ri";
+import ReactMarkdown from "react-markdown";
 
 export const MessageBubble = memo(({ msg }: { msg: Chat }) => {
   const isUser = msg.role === "user";
@@ -29,7 +30,7 @@ export const MessageBubble = memo(({ msg }: { msg: Chat }) => {
             {t("thinking")}
           </span>
         ) : (
-          msg.content
+          <ReactMarkdown>{msg.content}</ReactMarkdown>
         )}
       </div>
     </div>
