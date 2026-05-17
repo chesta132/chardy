@@ -214,5 +214,27 @@
         "noOptions": "Tidak ada opsi yang tersedia"
       }
     }
+  },
+
+  "AIChat": {
+    "panel": {
+      "header": {
+        "askMe": "Tanyakan sesuatu tentang {name}"
+      },
+      "empty": {
+        "askMe": "Tanyakan sesuatu tentang {name} — karya-karyanya, skill-skill-nya, atau pengalamannya."
+      },
+      "input": {
+        "waitingResponse": "Sedang merespons...",
+        "askMe": "Tanyakan sesuatu...",
+        "send": "Kirim pesan"
+      },
+      "bubble": {
+        "thinking": "Berpikir..."
+      }
+    },
+    "button": {
+      "askAI": "Tanya {aiName}"
+    }
   }
 }

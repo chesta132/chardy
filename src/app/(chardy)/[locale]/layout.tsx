@@ -8,12 +8,14 @@ import { Topbar } from "@/components/layouts/Topbar";
 import { Footer } from "@/components/layouts/Footer";
 import { Toaster } from "@/components/ui/Toaster";
 import { getMessages, getTranslations } from "next-intl/server";
-import { APP_NAME, APP_URL, LOCATION, OWNER_FULLNAME } from "@/config";
+import { APP_NAME, LOCATION, OWNER_FULLNAME } from "@/config";
 import { Metadata } from "next";
 import { getPayload } from "payload";
 import config from "@payload-config";
 import { getSocials } from "@/cms/crud/read";
 import { defaultMetadata } from "@/libs/metadata";
+import { AIChatProvider } from "@/contexts/AIChat";
+import { AIChatButton, AIChatPanel } from "@/components/ai";
 
 type MetadataProps = {
   params: Promise<{ locale?: string }>;
@@ -66,13 +68,17 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
       <GlobalErrorProvider>
-        <SmoothScroll>
-          <Topbar socials={socials} />
-          {children}
-          <Footer hideOnHomeWithXL socials={socials} />
-        </SmoothScroll>
-        <ViewGlobalError />
-        <Toaster />
+        <AIChatProvider>
+          <SmoothScroll>
+            <Topbar socials={socials} />
+            {children}
+            <Footer hideOnHomeWithXL socials={socials} />
+          </SmoothScroll>
+          <AIChatButton />
+          <AIChatPanel />
+          <ViewGlobalError />
+          <Toaster />
+        </AIChatProvider>
       </GlobalErrorProvider>
     </NextIntlClientProvider>
   );

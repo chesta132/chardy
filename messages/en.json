@@ -215,5 +215,27 @@
         "noOptions": "No options found"
       }
     }
+  },
+
+  "AIChat": {
+    "panel": {
+      "header": {
+        "askMe": "Ask me about {name}"
+      },
+      "empty": {
+        "askMe": "Ask me anything about {name} — his work, skills, or experience."
+      },
+      "input": {
+        "waitingResponse": "Waiting for response...",
+        "askMe": "Ask me anything...",
+        "send": "Send message"
+      },
+      "bubble": {
+        "thinking": "Thinking..."
+      }
+    },
+    "button": {
+      "askAI": "Ask {aiName}"
+    }
   }
 }
