@@ -19,6 +19,8 @@ export const {
   CLOUDINARY_SECRET,
   CLOUDINARY_CLOUD_NAME,
   CLOUDINARY_FOLDER,
+
+  GEMINI_API_KEY,
 } = process.env;
 
 // general
@@ -30,6 +32,9 @@ export const LOCATION = "Bekasi, Jawa Barat, Indonesia";
 export const OWNER_FIRSTNAME = "Chesta";
 export const OWNER_LASTNAME = "Ardiona";
 export const OWNER_FULLNAME = OWNER_FIRSTNAME + " " + OWNER_LASTNAME;
+
+// ai
+export const GEMINI_MODEL = "gemini-2.5-flash"
 
 // helpers
 export const isDevEnv = () => process.env.NODE_ENV === "development";

@@ -11,6 +11,7 @@
   },
   "type": "module",
   "dependencies": {
+    "@google/genai": "^2.3.0",
     "@gsap/react": "^2.1.2",
     "@lottiefiles/dotlottie-react": "^0.19.1",
     "@payloadcms/db-postgres": "^3.84.1",
