@@ -6,12 +6,17 @@ import { getPayload } from "payload";
 import config from "@payload-config";
 import { getAIConfig } from "@/cms/crud/read";
 import { runAgentLoop } from "@/libs/ai/gemini";
+import { Locale } from "@/i18n/types";
+import { getMessages } from "@/i18n/request";
+import { createTranslator } from "next-intl";
+import { ServerError } from "@/libs/error/server";
 
 const redisKey = (id: string) => `ai:conversation:session:${id}`;
 
 export type ChatPayload = {
   id: string;
   message: string;
+  lang: Locale;
 };
 
 type AppendChatsPayload = {
@@ -39,7 +44,8 @@ export abstract class AIService {
     return (await redis.get<Conversation>(redisKey(id))) || [];
   }
 
-  static async chat({ message, id }: ChatPayload) {
+  static async chat({ message, id, lang }: ChatPayload) {
+    const t = createTranslator({ locale: lang, messages: await getMessages(lang), namespace: "Error.AIChat" });
     const reqTime = Date.now();
     const conversation = await this.getConversation(id);
     const history = this.toGemini(conversation);
@@ -48,7 +54,10 @@ export abstract class AIService {
     const aiConfig = await getAIConfig(payload);
 
     const contents: Content[] = [...history, { role: "user", parts: [{ text: message }] }];
-    const { generator } = await runAgentLoop(contents, aiConfig.systemPrompt, aiConfig.model);
+    const { generator } = await runAgentLoop(contents, aiConfig.systemPrompt, aiConfig.model).catch((err) => {
+      if (err?.status === 429) throw new ServerError("TOO_MUCH_REQ", { desc: t("TOO_MUCH_REQ.desc") });
+      else throw new ServerError("SERVER_ERROR", { message: err?.message });
+    });
 
     let fullContent = "";
     const stream = new ReadableStream({

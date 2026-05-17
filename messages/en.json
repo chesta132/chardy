@@ -179,6 +179,13 @@
       }
     },
 
+    "AIChat": {
+      "failedToSend": "Failed to send message",
+      "TOO_MUCH_REQ": {
+        "desc": "Please send another message later."
+      }
+    },
+
     "Pages": {
       "NotFound": {
         "title": "Page Not Found",

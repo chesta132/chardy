@@ -8,6 +8,9 @@ export abstract class AIPayload {
       body: z.object({
         message: z.string().min(1, Payload.LOCALIZATION.REQUIRED_FIELD),
       }),
+      query: z.object({
+        lang: Payload.locale,
+      }),
     },
   } satisfies HandlerOption<AppRouterHandler>;
 
@@ -31,6 +34,7 @@ export abstract class AIPayload {
 
 export namespace AIPayload {
   export type ChatBody = z.infer<typeof AIPayload.chat.validator.body>;
+  export type ChatQuery = z.infer<typeof AIPayload.chat.validator.query>;
 }
 
 export type Chat = z.infer<typeof AIPayload.MODELS.chat>;

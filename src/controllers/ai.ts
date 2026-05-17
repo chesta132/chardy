@@ -1,3 +1,4 @@
+import { ServerError } from "@/libs/error/server";
 import { AIMiddleware } from "@/middlewares/ai";
 import { AIPayload, Conversation } from "@/payloads/ai";
 import { AIService } from "@/services/ai";
@@ -5,12 +6,11 @@ import { ActionFunc } from "nectic/actions";
 import { AppRouterHandler, RouteRequest } from "nectic/route";
 
 export abstract class AIController {
-  static chat: AppRouterHandler<RouteRequest<AIPayload.ChatBody>> = async (req, res, { reply, ...ctx }) => {
+  static chat: AppRouterHandler<RouteRequest<AIPayload.ChatBody, never, AIPayload.ChatQuery>> = async (req, res, { reply, ...ctx }) => {
     const conversationId = AIMiddleware.getConversationId(req)!;
     const { message } = ctx.validated.body;
-
-    const { stream } = await AIService.chat({ message, id: conversationId });
-
+    const { lang } = ctx.validated.query;
+    const { stream } = await AIService.chat({ message, id: conversationId, lang });
     return reply.stream(stream, { contentType: "text/event-stream" });
   };
 

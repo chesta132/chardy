@@ -178,6 +178,13 @@
       }
     },
 
+    "AIChat": {
+      "failedToSend": "Gagal mengirim pesan",
+      "TOO_MUCH_REQ": {
+        "desc": "Silakan kirim pesan lagi nanti."
+      }
+    },
+
     "Pages": {
       "NotFound": {
         "title": "Halaman Tidak Ditemukan",

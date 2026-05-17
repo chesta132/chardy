@@ -3,6 +3,7 @@
 import { getConversationAction } from "@/actions/ai";
 import { Chat, Conversation } from "@/payloads/ai";
 import { isOutcomeSuccess, nectAction } from "nectic/actions";
+import { useLocale, useTranslations } from "next-intl";
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 
 // crypto.randomUUID requires a secure context (HTTPS).
@@ -35,6 +36,8 @@ export const AIChatProvider = ({ children }: { children: React.ReactNode }) => {
   const [messages, setMessages] = useState<Conversation>([]);
   const [status, setStatus] = useState<AIChatStatus>("idle");
   const initialized = useRef(false);
+  const t = useTranslations();
+  const locale = useLocale();
 
   // Load existing conversation on mount (cached via cookie on BE)
   useEffect(() => {
@@ -66,13 +69,22 @@ export const AIChatProvider = ({ children }: { children: React.ReactNode }) => {
     const modelMsgId = uuid();
 
     try {
-      const res = await fetch("/api/ai/chat", {
+      const res = await fetch(`/api/ai/chat?lang=${locale}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message }),
       });
 
-      if (!res.ok || !res.body) throw new Error("Failed to send message");
+      if (!res.body) throw new Error(t("Error.AIChat.failedToSend"));
+      if (!res.ok) {
+        const body = await res.json().catch(() => {
+          throw new Error(t("Error.AIChat.failedToSend"));
+        });
+        if (body?.data?.message) {
+          throw new Error(body.data.message);
+        }
+        throw new Error(t("Error.AIChat.failedToSend"));
+      }
 
       setStatus("streaming");
 
