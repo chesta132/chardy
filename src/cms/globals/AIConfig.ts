@@ -1,4 +1,4 @@
-import { DEFAULT_GEMINI_MODEL } from "@/config";
+import { DEFAULT_AI_NAME, DEFAULT_GEMINI_MODEL } from "@/config";
 import { revalidateTag } from "next/cache";
 import { GlobalConfig } from "payload";
 
@@ -25,6 +25,12 @@ export const AIConfig: GlobalConfig = {
       type: "text",
       required: true,
       defaultValue: DEFAULT_GEMINI_MODEL,
+    },
+    {
+      name: "aiName",
+      type: "text",
+      required: true,
+      defaultValue: DEFAULT_AI_NAME,
     },
   ],
 };

@@ -9,11 +9,10 @@ import { RiRobot2Line } from "react-icons/ri";
 import { cn } from "@/libs/utils";
 import { RollingLabel } from "@/components/ui/Label";
 import { useTranslations } from "next-intl";
-import { AI_NAME } from "@/config";
 
 export const AIChatButton = () => {
   const t = useTranslations("AIChat.button");
-  const { open, setOpen } = useAIChat();
+  const { open, setOpen, aiConfig } = useAIChat();
   const direction = useScrollDirection({ threshold: 10 });
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [initialed, setInitialed] = useState(false);
@@ -85,7 +84,7 @@ export const AIChatButton = () => {
       )}
     >
       <RiRobot2Line className="w-3.5 h-3.5 shrink-0" aria-hidden />
-      <RollingLabel>{t("askAI", { aiName: AI_NAME })}</RollingLabel>
+      <RollingLabel>{t("askAI", { aiName: aiConfig.aiName })}</RollingLabel>
     </button>
   );
 };

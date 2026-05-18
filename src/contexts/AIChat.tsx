@@ -2,6 +2,7 @@
 
 import { getConversationAction } from "@/actions/ai";
 import { Chat, Conversation } from "@/payloads/ai";
+import { AiConfig } from "@/types/payload";
 import { isOutcomeSuccess, nectAction } from "nectic/actions";
 import { useLocale, useTranslations } from "next-intl";
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
@@ -27,11 +28,12 @@ type AIChatContextValue = {
   messages: Conversation;
   status: AIChatStatus;
   sendMessage: (message: string) => Promise<void>;
+  aiConfig: AiConfig;
 };
 
 const AIChatContext = createContext<AIChatContextValue | null>(null);
 
-export const AIChatProvider = ({ children }: { children: React.ReactNode }) => {
+export const AIChatProvider = ({ children, aiConfig }: { children: React.ReactNode; aiConfig: AiConfig }) => {
   const [open, setOpenState] = useState(false);
   const [messages, setMessages] = useState<Conversation>([]);
   const [status, setStatus] = useState<AIChatStatus>("idle");
@@ -107,7 +109,7 @@ export const AIChatProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, []);
 
-  return <AIChatContext.Provider value={{ open, setOpen, messages, status, sendMessage }}>{children}</AIChatContext.Provider>;
+  return <AIChatContext.Provider value={{ open, setOpen, messages, status, sendMessage, aiConfig }}>{children}</AIChatContext.Provider>;
 };
 
 export const useAIChat = () => {

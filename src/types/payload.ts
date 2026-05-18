@@ -576,6 +576,7 @@ export interface AiConfig {
   id: number;
   systemPrompt: string;
   model: string;
+  aiName: string;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -636,6 +637,7 @@ export interface ContactMeSelect<T extends boolean = true> {
 export interface AiConfigSelect<T extends boolean = true> {
   systemPrompt?: T;
   model?: T;
+  aiName?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

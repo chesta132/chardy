@@ -12,7 +12,7 @@ import { APP_NAME, LOCATION, OWNER_FULLNAME } from "@/config";
 import { Metadata } from "next";
 import { getPayload } from "payload";
 import config from "@payload-config";
-import { getSocials } from "@/cms/crud/read";
+import { getAIConfig, getSocials } from "@/cms/crud/read";
 import { defaultMetadata } from "@/libs/metadata";
 import { AIChatProvider } from "@/contexts/AIChat";
 import { AIChatButton, AIChatPanel } from "@/components/ai";
@@ -63,12 +63,12 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
   }
 
   const payload = await getPayload({ config });
-  const socials = await getSocials(payload);
+  const [socials, aiConfig] = await Promise.all([getSocials(payload), getAIConfig(payload)]);
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
       <GlobalErrorProvider>
-        <AIChatProvider>
+        <AIChatProvider aiConfig={aiConfig}>
           <SmoothScroll>
             <Topbar socials={socials} />
             {children}

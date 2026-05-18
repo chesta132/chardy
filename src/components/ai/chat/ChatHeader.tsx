@@ -1,10 +1,21 @@
-import { AI_NAME, OWNER_FIRSTNAME } from "@/config";
+import { OWNER_FIRSTNAME } from "@/config";
 import { useTranslations } from "next-intl";
 import { FiX } from "react-icons/fi";
 import { RiRobot2Line } from "react-icons/ri";
 import { AiOutlineExpandAlt, AiOutlineShrink } from "react-icons/ai";
+import { AiConfig } from "@/types/payload";
 
-export const ChatHeader = ({ onClose, onToggleSize, isExpanded }: { onClose: () => void; onToggleSize?: () => void; isExpanded?: boolean }) => {
+export const ChatHeader = ({
+  onClose,
+  onToggleSize,
+  isExpanded,
+  aiConfig,
+}: {
+  onClose: () => void;
+  onToggleSize?: () => void;
+  isExpanded?: boolean;
+  aiConfig: AiConfig;
+}) => {
   const t = useTranslations("AIChat.panel.header");
 
   return (
@@ -14,7 +25,7 @@ export const ChatHeader = ({ onClose, onToggleSize, isExpanded }: { onClose: () 
           <RiRobot2Line className="w-3.5 h-3.5 text-secondary" />
         </div>
         <div>
-          <p className="text-xs font-supply-mono uppercase tracking-wider text-foreground leading-none">{AI_NAME}</p>
+          <p className="text-xs font-supply-mono uppercase tracking-wider text-foreground leading-none">{aiConfig.aiName}</p>
           <p className="text-[0.6rem] font-supply-mono text-foreground/40 mt-0.5">{t("askMe", { name: OWNER_FIRSTNAME })}</p>
         </div>
       </div>

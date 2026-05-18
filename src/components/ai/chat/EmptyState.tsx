@@ -1,8 +1,9 @@
-import { AI_NAME, OWNER_FIRSTNAME } from "@/config";
+import {  OWNER_FIRSTNAME } from "@/config";
+import { AiConfig } from "@/types/payload";
 import { useTranslations } from "next-intl";
 import { RiRobot2Line } from "react-icons/ri";
 
-export const EmptyState = () => {
+export const EmptyState = ({aiConfig}: { aiConfig:AiConfig }) => {
   const t = useTranslations("AIChat.panel.empty");
 
   return (
@@ -11,7 +12,7 @@ export const EmptyState = () => {
         <RiRobot2Line className="w-5 h-5 text-foreground/40" />
       </div>
       <div>
-        <p className="text-xs font-supply-mono uppercase tracking-wider text-foreground/60">{AI_NAME}</p>
+        <p className="text-xs font-supply-mono uppercase tracking-wider text-foreground/60">{aiConfig.aiName}</p>
         <p className="text-[0.7rem] font-neue-montreal text-foreground/40 mt-1 leading-relaxed">{t("askMe", { name: OWNER_FIRSTNAME })}</p>
       </div>
     </div>
