@@ -11,7 +11,8 @@ import { getMessages } from "@/i18n/request";
 import { createTranslator } from "next-intl";
 import { ServerError } from "@/libs/error/server";
 
-const redisKey = (id: string) => `ai:conversation:session:${id}`;
+const conversationKey = (id: string) => `ai:conversation:session:${id}`;
+const geminiKey = (id: string) => `ai:conversation:gemini:${id}`;
 
 export type ChatPayload = {
   id: string;
@@ -25,36 +26,44 @@ type AppendChatsPayload = {
   chats: [Chat, Chat];
 };
 
+type AppendGeminiPayload = {
+  id: string;
+  contents: Content[];
+};
+
 export abstract class AIService {
   static readonly CONVERSATION_EXP_SEC = timeInSec({ day: 3 });
 
-  private static toGemini(conversation: Conversation): Content[] {
-    return conversation.map((chat) => ({
-      role: chat.role,
-      parts: [{ text: chat.content }],
-    }));
-  }
   private static async appendChats({ chats, id }: AppendChatsPayload) {
     const conversation = await this.getConversation(id);
     const appended: Conversation = [...conversation, ...chats];
-    await redis.set(redisKey(id), appended, { ex: this.CONVERSATION_EXP_SEC });
+    await redis.set(conversationKey(id), appended, { ex: this.CONVERSATION_EXP_SEC });
+  }
+
+  private static async appendGemini({ contents, id }: AppendGeminiPayload) {
+    const gemini = await this.getGemini(id);
+    const appended: Content[] = [...gemini, ...contents];
+    await redis.set(geminiKey(id), appended, { ex: this.CONVERSATION_EXP_SEC });
   }
 
   static async getConversation(id: string): Promise<Conversation> {
-    return (await redis.get<Conversation>(redisKey(id))) || [];
+    return (await redis.get<Conversation>(conversationKey(id))) || [];
+  }
+
+  static async getGemini(id: string): Promise<Content[]> {
+    return (await redis.get<Content[]>(geminiKey(id))) || [];
   }
 
   static async chat({ message, id, lang }: ChatPayload) {
     const t = createTranslator({ locale: lang, messages: await getMessages(lang), namespace: "Error.AIChat" });
     const reqTime = Date.now();
-    const conversation = await this.getConversation(id);
-    const history = this.toGemini(conversation);
+    const gemini = await this.getGemini(id);
 
     const payload = await getPayload({ config });
     const aiConfig = await getAIConfig(payload);
 
-    const contents: Content[] = [...history, { role: "user", parts: [{ text: message }] }];
-    const { generator } = await runAgentLoop(contents, aiConfig.systemPrompt, aiConfig.model).catch((err) => {
+    const contents: Content[] = [...gemini, { role: "user", parts: [{ text: message }] }];
+    const { generator, finalContents } = await runAgentLoop(contents, aiConfig.systemPrompt, aiConfig.model).catch((err) => {
       if (err?.status === 429) throw new ServerError("TOO_MUCH_REQ", { desc: t("TOO_MUCH_REQ.desc") }).withLocale(lang);
       else throw new ServerError("SERVER_ERROR", { message: err?.message });
     });
@@ -69,13 +78,19 @@ export abstract class AIService {
         }
         controller.close();
 
-        await AIService.appendChats({
-          id,
-          chats: [
-            { id: crypto.randomUUID(), content: message, createdAt: reqTime, role: "user" },
-            { id: crypto.randomUUID(), content: fullContent, createdAt: Date.now(), role: "model" },
-          ],
-        });
+        await Promise.all([
+          AIService.appendChats({
+            id,
+            chats: [
+              { id: crypto.randomUUID(), content: message, createdAt: reqTime, role: "user" },
+              { id: crypto.randomUUID(), content: fullContent, createdAt: Date.now(), role: "model" },
+            ],
+          }),
+          AIService.appendGemini({
+            id,
+            contents: finalContents.slice(gemini.length),
+          }),
+        ]);
       },
     });
 

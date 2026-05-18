@@ -33,6 +33,10 @@ export async function runAgentLoop(contents: Content[], systemInstruction: strin
       if (parts?.length) contentParts.push(...parts);
     }
 
+    if (contentParts.length) {
+      currentContents.push({ role: "model", parts: contentParts });
+    }
+
     // no func calls = return generator
     if (!functionCalls?.length) {
       // replay chunks as async generator
@@ -68,9 +72,6 @@ export async function runAgentLoop(contents: Content[], systemInstruction: strin
       }),
     );
 
-    if (contentParts.length) {
-      currentContents.push({ role: "model", parts: contentParts });
-    }
     if (toolResults.length) {
       currentContents.push({ role: "tool", parts: toolResults });
     }
