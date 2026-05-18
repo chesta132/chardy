@@ -44,7 +44,8 @@ export async function runAgentLoop(contents: Content[], systemInstruction: strin
         finalContents: currentContents,
         generator: (async function* () {
           for (const chunk of chunks) {
-            await sleep(50); // fake stream
+            // fake stream effect
+            await sleep(Math.random() * 30 + 20); // 20-50ms
             yield chunk;
           }
         })(),
