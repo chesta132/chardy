@@ -2,8 +2,14 @@
 
 import { cn } from "@/libs/utils";
 import { useState } from "react";
-import { GitHubCalendar } from "react-github-calendar";
 import { Button } from "../ui/Button";
+import dynamic from "next/dynamic";
+import { Loading } from "../ui/Loading";
+
+const GitHubCalendar = dynamic(async () => (await import("react-github-calendar")).GitHubCalendar, {
+  ssr: false,
+  loading: () => <Loading />,
+});
 
 export const GithubCalendar = ({ username }: { username: string }) => {
   const availableGhYears = new Array(5).fill(0).map((_, idx) => new Date().getFullYear() - idx);
