@@ -18,13 +18,19 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
   if (!hasLocale(routing.locales, locale)) locale = "en";
   const t = await getTranslations({ locale, namespace: "Metadata.ProjectDetail" });
 
+  const createNotoFound = async () => ({
+    ...(await generateNotFoundMetadata()),
+    description: t("notFoundDescription"),
+  });
+
+  if (Number.isNaN(Number(id))) {
+    return await createNotoFound();
+  }
+
   const payload = await getPayload({ config });
   const project = await getProject(payload, Number(id));
   if (!project) {
-    return {
-      ...(await generateNotFoundMetadata()),
-      description: t("notFoundDescription"),
-    };
+    return await createNotoFound();
   }
 
   return {
