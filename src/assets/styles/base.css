@@ -33,6 +33,7 @@
   .reveal-text {
     position: relative;
     overflow: hidden;
+    will-change: transform;
   }
 
   .reveal-text::before {
@@ -42,6 +43,7 @@
     inset: 0;
     background: var(--cover-bg, var(--color-secondary));
     transform: translateX(var(--cover-x, 0%)) translateY(var(--cover-y, 0%));
+    will-change: transform;
   }
 
   /* Rich Text */

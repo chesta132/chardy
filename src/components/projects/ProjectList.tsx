@@ -3,7 +3,7 @@
 import { Link } from "@/i18n/navigation";
 import { Media, Project } from "@/types/payload";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Arrow } from "../ui/Arrow";
 import { cn } from "@/libs/utils";
 import { gsap } from "@/libs/gsap/register";
@@ -14,15 +14,19 @@ export function ProjectList({ projects }: { projects: Project[] }) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const cursorImgRef = useRef<HTMLDivElement>(null);
 
+  // quickTo reuses a single tween instead of creating new ones every mousemove
+  const xTo = useRef<gsap.QuickToFunc | null>(null);
+  const yTo = useRef<gsap.QuickToFunc | null>(null);
+
+  useEffect(() => {
+    if (!cursorImgRef.current) return;
+    xTo.current = gsap.quickTo(cursorImgRef.current, "x", { duration: 0.55, ease: "power3.out" });
+    yTo.current = gsap.quickTo(cursorImgRef.current, "y", { duration: 0.55, ease: "power3.out" });
+  }, []);
+
   const handleMouseMove = (e: React.MouseEvent<HTMLUListElement>) => {
-    const el = cursorImgRef.current;
-    if (!el) return;
-    gsap.to(el, {
-      x: e.clientX,
-      y: e.clientY,
-      duration: 0.55,
-      ease: "power3.out",
-    });
+    xTo.current?.(e.clientX);
+    yTo.current?.(e.clientY);
   };
 
   const handleItemEnter = (i: number) => {

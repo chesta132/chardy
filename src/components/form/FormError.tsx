@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { gsap } from "gsap";
+import { gsap } from "@/libs/gsap/register";
 import { cn } from "@/libs/utils";
 import { FormChildProps, useFormLayout } from "./FormLayout";
 import { useGSAP } from "@gsap/react";
@@ -21,14 +21,17 @@ export const FormFieldError = ({ field, className, ignoreError, ...props }: Form
     if (!ref.current) return;
 
     if (isVisible) {
-      gsap.set(ref.current, { height: "auto", opacity: 1 });
-      const height = ref.current.offsetHeight;
-      gsap.fromTo(ref.current, { opacity: 0, y: -4, height: 0 }, { opacity: 1, y: 0, height, duration: 0.25, ease: "power2.out" });
+      // Use scaleY + opacity instead of height to avoid layout recalc
+      gsap.fromTo(
+        ref.current,
+        { opacity: 0, scaleY: 0, transformOrigin: "top center" },
+        { opacity: 1, scaleY: 1, duration: 0.25, ease: "power2.out" },
+      );
     } else {
       gsap.to(ref.current, {
         opacity: 0,
-        y: -4,
-        height: 0,
+        scaleY: 0,
+        transformOrigin: "top center",
         duration: 0.2,
         ease: "power2.in",
       });
@@ -36,7 +39,7 @@ export const FormFieldError = ({ field, className, ignoreError, ...props }: Form
   }, [isVisible]);
 
   return (
-    <p ref={ref} className={cn("text-xs text-red-400 overflow-hidden opacity-0 h-0", className)} {...props}>
+    <p ref={ref} className={cn("text-xs text-red-400 overflow-hidden opacity-0", className)} {...props}>
       {fieldErr}
     </p>
   );

@@ -7,7 +7,7 @@ import { cn } from "@/libs/utils";
 import { Arrow } from "../ui/Arrow";
 import { Button } from "../ui/Button";
 import { useState, useRef, useEffect } from "react";
-import { gsap } from "gsap";
+import { gsap } from "@/libs/gsap/register";
 
 export const ProjectDetailSites = ({ project }: { project: Project }) => {
   const t = useTranslations("ProjectDetail");

@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useId, type KeyboardEvent } from "react";
 import { cn } from "@/libs/utils";
 import { FaX } from "react-icons/fa6";
 import { FaCheck, FaChevronDown } from "react-icons/fa";
-import gsap from "gsap";
+import { gsap } from "@/libs/gsap/register";
 import { useTranslations } from "next-intl";
 
 export interface TagInputProps {

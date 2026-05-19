@@ -4,7 +4,7 @@ import { gsap } from "@/libs/gsap/register";
 import { cn } from "@/libs/utils";
 import Image, { type StaticImageData } from "next/image";
 import { Link } from "@/i18n/navigation";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { FeaturedProject } from "@/types/payload";
 
 const MAX_TAGS = 3;
@@ -15,10 +15,26 @@ export const ProjectCard = ({ span, project }: FeaturedProject) => {
   const cardRef = useRef<HTMLAnchorElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
 
+  // quickTo refs — created once, reused on every mousemove
+  const xTo = useRef<gsap.QuickToFunc | null>(null);
+  const yTo = useRef<gsap.QuickToFunc | null>(null);
+  const rotateXTo = useRef<gsap.QuickToFunc | null>(null);
+  const rotateYTo = useRef<gsap.QuickToFunc | null>(null);
+  const scaleTo = useRef<gsap.QuickToFunc | null>(null);
+
+  useEffect(() => {
+    const el = imageRef.current;
+    if (!el) return;
+    xTo.current = gsap.quickTo(el, "x", { duration: 0.5, ease: "power2.out" });
+    yTo.current = gsap.quickTo(el, "y", { duration: 0.5, ease: "power2.out" });
+    rotateXTo.current = gsap.quickTo(el, "rotateX", { duration: 0.5, ease: "power2.out" });
+    rotateYTo.current = gsap.quickTo(el, "rotateY", { duration: 0.5, ease: "power2.out" });
+    scaleTo.current = gsap.quickTo(el, "scale", { duration: 0.5, ease: "power2.out" });
+  }, []);
+
   const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
     const card = cardRef.current;
-    const imageWrap = imageRef.current;
-    if (!card || !imageWrap) return;
+    if (!card) return;
 
     const { left, top, width, height } = card.getBoundingClientRect();
 
@@ -26,16 +42,11 @@ export const ProjectCard = ({ span, project }: FeaturedProject) => {
     const xNorm = (e.clientX - left) / width - 0.5;
     const yNorm = (e.clientY - top) / height - 0.5;
 
-    gsap.to(imageWrap, {
-      x: xNorm * 18, // translate X max ±9px
-      y: yNorm * 14, // translate Y max ±7px
-      rotateX: -yNorm * 6, // tilt X max ±3deg
-      rotateY: xNorm * 6, // tilt Y max ±3deg
-      scale: 1.06,
-      duration: 0.5,
-      ease: "power2.out",
-      transformPerspective: 800,
-    });
+    xTo.current?.(xNorm * 18);
+    yTo.current?.(yNorm * 14);
+    rotateXTo.current?.(-yNorm * 6);
+    rotateYTo.current?.(xNorm * 6);
+    scaleTo.current?.(1.06);
   };
 
   const handleMouseLeave = () => {
