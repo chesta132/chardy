@@ -17,6 +17,7 @@ export default function RootLayout({
       className={cn("h-full", "antialiased", inter.variable, neueMontreal.variable, PPSuplySans.variable, PPSuplyMono.variable)}
       suppressHydrationWarning
     >
+      <head>{isProdEnv() && <Script defer src={UMAMI_URL} data-website-id={UMAMI_WEBSITE_ID} />}</head>
       <body className="min-h-full flex flex-col bg-background" suppressHydrationWarning>
         <a
           href="#main-content"
@@ -25,7 +26,6 @@ export default function RootLayout({
           Skip to main content
         </a>
         {children}
-        {isProdEnv() && <Script defer src={UMAMI_URL} data-website-id={UMAMI_WEBSITE_ID} />}
       </body>
     </html>
   );
