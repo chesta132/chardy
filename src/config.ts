@@ -1,4 +1,6 @@
 export const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://chardy.dev";
+export const UMAMI_URL = process.env.NEXT_PUBLIC_UMAMI_URL;
+export const UMAMI_WEBSITE_ID = process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID;
 
 export const {
   // mailer

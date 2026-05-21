@@ -1,9 +1,10 @@
 import "@/assets/styles/main.css";
+import { UMAMI_URL, UMAMI_WEBSITE_ID } from "@/config";
 import { inter } from "@/fonts/inter";
 import { neueMontreal } from "@/fonts/neueMontreal";
 import { PPSuplyMono, PPSuplySans } from "@/fonts/ppSupply";
 import { cn } from "@/libs/utils";
-import { Analytics } from "@vercel/analytics/next";
+import Script from "next/script";
 
 export default function RootLayout({
   children,
@@ -24,7 +25,7 @@ export default function RootLayout({
           Skip to main content
         </a>
         {children}
-        <Analytics />
+        <Script defer src={UMAMI_URL} data-website-id={UMAMI_WEBSITE_ID} />
       </body>
     </html>
   );
