@@ -10,9 +10,10 @@ type NotifyErrorProps = {
   message: string;
   digest?: string;
   url?: string;
+  string?: string;
 };
 
-export const notifyError: ActionFunc<[NotifyErrorProps], [], void> = async ({ outcome }, { message, type, digest, url }) => {
+export const notifyError: ActionFunc<[NotifyErrorProps], [], void> = async ({ outcome }, { message, type, digest, url, string }) => {
   const out = () => outcome.success(undefined).ok();
   if (isDevEnv()) return out();
   try {
@@ -29,7 +30,10 @@ export const notifyError: ActionFunc<[NotifyErrorProps], [], void> = async ({ ou
       occurredAt: new Date(),
     });
 
-    console.error(`[notifyErrorAction] ${type}${digest ? ` · ${digest}` : ""}`, { message, digest, url });
+    const log = [`[notifyError] ${type}${digest ? ` · ${digest}` : ""}\n`, { message, digest, url }];
+    if (string) log.push("\n", string);
+
+    console.error(...log);
     await sendMail(html, {
       to: OWNER_EMAIL!,
       subject: `Unhandled Error${digest ? ` · ${digest}` : ""}`,
@@ -37,7 +41,7 @@ export const notifyError: ActionFunc<[NotifyErrorProps], [], void> = async ({ ou
 
     await redis.set(redisKey(cacheKey), 1, { ex: timeInSec({ day: 1 }) });
   } catch (sendErr) {
-    console.error("[notifyErrorAction] Failed to send error notification:", sendErr);
+    console.error("[notifyError] Failed to send error notification:", sendErr);
   }
   return out();
 };

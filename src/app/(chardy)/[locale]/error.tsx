@@ -30,9 +30,13 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
     if (isDevEnv()) {
       console.error("[ErrorPage]", error.message, error.digest);
     } else {
+      let stringified;
+      try {
+        stringified = JSON.stringify(error);
+      } catch {}
       nectAction(
         { action: notifyErrorAction, fromCSR: true },
-        { message: error.message, digest: error.digest, url: window.location.href, type: "Client Error" },
+        { message: error.message, digest: error.digest, url: window.location.href, type: "Client Error", string: stringified },
       );
     }
   }, [error]);
