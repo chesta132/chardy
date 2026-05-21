@@ -1,5 +1,5 @@
 import "@/assets/styles/main.css";
-import { UMAMI_URL, UMAMI_WEBSITE_ID } from "@/config";
+import { isProdEnv, UMAMI_URL, UMAMI_WEBSITE_ID } from "@/config";
 import { inter } from "@/fonts/inter";
 import { neueMontreal } from "@/fonts/neueMontreal";
 import { PPSuplyMono, PPSuplySans } from "@/fonts/ppSupply";
@@ -25,7 +25,7 @@ export default function RootLayout({
           Skip to main content
         </a>
         {children}
-        <Script defer src={UMAMI_URL} data-website-id={UMAMI_WEBSITE_ID} />
+        {isProdEnv() && <Script defer src={UMAMI_URL} data-website-id={UMAMI_WEBSITE_ID} />}
       </body>
     </html>
   );
