@@ -26,7 +26,7 @@ export const MessageBubble = memo(({ msg }: { msg: Chat }) => {
       >
         {isEmpty ? (
           <span className="flex items-center gap-1.5 text-foreground/40 italic text-[0.7rem]">
-            <Loading className="w-3.5 h-3.5" />
+            <Loading />
             {t("thinking")}
           </span>
         ) : (

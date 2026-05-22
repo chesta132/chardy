@@ -47,7 +47,7 @@ export const ChatInput = () => {
         aria-label={busy ? t("waitingResponse") : t("send")}
         className="shrink-0 cursor-pointer w-7 h-7 rounded-lg bg-foreground text-background flex items-center justify-center hover:bg-secondary transition-colors duration-300 disabled:opacity-30 disabled:cursor-not-allowed"
       >
-        {busy ? <Loading className="w-4 h-4 invert" /> : <FiSend className="w-3.5 h-3.5" />}
+        {busy ? <Loading /> : <FiSend className="w-3.5 h-3.5" />}
       </button>
     </FormLayout>
   );
