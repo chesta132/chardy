@@ -3,13 +3,23 @@ import { portfolioToolDeclarations, portfolioToolHandlers } from "./tools";
 import { ai } from "./client";
 import { sleep } from "../manipulate/date";
 
+type AgentLoopResult = {
+  /** `finalContents` not include returned `generator` content */
+  finalContents: Content[];
+  generator: AsyncGenerator<GenerateContentResponse>;
+};
+
+const MAX_AGENT_LOOP = 3;
+
 // this func wait for stream 2 times
 //  - generator from `generateContentStream`
 //  - on return - to avoid n+1 generate content
-export async function runAgentLoop(contents: Content[], systemInstruction: string, model: string) {
+// or if max iter reached, it returns real generator
+export async function runAgentLoop(contents: Content[], systemInstruction: string, model: string): Promise<AgentLoopResult> {
   let currentContents = [...contents];
 
-  while (true) {
+  // max iter is MAX_AGENT_LOOP - 1
+  for (let i = 1; i < MAX_AGENT_LOOP; i++) {
     const generator = await ai.models.generateContentStream({
       model,
       contents: currentContents,
@@ -31,10 +41,6 @@ export async function runAgentLoop(contents: Content[], systemInstruction: strin
 
       const parts = chunk.candidates?.[0]?.content?.parts;
       if (parts?.length) contentParts.push(...parts);
-    }
-
-    if (contentParts.length) {
-      currentContents.push({ role: "model", parts: contentParts });
     }
 
     // no func calls = return generator
@@ -76,5 +82,22 @@ export async function runAgentLoop(contents: Content[], systemInstruction: strin
     if (toolResults.length) {
       currentContents.push({ role: "tool", parts: toolResults });
     }
+    if (contentParts.length) {
+      currentContents.push({ role: "model", parts: contentParts });
+    }
   }
+
+  // max iteration reached
+  const generator = await ai.models.generateContentStream({
+    model,
+    contents: currentContents,
+    config: {
+      systemInstruction,
+    },
+  });
+
+  return {
+    finalContents: currentContents,
+    generator,
+  };
 }

@@ -77,6 +77,7 @@ export abstract class AIService {
           controller.enqueue(text);
         }
         controller.close();
+        finalContents.push({ role: "model", parts: [{ text: fullContent }] });
 
         await Promise.all([
           AIService.appendChats({
