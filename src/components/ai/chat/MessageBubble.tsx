@@ -22,11 +22,12 @@ export const MessageBubble = memo(({ msg }: { msg: Chat }) => {
         className={cn(
           "max-w-[78%] px-3.5 py-2.5 rounded-2xl text-xs font-neue-montreal leading-relaxed whitespace-pre-wrap wrap-break-word",
           isUser ? "bg-foreground text-background rounded-tr-sm" : "bg-foreground/8 text-foreground rounded-tl-sm border border-foreground/10",
+          isEmpty && "bg-transparent border-transparent px-0",
         )}
       >
         {isEmpty ? (
-          <span className="flex items-center gap-1.5 text-foreground/40 italic text-[0.7rem]">
-            <Loading />
+          <span className="flex items-center text-foreground/40 italic text-[0.7rem]">
+            <Loading className="invert" />
             {t("thinking")}
           </span>
         ) : (
