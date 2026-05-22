@@ -1,63 +1,63 @@
 import { timeInSec } from "@/libs/manipulate/number";
 import { redis } from "@/libs/redis";
-import { Chat, Conversation } from "@/payloads/ai";
+import { Message, Messages } from "@/payloads/ai";
 import { Content } from "@google/genai";
 import { getPayload } from "payload";
 import config from "@payload-config";
 import { getAIConfig } from "@/cms/crud/read";
 import { runAgentLoop } from "@/libs/ai/gemini";
 import { Locale } from "@/i18n/types";
-import { getMessages } from "@/i18n/request";
+import { getMessages as getLocaleMessages } from "@/i18n/request";
 import { createTranslator } from "next-intl";
 import { ServerError } from "@/libs/error/server";
 
 const messagesKey = (id: string) => `ai:conversation:${id}:messages`;
 const geminiKey = (id: string) => `ai:conversation:${id}:gemini`;
 
-export type ChatPayload = {
-  id: string;
+export type SendMessagePayload = {
+  conversationId: string;
   message: string;
   lang: Locale;
 };
 
-type AppendChatsPayload = {
-  id: string;
+type AppendMessagesPayload = {
+  conversationId: string;
   /** Typically, first is user and second is model */
-  chats: [Chat, Chat];
+  messages: [Message, Message];
 };
 
 type AppendGeminiPayload = {
-  id: string;
+  conversationId: string;
   contents: Content[];
 };
 
 export abstract class AIService {
   static readonly CONVERSATION_EXP_SEC = timeInSec({ day: 3 });
 
-  private static async appendChats({ chats, id }: AppendChatsPayload) {
-    const conversation = await this.getConversation(id);
-    const appended: Conversation = [...conversation, ...chats];
-    await redis.set(messagesKey(id), appended, { ex: this.CONVERSATION_EXP_SEC });
+  private static async appendMessages({ messages, conversationId }: AppendMessagesPayload) {
+    const conversation = await this.getMessages(conversationId);
+    const appended: Messages = [...conversation, ...messages];
+    await redis.set(messagesKey(conversationId), appended, { ex: this.CONVERSATION_EXP_SEC });
   }
 
-  private static async appendGemini({ contents, id }: AppendGeminiPayload) {
-    const gemini = await this.getGemini(id);
+  private static async appendGemini({ contents, conversationId }: AppendGeminiPayload) {
+    const gemini = await this.getGemini(conversationId);
     const appended: Content[] = [...gemini, ...contents];
-    await redis.set(geminiKey(id), appended, { ex: this.CONVERSATION_EXP_SEC });
+    await redis.set(geminiKey(conversationId), appended, { ex: this.CONVERSATION_EXP_SEC });
   }
 
-  static async getConversation(id: string): Promise<Conversation> {
-    return (await redis.get<Conversation>(messagesKey(id))) || [];
+  static async getMessages(id: string): Promise<Messages> {
+    return (await redis.get<Messages>(messagesKey(id))) || [];
   }
 
   static async getGemini(id: string): Promise<Content[]> {
     return (await redis.get<Content[]>(geminiKey(id))) || [];
   }
 
-  static async chat({ message, id, lang }: ChatPayload) {
-    const t = createTranslator({ locale: lang, messages: await getMessages(lang), namespace: "Error.AIChat" });
+  static async sendMessage({ message, conversationId, lang }: SendMessagePayload) {
+    const t = createTranslator({ locale: lang, messages: await getLocaleMessages(lang), namespace: "Error.AIChat" });
     const reqTime = Date.now();
-    const gemini = await this.getGemini(id);
+    const gemini = await this.getGemini(conversationId);
 
     const payload = await getPayload({ config });
     const aiConfig = await getAIConfig(payload);
@@ -80,21 +80,21 @@ export abstract class AIService {
         finalContents.push({ role: "model", parts: [{ text: fullContent }] });
 
         await Promise.all([
-          AIService.appendChats({
-            id,
-            chats: [
+          AIService.appendMessages({
+            conversationId,
+            messages: [
               { id: crypto.randomUUID(), content: message, createdAt: reqTime, role: "user" },
               { id: crypto.randomUUID(), content: fullContent, createdAt: Date.now(), role: "model" },
             ],
           }),
           AIService.appendGemini({
-            id,
+            conversationId,
             contents: finalContents.slice(gemini.length),
           }),
         ]);
       },
     });
 
-    return { id, stream };
+    return { conversationId, stream };
   }
 }

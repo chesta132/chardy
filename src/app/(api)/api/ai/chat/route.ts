@@ -7,7 +7,7 @@ import { createAppRouter } from "nectic/route";
 
 export const { POST } = createAppRouter(
   {
-    POST: [AIMiddleware.extractConversationId, AIController.chat],
+    POST: [AIMiddleware.extractConversationId, AIController.sendMessage],
   },
-  { POST: AIPayload.chat, cors: true, debugMode: isDevEnv(), recover: ServerErrorRecover, statusMap },
+  { POST: AIPayload.sendMessage, cors: true, debugMode: isDevEnv(), recover: ServerErrorRecover, statusMap },
 );

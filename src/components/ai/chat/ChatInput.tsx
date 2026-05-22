@@ -10,14 +10,14 @@ import { FiSend } from "react-icons/fi";
 export const ChatInput = () => {
   const t = useTranslations("AIChat.panel.input");
   const { sendMessage, status } = useAIChat();
-  const form = useForm({ message: "" }, AIPayload.chat.validator.body);
+  const form = useForm({ message: "" }, AIPayload.sendMessage.validator.body);
   const {
     form: [{ message }],
   } = form;
   const { textAreaRef } = useAutosizeTextarea(message);
   const busy = status === "loading" || status === "streaming";
 
-  const handleSubmit = async (_: any, { message }: AIPayload.ChatBody) => {
+  const handleSubmit = async (_: any, { message }: AIPayload.SendMessageBody) => {
     const trimmed = message.trim();
     if (!trimmed || busy) return;
     await sendMessage(trimmed);

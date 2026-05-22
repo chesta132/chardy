@@ -2,7 +2,6 @@ import { isProdEnv } from "@/config";
 import { AIService } from "@/services/ai";
 import { ActionMiddlewareFunc } from "nectic/actions";
 import { AppRouterHandler } from "nectic/route";
-import { NectRequest } from "nectic/server";
 import { cookies } from "next/headers";
 
 export abstract class AIMiddleware {

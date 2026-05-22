@@ -3,7 +3,7 @@ import z from "zod";
 import { Payload } from ".";
 
 export abstract class AIPayload {
-  static readonly chat = {
+  static readonly sendMessage = {
     validator: {
       body: z.object({
         message: z.string().min(1, Payload.LOCALIZATION.REQUIRED_FIELD),
@@ -14,28 +14,25 @@ export abstract class AIPayload {
     },
   } satisfies HandlerOption<AppRouterHandler>;
 
-  static readonly MODELS = {
-    chat: z.object({
+  private static readonly INTERNAL_MODELS = {
+    message: z.object({
       id: z.uuidv4(),
       role: z.enum(["user", "model"]),
       content: z.string(),
       createdAt: z.number(),
     }),
-    conversation: z.array(
-      z.object({
-        id: z.uuidv4(),
-        role: z.enum(["user", "model"]),
-        content: z.string(),
-        createdAt: z.number(),
-      }),
-    ),
+  };
+
+  static readonly MODELS = {
+    message: this.INTERNAL_MODELS.message,
+    messages: z.array(this.INTERNAL_MODELS.message),
   };
 }
 
 export namespace AIPayload {
-  export type ChatBody = z.infer<typeof AIPayload.chat.validator.body>;
-  export type ChatQuery = z.infer<typeof AIPayload.chat.validator.query>;
+  export type SendMessageBody = z.infer<typeof AIPayload.sendMessage.validator.body>;
+  export type SendMessageQuery = z.infer<typeof AIPayload.sendMessage.validator.query>;
 }
 
-export type Chat = z.infer<typeof AIPayload.MODELS.chat>;
-export type Conversation = z.infer<typeof AIPayload.MODELS.conversation>;
+export type Message = z.infer<typeof AIPayload.MODELS.message>;
+export type Messages = z.infer<typeof AIPayload.MODELS.messages>;

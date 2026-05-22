@@ -1,12 +1,12 @@
 import { Loading } from "@/components/ui/Loading";
 import { cn } from "@/libs/utils";
-import { Chat } from "@/payloads/ai";
+import { Message } from "@/payloads/ai";
 import { useTranslations } from "next-intl";
 import { memo } from "react";
 import { RiRobot2Line } from "react-icons/ri";
 import ReactMarkdown from "react-markdown";
 
-export const MessageBubble = memo(({ msg }: { msg: Chat }) => {
+export const MessageBubble = memo(({ msg }: { msg: Message }) => {
   const isUser = msg.role === "user";
   const isEmpty = !msg.content && msg.role === "model";
   const t = useTranslations("AIChat.panel.bubble");

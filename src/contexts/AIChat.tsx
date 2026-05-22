@@ -1,7 +1,7 @@
 "use client";
 
-import { getConversationAction } from "@/actions/ai";
-import { Chat, Conversation } from "@/payloads/ai";
+import { getMessagesAction } from "@/actions/ai";
+import { Message, Messages } from "@/payloads/ai";
 import { AiConfig } from "@/types/payload";
 import { isOutcomeSuccess, nectAction } from "nectic/actions";
 import { useLocale, useTranslations } from "next-intl";
@@ -25,7 +25,7 @@ type AIChatStatus = "idle" | "loading" | "streaming" | "error";
 type AIChatContextValue = {
   open: boolean;
   setOpen: (open: boolean) => void;
-  messages: Conversation;
+  messages: Messages;
   status: AIChatStatus;
   sendMessage: (message: string) => Promise<void>;
   aiConfig: AiConfig;
@@ -35,7 +35,7 @@ const AIChatContext = createContext<AIChatContextValue | null>(null);
 
 export const AIChatProvider = ({ children, aiConfig }: { children: React.ReactNode; aiConfig: AiConfig }) => {
   const [open, setOpenState] = useState(false);
-  const [messages, setMessages] = useState<Conversation>([]);
+  const [messages, setMessages] = useState<Messages>([]);
   const [status, setStatus] = useState<AIChatStatus>("idle");
   const initialized = useRef(false);
   const t = useTranslations();
@@ -46,7 +46,7 @@ export const AIChatProvider = ({ children, aiConfig }: { children: React.ReactNo
     if (initialized.current) return;
     initialized.current = true;
 
-    nectAction({ action: getConversationAction, fromCSR: true }).then((res) => {
+    nectAction({ action: getMessagesAction, fromCSR: true }).then((res) => {
       if (isOutcomeSuccess(res) && res.data.length > 0) {
         setMessages(res.data);
       }
@@ -58,7 +58,7 @@ export const AIChatProvider = ({ children, aiConfig }: { children: React.ReactNo
   }, []);
 
   const sendMessage = useCallback(async (message: string) => {
-    const userMsg: Chat = {
+    const userMsg: Message = {
       id: uuid(),
       role: "user",
       content: message,
