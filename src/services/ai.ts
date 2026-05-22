@@ -11,8 +11,8 @@ import { getMessages } from "@/i18n/request";
 import { createTranslator } from "next-intl";
 import { ServerError } from "@/libs/error/server";
 
-const conversationKey = (id: string) => `ai:conversation:session:${id}`;
-const geminiKey = (id: string) => `ai:conversation:gemini:${id}`;
+const messagesKey = (id: string) => `ai:conversation:${id}:messages`;
+const geminiKey = (id: string) => `ai:conversation:${id}:gemini`;
 
 export type ChatPayload = {
   id: string;
@@ -37,7 +37,7 @@ export abstract class AIService {
   private static async appendChats({ chats, id }: AppendChatsPayload) {
     const conversation = await this.getConversation(id);
     const appended: Conversation = [...conversation, ...chats];
-    await redis.set(conversationKey(id), appended, { ex: this.CONVERSATION_EXP_SEC });
+    await redis.set(messagesKey(id), appended, { ex: this.CONVERSATION_EXP_SEC });
   }
 
   private static async appendGemini({ contents, id }: AppendGeminiPayload) {
@@ -47,7 +47,7 @@ export abstract class AIService {
   }
 
   static async getConversation(id: string): Promise<Conversation> {
-    return (await redis.get<Conversation>(conversationKey(id))) || [];
+    return (await redis.get<Conversation>(messagesKey(id))) || [];
   }
 
   static async getGemini(id: string): Promise<Content[]> {
