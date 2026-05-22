@@ -1,7 +1,7 @@
-import { Content, FunctionCall, GenerateContentResponse, Part } from "@google/genai";
+import { Content, GenerateContentResponse } from "@google/genai";
 import { portfolioToolDeclarations, portfolioToolHandlers } from "./tools";
 import { ai } from "./client";
-import { sleep } from "../manipulate/date";
+import { collectStream, createGeneratorWithFakeStream, execTools } from "./gemini.lib";
 
 type AgentLoopResult = {
   /** `finalContents` not include returned `generator` content */
@@ -20,7 +20,7 @@ export async function runAgentLoop(contents: Content[], systemInstruction: strin
 
   // max iter is MAX_AGENT_LOOP - 1
   for (let i = 1; i < MAX_AGENT_LOOP; i++) {
-    const generator = await ai.models.generateContentStream({
+    const iterGenerator = await ai.models.generateContentStream({
       model,
       contents: currentContents,
       config: {
@@ -30,55 +30,21 @@ export async function runAgentLoop(contents: Content[], systemInstruction: strin
     });
 
     // collect full response from stream
-    const chunks: GenerateContentResponse[] = [];
-    const functionCalls: FunctionCall[] = [];
-    const contentParts: Part[] = [];
-
-    for await (const chunk of generator) {
-      chunks.push(chunk);
-
-      if (chunk.functionCalls?.length) functionCalls.push(...chunk.functionCalls);
-
-      const parts = chunk.candidates?.[0]?.content?.parts;
-      if (parts?.length) contentParts.push(...parts);
-    }
+    const { chunks, contentParts, functionCalls } = await collectStream(iterGenerator);
 
     // no func calls = return generator
-    if (!functionCalls?.length) {
+    if (!functionCalls.length) {
       // replay chunks as async generator
       return {
         finalContents: currentContents,
-        generator: (async function* () {
-          for (const chunk of chunks) {
-            // fake stream effect
-            await sleep(Math.random() * 30 + 20); // 20-50ms
-            yield chunk;
-          }
-        })(),
+        generator: createGeneratorWithFakeStream(chunks, 20, 50),
       };
     }
 
     // exec tools
-    const toolResults = await Promise.all(
-      functionCalls.map(async (call): Promise<Part> => {
-        if (!call.name || !(call.name in portfolioToolHandlers)) {
-          return {
-            functionResponse: {
-              response: { error: `Tool with name "${call.name}" not found` },
-            },
-          };
-        }
-        const handler = portfolioToolHandlers[call.name as keyof typeof portfolioToolHandlers];
-        const result = await handler();
-        return {
-          functionResponse: {
-            name: call.name!,
-            response: result as Record<string, unknown>,
-          },
-        };
-      }),
-    );
+    const toolResults = await execTools(functionCalls, portfolioToolHandlers);
 
+    // append this iteration context
     if (toolResults.length) {
       currentContents.push({ role: "tool", parts: toolResults });
     }
@@ -88,7 +54,7 @@ export async function runAgentLoop(contents: Content[], systemInstruction: strin
   }
 
   // max iteration reached
-  const generator = await ai.models.generateContentStream({
+  const finalGenerator = await ai.models.generateContentStream({
     model,
     contents: currentContents,
     config: {
@@ -98,6 +64,6 @@ export async function runAgentLoop(contents: Content[], systemInstruction: strin
 
   return {
     finalContents: currentContents,
-    generator,
+    generator: finalGenerator,
   };
 }
