@@ -99,25 +99,31 @@ const MobileChatPill = ({ panelRef, sheetHeight }: MobileChatPillProps) => {
   const MIN_HEIGHT_SVH = 35;
   const MAX_HEIGHT_SVH = 90;
   const { setOpen } = useAIChat();
-  const touchStartY = useRef(0);
-  const touchStartHeight = useRef(55);
+  const startY = useRef(0);
+  const startHeight = useRef(55);
+  const isDragging = useRef(false);
 
-  const onPillTouchStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
-    touchStartY.current = e.touches[0].clientY;
-    touchStartHeight.current = sheetHeight.current;
+  const onPointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    e.currentTarget.setPointerCapture(e.pointerId);
+    startY.current = e.clientY;
+    startHeight.current = sheetHeight.current;
+    isDragging.current = true;
   }, []);
 
-  const onPillTouchMove = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+  const onPointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDragging.current) return;
     const panel = panelRef.current;
     if (!panel) return;
-    const deltaY = touchStartY.current - e.touches[0].clientY; // up = positive
+    const deltaY = startY.current - e.clientY;
     const svhUnit = window.innerHeight / 100;
-    const newH = Math.min(MAX_HEIGHT_SVH, Math.max(MIN_HEIGHT_SVH, touchStartHeight.current + deltaY / svhUnit));
+    const newH = Math.min(MAX_HEIGHT_SVH, Math.max(MIN_HEIGHT_SVH, startHeight.current + deltaY / svhUnit));
     sheetHeight.current = newH;
     gsap.set(panel, { height: `${newH}svh` });
   }, []);
 
-  const onPillTouchEnd = useCallback(() => {
+  const onPointerUp = useCallback(() => {
+    if (!isDragging.current) return;
+    isDragging.current = false;
     const panel = panelRef.current;
     if (!panel) return;
     if (sheetHeight.current < 42) {
@@ -141,10 +147,11 @@ const MobileChatPill = ({ panelRef, sheetHeight }: MobileChatPillProps) => {
 
   return (
     <div
-      className="flex justify-center pt-2.5 pb-1 lg:hidden shrink-0 touch-none select-none"
-      onTouchStart={onPillTouchStart}
-      onTouchMove={onPillTouchMove}
-      onTouchEnd={onPillTouchEnd}
+      className="flex justify-center pt-2.5 pb-1 lg:hidden shrink-0 touch-none select-none cursor-grab active:cursor-grabbing"
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerCancel={onPointerUp}
     >
       <div className="w-8 h-1 rounded-full bg-foreground/25 active:bg-foreground/50 transition-colors" />
     </div>
