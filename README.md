@@ -10,7 +10,7 @@ Personal portfolio — Next.js 15 + Payload CMS 3. Semua konten dimanage lewat P
 | ------------- | -------------------------------------------------- |
 | Framework     | Next.js 16 (App Router)                            |
 | CMS           | Payload CMS 3 (self-hosted, same Next.js instance) |
-| Database      | PostgreSQL (via `@payloadcms/db-postgres`)         |
+| Database      | PostgreSQL (via `@payloadcms/db-vercel-postgres`)         |
 | Media         | Cloudinary (`payload-cloudinary`)                  |
 | Email         | Nodemailer + Resend SMTP                           |
 | Rate Limiting | Upstash Redis (`@upstash/redis`)                   |

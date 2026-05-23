@@ -1,4 +1,4 @@
-import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
+import { MigrateUpArgs, MigrateDownArgs, sql } from "@payloadcms/db-vercel-postgres";
 
 export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   await db.execute(sql`
@@ -251,7 +251,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "about_me_tools_order_idx" ON "about_me_tools" USING btree ("_order");
   CREATE INDEX "about_me_tools_parent_id_idx" ON "about_me_tools" USING btree ("_parent_id");
   CREATE UNIQUE INDEX "about_me_tools_logo_idx" ON "about_me_tools" USING btree ("logo_id");
-  CREATE UNIQUE INDEX "about_me_locales_locale_parent_id_unique" ON "about_me_locales" USING btree ("_locale","_parent_id");`)
+  CREATE UNIQUE INDEX "about_me_locales_locale_parent_id_unique" ON "about_me_locales" USING btree ("_locale","_parent_id");`);
 }
 
 export async function down({ db, payload, req }: MigrateDownArgs): Promise<void> {
@@ -277,5 +277,5 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "about_me_locales" CASCADE;
   DROP TABLE "contact_me" CASCADE;
   DROP TYPE "public"."_locales";
-  DROP TYPE "public"."enum_featured_project_span";`)
+  DROP TYPE "public"."enum_featured_project_span";`);
 }

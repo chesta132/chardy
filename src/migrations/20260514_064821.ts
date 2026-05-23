@@ -1,4 +1,4 @@
-import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
+import { MigrateUpArgs, MigrateDownArgs, sql } from "@payloadcms/db-vercel-postgres";
 
 export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   await db.execute(sql`
@@ -21,12 +21,12 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "project_sites_order_idx" ON "project_sites" USING btree ("_order");
   CREATE INDEX "project_sites_parent_id_idx" ON "project_sites" USING btree ("_parent_id");
   CREATE UNIQUE INDEX "project_sites_locales_locale_parent_id_unique" ON "project_sites_locales" USING btree ("_locale","_parent_id");
-  ALTER TABLE "project" DROP COLUMN "live_site";`)
+  ALTER TABLE "project" DROP COLUMN "live_site";`);
 }
 
 export async function down({ db, payload, req }: MigrateDownArgs): Promise<void> {
   await db.execute(sql`
    DROP TABLE "project_sites" CASCADE;
   DROP TABLE "project_sites_locales" CASCADE;
-  ALTER TABLE "project" ADD COLUMN "live_site" varchar;`)
+  ALTER TABLE "project" ADD COLUMN "live_site" varchar;`);
 }
