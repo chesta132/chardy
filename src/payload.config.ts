@@ -1,19 +1,11 @@
-import { postgresAdapter } from "@payloadcms/db-postgres";
+import { vercelPostgresAdapter } from "@payloadcms/db-vercel-postgres";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import path from "path";
 import { buildConfig } from "payload";
 import { fileURLToPath } from "url";
 import sharp from "sharp";
 import { cloudinaryStorage } from "payload-cloudinary";
-import {
-  CLOUDINARY_FOLDER,
-  CLOUDINARY_KEY,
-  CLOUDINARY_CLOUD_NAME,
-  CLOUDINARY_SECRET,
-  DATABASE_URL,
-  PAYLOAD_SECRET,
-  MAILER_FROM,
-} from "./config";
+import { CLOUDINARY_FOLDER, CLOUDINARY_KEY, CLOUDINARY_CLOUD_NAME, CLOUDINARY_SECRET, DATABASE_URL, PAYLOAD_SECRET, MAILER_FROM } from "./config";
 import { routing } from "./i18n/routing";
 import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
 import { extractAddress, extractName, transporter } from "./libs/email";
@@ -44,7 +36,7 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(dirname, "types/payload.ts"),
   },
-  db: postgresAdapter({
+  db: vercelPostgresAdapter({
     pool: {
       connectionString: DATABASE_URL || "",
     },
