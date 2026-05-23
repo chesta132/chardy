@@ -32,7 +32,7 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
     } else {
       let stringified;
       try {
-        stringified = JSON.stringify(error);
+        stringified = JSON.stringify(error, Object.getOwnPropertyNames(error));
       } catch {}
       nectAction(
         { action: notifyErrorAction, fromCSR: true },
