@@ -20,16 +20,18 @@ export const ProjectCard = ({ span, project }: FeaturedProject) => {
   const yTo = useRef<gsap.QuickToFunc | null>(null);
   const rotateXTo = useRef<gsap.QuickToFunc | null>(null);
   const rotateYTo = useRef<gsap.QuickToFunc | null>(null);
-  const scaleTo = useRef<gsap.QuickToFunc | null>(null);
+  const scaleXTo = useRef<gsap.QuickToFunc | null>(null);
+  const scaleYTo = useRef<gsap.QuickToFunc | null>(null);
 
   useEffect(() => {
     const el = imageRef.current;
     if (!el) return;
     xTo.current = gsap.quickTo(el, "x", { duration: 0.5, ease: "power2.out" });
     yTo.current = gsap.quickTo(el, "y", { duration: 0.5, ease: "power2.out" });
-    rotateXTo.current = gsap.quickTo(el, "rotateX", { duration: 0.5, ease: "power2.out" });
-    rotateYTo.current = gsap.quickTo(el, "rotateY", { duration: 0.5, ease: "power2.out" });
-    scaleTo.current = gsap.quickTo(el, "scale", { duration: 0.5, ease: "power2.out" });
+    rotateXTo.current = gsap.quickTo(el, "rotationX", { duration: 0.5, ease: "power2.out" });
+    rotateYTo.current = gsap.quickTo(el, "rotationY", { duration: 0.5, ease: "power2.out" });
+    scaleXTo.current = gsap.quickTo(el, "scaleX", { duration: 0.5, ease: "power2.out" });
+    scaleYTo.current = gsap.quickTo(el, "scaleY", { duration: 0.5, ease: "power2.out" });
   }, []);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -46,7 +48,8 @@ export const ProjectCard = ({ span, project }: FeaturedProject) => {
     yTo.current?.(yNorm * 14);
     rotateXTo.current?.(-yNorm * 6);
     rotateYTo.current?.(xNorm * 6);
-    scaleTo.current?.(1.06);
+    scaleXTo.current?.(1.06);
+    scaleYTo.current?.(1.06);
   };
 
   const handleMouseLeave = () => {
@@ -56,8 +59,8 @@ export const ProjectCard = ({ span, project }: FeaturedProject) => {
     gsap.to(imageWrap, {
       x: 0,
       y: 0,
-      rotateX: 0,
-      rotateY: 0,
+      rotationX: 0,
+      rotationY: 0,
       scale: 1,
       duration: 0.7,
       ease: "power3.out",
@@ -95,7 +98,13 @@ export const ProjectCard = ({ span, project }: FeaturedProject) => {
       {/* Info overlay */}
       <div className="relative z-10 flex flex-col gap-2 p-5 translate-y-1 transition-transform duration-300 group-hover:translate-y-0">
         <h3 className="text-text-light font-medium text-lg leading-tight">{project.title}</h3>
-        <div className="flex flex-wrap gap-1.5 lg:opacity-0 lg:translate-y-2 transition-all duration-300 group-hover:opacity-100 translate-y-0 group-hover:translate-y-0" aria-label={`Tags: ${project.tags.slice(0, MAX_TAGS).map(t => t.tag).join(', ')}`}>
+        <div
+          className="flex flex-wrap gap-1.5 lg:opacity-0 lg:translate-y-2 transition-all duration-300 group-hover:opacity-100 translate-y-0 group-hover:translate-y-0"
+          aria-label={`Tags: ${project.tags
+            .slice(0, MAX_TAGS)
+            .map((t) => t.tag)
+            .join(", ")}`}
+        >
           {project.tags.slice(0, MAX_TAGS).map(({ tag }) => (
             <span
               key={tag}
