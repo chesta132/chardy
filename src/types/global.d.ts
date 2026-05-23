@@ -46,3 +46,10 @@ type MergeUnion<U> = (U extends any ? (k: U) => void : never) extends (k: infer 
 
 /** Value of `T` */
 type ValueOf<T> = T[keyof T];
+
+interface ErrorPageProps {
+  /** The underlying error thrown at runtime */
+  error: Error & { digest?: string };
+  /** Next.js-provided reset function to retry rendering the segment */
+  reset: () => void;
+}

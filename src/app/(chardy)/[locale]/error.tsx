@@ -13,15 +13,7 @@ import { ErrorLayout } from "@/components/error";
 import type { ErrorPageData } from "@/components/error";
 import { isDevEnv } from "@/config";
 import { useEffect } from "react";
-import { notifyErrorAction } from "@/actions/notify";
-import { nectAction } from "nectic/actions";
-
-interface ErrorPageProps {
-  /** The underlying error thrown at runtime */
-  error: Error & { digest?: string };
-  /** Next.js-provided reset function to retry rendering the segment */
-  reset: () => void;
-}
+import * as Sentry from "@sentry/nextjs";
 
 export default function ErrorPage({ error, reset }: ErrorPageProps) {
   const t = useTranslations("Error.Pages.Unexpected");
@@ -30,14 +22,7 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
     if (isDevEnv()) {
       console.error("[ErrorPage]", error.message, error.digest);
     } else {
-      let stringified;
-      try {
-        stringified = JSON.stringify(error, Object.getOwnPropertyNames(error));
-      } catch {}
-      nectAction(
-        { action: notifyErrorAction, fromCSR: true },
-        { message: error.message, digest: error.digest, url: window.location.href, type: "Client Error", string: stringified },
-      );
+      Sentry.captureException(error);
     }
   }, [error]);
 
