@@ -5,7 +5,18 @@ import { buildConfig } from "payload";
 import { fileURLToPath } from "url";
 import sharp from "sharp";
 import { cloudinaryStorage } from "payload-cloudinary";
-import { CLOUDINARY_FOLDER, CLOUDINARY_KEY, CLOUDINARY_CLOUD_NAME, CLOUDINARY_SECRET, DATABASE_URL, PAYLOAD_SECRET, MAILER_FROM } from "./config";
+import {
+  CLOUDINARY_FOLDER,
+  CLOUDINARY_KEY,
+  CLOUDINARY_CLOUD_NAME,
+  CLOUDINARY_SECRET,
+  DATABASE_URL,
+  PAYLOAD_SECRET,
+  MAILER_FROM,
+  ADMIN_URL,
+  APP_URL,
+  INTERNAL_ADMIN_PATH,
+} from "./config";
 import { routing } from "./i18n/routing";
 import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
 import { extractAddress, extractName, transporter } from "./libs/email";
@@ -29,6 +40,11 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
+  serverURL: ADMIN_URL,
+  routes: {
+    admin: ADMIN_URL === APP_URL ? INTERNAL_ADMIN_PATH : "/",
+  },
+  csrf: [ADMIN_URL, APP_URL],
   collections: [Users, Media, Project, FeaturedProject],
   globals: [Hero, AboutMe, ContactMe, AIConfig],
   editor: lexicalEditor(),
