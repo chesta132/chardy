@@ -39,8 +39,8 @@ export const ContactMe = ({ data }: { data: ContactMePayload }) => {
           <Button>{t("emailDirectly")}</Button>
         </Link>
       </div>
-      <div className="flex flex-col lg:flex-row justify-between gap-10 px-2 lg:px-5">
-        <div ref={leftRef} className="flex flex-col justify-between">
+      <div className="flex flex-col lg:flex-row justify-between gap-10 px-2 lg:px-5 h-full">
+        <div ref={leftRef} className="flex flex-col justify-between h-full">
           <div className="flex flex-col gap-4">
             {socialItems.map((item) => (
               <a
@@ -48,7 +48,7 @@ export const ContactMe = ({ data }: { data: ContactMePayload }) => {
                 href={item.href}
                 target="_blank"
                 rel="noreferrer"
-                aria-label={`${item.label}${item.href.startsWith('mailto:') ? '' : ' (opens in new tab)'}`}
+                aria-label={`${item.label}${item.href.startsWith("mailto:") ? "" : " (opens in new tab)"}`}
                 className={cn(
                   "flex group gap-2 uppercase leading-4 cursor-pointer hover:text-secondary text-[clamp(0.2rem,3vw,0.8rem)] reveal-text",
                   rollingLabelGroupClass,
