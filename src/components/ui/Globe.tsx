@@ -1,8 +1,9 @@
 "use client";
 
-import { cn } from "@/libs/utils";
 import createGlobe, { COBEOptions } from "cobe";
 import { useEffect, useRef, useCallback, useState } from "react";
+import FallbackGlobe from "@/assets/images/globe.webp";
+import Image from "next/image";
 
 export const WEST_JAVA: [number, number] = [-6.3194, 107.005];
 
@@ -26,7 +27,7 @@ export const Globe = (options: Partial<COBEOptions>) => {
     // Check WebGL availability before attempting to create the globe
     const testCtx = canvasRef.current.getContext("webgl");
     if (!testCtx) {
-      console.warn("WebGL is not available — skipping globe rendering.");
+      console.warn("WebGL is not available — fallback to static image.");
       setWebglSupported(false);
       return;
     }
@@ -135,7 +136,7 @@ export const Globe = (options: Partial<COBEOptions>) => {
       onTouchStart={onPointerDown}
       className="w-full max-w-2xl aspect-square cursor-grab active:cursor-grabbing"
     >
-      {webglSupported && <canvas ref={canvasRef} className="size-full" />}
+      {webglSupported ? <canvas ref={canvasRef} className="size-full" /> : <Image src={FallbackGlobe} alt="" role="presentation" />}
     </div>
   );
 };
