@@ -2,32 +2,30 @@
 
 import createGlobe, { COBEOptions } from "cobe";
 import { useEffect, useRef, useCallback, useState } from "react";
-import FallbackGlobe from "@/assets/images/globe.webp";
 import Image from "next/image";
-
-export const WEST_JAVA: [number, number] = [-6.3194, 107.005];
+import FallbackGlobe from "@/assets/images/globe.webp";
+import { useDragRotation } from "@/hooks/useDragRotation";
+import { ROTATION_SPEED, VELOCITY_DAMPING, DEFAULT_GLOBE_SIZE, INITIAL_PHI, INITIAL_THETA, isWebGLSupported, clampTheta } from "@/libs/globe";
 
 export const Globe = (options: Partial<COBEOptions>) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const globeRef = useRef<ReturnType<typeof createGlobe> | null>(null);
-  const phi = useRef(-1.8);
-  const theta = useRef(0.3);
-  const isDragging = useRef(false);
-  const lastX = useRef(0);
-  const lastY = useRef(0);
+
+  const phi = useRef(INITIAL_PHI);
+  const theta = useRef(INITIAL_THETA);
   const velocityX = useRef(0);
   const velocityY = useRef(0);
-  const size = useRef(600);
+  const size = useRef(DEFAULT_GLOBE_SIZE);
+
   const [webglSupported, setWebglSupported] = useState(true);
+
+  const { onPointerDown, isDragging } = useDragRotation(phi, theta, velocityX, velocityY);
 
   const createGlobeInstance = useCallback(() => {
     if (!canvasRef.current) return;
-
-    // Check WebGL availability before attempting to create the globe
-    const testCtx = canvasRef.current.getContext("webgl");
-    if (!testCtx) {
-      console.warn("WebGL is not available — fallback to static image.");
+    if (!isWebGLSupported(canvasRef.current)) {
+      console.warn("WebGL not available — falling back to static image.");
       setWebglSupported(false);
       return;
     }
@@ -57,77 +55,39 @@ export const Globe = (options: Partial<COBEOptions>) => {
           state.phi = phi.current;
           state.theta = theta.current;
           if (!isDragging.current) {
-            velocityX.current *= 0.95;
-            velocityY.current *= 0.95;
-            phi.current += velocityX.current + 0.002;
-            theta.current = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, theta.current + velocityY.current));
+            velocityX.current *= VELOCITY_DAMPING;
+            velocityY.current *= VELOCITY_DAMPING;
+            phi.current += velocityX.current + ROTATION_SPEED;
+            theta.current = clampTheta(theta.current + velocityY.current);
           }
         },
         ...options,
       });
     } catch (err) {
-      console.warn("Failed to create globe instance:", err);
+      console.warn("Failed to create globe:", err);
       setWebglSupported(false);
     }
-  }, []);
+  }, [isDragging, options]);
 
   useEffect(() => {
     if (!containerRef.current) return;
-    size.current = containerRef.current.offsetWidth || 600;
-    createGlobeInstance();
-    return () => globeRef.current?.destroy();
-  }, [createGlobeInstance]);
 
-  useEffect(() => {
-    if (!containerRef.current) return;
     const observer = new ResizeObserver((entries) => {
       const newSize = entries[0].contentRect.width;
       if (Math.abs(newSize - size.current) < 1) return;
       size.current = newSize;
       createGlobeInstance();
     });
+
+    size.current = containerRef.current.offsetWidth || DEFAULT_GLOBE_SIZE;
+    createGlobeInstance();
     observer.observe(containerRef.current);
-    return () => observer.disconnect();
-  }, [createGlobeInstance]);
 
-  const onPointerDown = useCallback((e: React.MouseEvent | React.TouchEvent) => {
-    isDragging.current = true;
-    lastX.current = "touches" in e ? e.touches[0].clientX : e.clientX;
-    lastY.current = "touches" in e ? e.touches[0].clientY : e.clientY;
-    velocityX.current = 0;
-    velocityY.current = 0;
-  }, []);
-
-  const onPointerMove = useCallback((e: MouseEvent | TouchEvent) => {
-    if (!isDragging.current) return;
-    const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
-    const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
-    const dx = clientX - lastX.current;
-    const dy = clientY - lastY.current;
-    phi.current += dx * 0.005;
-    theta.current = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, theta.current + dy * 0.005));
-    velocityX.current = dx * 0.005;
-    velocityY.current = dy * 0.005;
-    lastX.current = clientX;
-    lastY.current = clientY;
-  }, []);
-
-  const onPointerUp = useCallback(() => {
-    isDragging.current = false;
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener("mousemove", onPointerMove);
-    window.addEventListener("mouseup", onPointerUp);
-    window.addEventListener("touchmove", onPointerMove);
-    window.addEventListener("touchend", onPointerUp);
     return () => {
-      window.removeEventListener("mousemove", onPointerMove);
-      window.removeEventListener("mouseup", onPointerUp);
-      window.removeEventListener("touchmove", onPointerMove);
-      window.removeEventListener("touchend", onPointerUp);
+      observer.disconnect();
+      globeRef.current?.destroy();
     };
-  }, [onPointerMove, onPointerUp]);
+  }, [createGlobeInstance]);
 
   return (
     <div

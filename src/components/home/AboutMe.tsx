@@ -2,7 +2,7 @@
 
 import { cn } from "@/libs/utils";
 import { Arrow } from "../ui/Arrow";
-import { Globe, WEST_JAVA } from "../ui/Globe";
+import { Globe } from "../ui/Globe";
 import { ChardyLogo } from "../ui/Logo";
 import { Button } from "../ui/Button";
 import { GithubCalendar } from "../about-me/GithubCalendar";
@@ -15,6 +15,7 @@ import { LOCATION, OWNER_FULLNAME } from "@/config";
 import { Media, type AboutMe as AboutMePayload } from "@/types/payload";
 import { extractUsername } from "@/libs/github";
 import { RichText } from "@payloadcms/richtext-lexical/react";
+import { WEST_JAVA_GLOBE_COOR } from "@/libs/globe";
 
 const getStats = (data: AboutMePayload["stats"]) =>
   [
@@ -71,7 +72,7 @@ export const AboutMe = ({ data, githubUrl }: { data: AboutMePayload; githubUrl: 
                 </h2>
                 <h3 className="uppercase font-supply-mono text-text-light/50 text-[clamp(0.2rem,3vw,0.75rem)] mt-2">{t("availableForWorldwide")}</h3>
               </div>
-              <Globe markers={[{ location: WEST_JAVA, size: 0.08 }]} aria-hidden="true" />
+              <Globe markers={[{ location: WEST_JAVA_GLOBE_COOR, size: 0.08 }]} aria-hidden="true" />
             </div>
           </div>
         </div>
