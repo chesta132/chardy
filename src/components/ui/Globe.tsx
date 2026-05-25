@@ -2,7 +2,7 @@
 
 import { cn } from "@/libs/utils";
 import createGlobe, { COBEOptions } from "cobe";
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
 
 export const WEST_JAVA: [number, number] = [-6.3194, 107.005];
 
@@ -18,41 +18,56 @@ export const Globe = (options: Partial<COBEOptions>) => {
   const velocityX = useRef(0);
   const velocityY = useRef(0);
   const size = useRef(600);
+  const [webglSupported, setWebglSupported] = useState(true);
 
   const createGlobeInstance = useCallback(() => {
     if (!canvasRef.current) return;
+
+    // Check WebGL availability before attempting to create the globe
+    const testCtx = canvasRef.current.getContext("webgl");
+    if (!testCtx) {
+      console.warn("WebGL is not available — skipping globe rendering.");
+      setWebglSupported(false);
+      return;
+    }
+
     globeRef.current?.destroy();
 
     const s = size.current;
     canvasRef.current.style.width = `${s}px`;
     canvasRef.current.style.height = `${s}px`;
 
-    globeRef.current = createGlobe(canvasRef.current, {
-      devicePixelRatio: 2,
-      width: s * 2,
-      height: s * 2,
-      phi: phi.current,
-      theta: theta.current,
-      dark: 1,
-      diffuse: 1.2,
-      mapSamples: 16000,
-      mapBrightness: 6,
-      baseColor: [0.3, 0.3, 0.3],
-      markerColor: [1, 0.302, 0.114],
-      glowColor: [1, 1, 1],
-      markers: [],
-      onRender: (state) => {
-        state.phi = phi.current;
-        state.theta = theta.current;
-        if (!isDragging.current) {
-          velocityX.current *= 0.95;
-          velocityY.current *= 0.95;
-          phi.current += velocityX.current + 0.002;
-          theta.current = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, theta.current + velocityY.current));
-        }
-      },
-      ...options,
-    });
+    try {
+      globeRef.current = createGlobe(canvasRef.current, {
+        devicePixelRatio: 2,
+        width: s * 2,
+        height: s * 2,
+        phi: phi.current,
+        theta: theta.current,
+        dark: 1,
+        diffuse: 1.2,
+        mapSamples: 16000,
+        mapBrightness: 6,
+        baseColor: [0.3, 0.3, 0.3],
+        markerColor: [1, 0.302, 0.114],
+        glowColor: [1, 1, 1],
+        markers: [],
+        onRender: (state) => {
+          state.phi = phi.current;
+          state.theta = theta.current;
+          if (!isDragging.current) {
+            velocityX.current *= 0.95;
+            velocityY.current *= 0.95;
+            phi.current += velocityX.current + 0.002;
+            theta.current = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, theta.current + velocityY.current));
+          }
+        },
+        ...options,
+      });
+    } catch (err) {
+      console.warn("Failed to create globe instance:", err);
+      setWebglSupported(false);
+    }
   }, []);
 
   useEffect(() => {
@@ -120,7 +135,7 @@ export const Globe = (options: Partial<COBEOptions>) => {
       onTouchStart={onPointerDown}
       className="w-full max-w-2xl aspect-square cursor-grab active:cursor-grabbing"
     >
-      <canvas ref={canvasRef} className="size-full" />
+      {webglSupported && <canvas ref={canvasRef} className="size-full" />}
     </div>
   );
 };
