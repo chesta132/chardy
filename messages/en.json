@@ -208,6 +208,12 @@
         "description": "Something went wrong. Please try again later or contact support if the issue persists.",
         "action": "Back to Home"
       }
+    },
+
+    "Common": {
+      "UNKNOWN": {
+        "message": "Something went wrong."
+      }
     }
   },
 

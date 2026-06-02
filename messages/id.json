@@ -207,6 +207,12 @@
         "description": "Terjadi kesalahan. Silakan coba lagi atau hubungi dukungan jika masalah berlanjut.",
         "action": "Kembali ke Beranda"
       }
+    },
+
+    "Common": {
+      "UNKNOWN": {
+        "message": "Terjadi kesalahan."
+      }
     }
   },
 
