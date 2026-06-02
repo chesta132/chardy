@@ -4,6 +4,8 @@ import { Locale } from "@/i18n/types";
 import { createTranslator } from "next-intl";
 import { getMessages } from "@/i18n/request";
 import { ErrorOutcomeType } from "nectic/actions";
+import { isProdEnv } from "@/config";
+import * as Sentry from "@sentry/nextjs";
 
 interface RestError {
   debug?: any;
@@ -59,9 +61,21 @@ export class ServerError<C extends ServerErrorCode> {
     return this;
   }
 
+  handleDebug(error: Pick<RestError, "debug">, code = this.code) {
+    try {
+      if (error.debug && isProdEnv()) {
+        const errKeys = typeof error.debug === "object" ? Object.keys(error.debug).join(", ") : "unknown-" + typeof error.debug;
+        Sentry.captureException(error.debug, { tags: { errorCode: code, errKeys: errKeys } });
+        delete error.debug;
+      }
+    } catch {}
+  }
+
   async flatten(): Promise<FlattenedServerError> {
     const t = createTranslator({ locale: this.locale, messages: await getMessages(this.locale), namespace: "Error.ServerError" });
     const { deps, code } = { code: this.code, deps: this.deps } as ServerErrorConfig;
+
+    if (deps[0]) this.handleDebug(deps[0], code as C);
 
     switch (code) {
       case "CLIENT_FIELD":
