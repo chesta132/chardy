@@ -56,12 +56,7 @@ export class ServerError<C extends ServerErrorCode> {
     }
   }
 
-  withLocale(locale: Locale) {
-    (this.locale as Locale) = locale;
-    return this;
-  }
-
-  handleDebug(error: Pick<RestError, "debug">, code = this.code) {
+  private handleDebug(error: Pick<RestError, "debug">, code = this.code) {
     try {
       if (error.debug && isProdEnv()) {
         const errKeys = typeof error.debug === "object" ? Object.keys(error.debug).join(", ") : "unknown-" + typeof error.debug;
@@ -69,6 +64,11 @@ export class ServerError<C extends ServerErrorCode> {
         delete error.debug;
       }
     } catch {}
+  }
+
+  withLocale(locale: Locale) {
+    (this.locale as Locale) = locale;
+    return this;
   }
 
   async flatten(): Promise<FlattenedServerError> {
