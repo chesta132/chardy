@@ -49,7 +49,7 @@ export async function runAgentLoop(contents: Content[], systemInstruction: strin
       currentContents.push({ role: "model", parts: contentParts });
     }
     if (toolResults.length) {
-      currentContents.push({ role: "tool", parts: toolResults });
+      currentContents.push({ role: "user", parts: toolResults });
     }
   }
 
