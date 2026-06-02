@@ -45,11 +45,11 @@ export async function runAgentLoop(contents: Content[], systemInstruction: strin
     const toolResults = await execTools(functionCalls, portfolioToolHandlers);
 
     // append this iteration context
-    if (toolResults.length) {
-      currentContents.push({ role: "tool", parts: toolResults });
-    }
     if (contentParts.length) {
       currentContents.push({ role: "model", parts: contentParts });
+    }
+    if (toolResults.length) {
+      currentContents.push({ role: "tool", parts: toolResults });
     }
   }
 
