@@ -1,11 +1,12 @@
-import { revalidateTag } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { BasePayload, CollectionConfig } from "payload";
 import { getFeaturedProjects } from "../crud/read";
+import { revalidateFeaturedProject } from "./FeaturedProject";
 
 const revalidateFeatured = async (id: string | number, payload: BasePayload) => {
   const featured = await getFeaturedProjects(payload);
   if (featured.docs.some((item) => (typeof item.project === "number" ? item.project === id : item.project.id === id))) {
-    revalidateTag("featured-project", "max");
+    revalidateFeaturedProject();
   }
 };
 
@@ -17,18 +18,22 @@ export const Project: CollectionConfig = {
   hooks: {
     afterChange: [
       async ({ doc, operation, req: { payload } }) => {
-        revalidateTag("projects", "max");
+        updateTag("projects");
         if (doc.id) {
-          revalidateTag(`project-${doc.id}`, "max");
+          updateTag(`project-${doc.id}`);
           if (operation === "update") await revalidateFeatured(doc.id, payload);
+          revalidatePath(`/[locale]/projects/${doc.id}`);
         }
+        revalidatePath("/[locale]/projects");
       },
     ],
     afterDelete: [
       async ({ id }) => {
-        revalidateTag("projects", "max");
-        revalidateTag(`project-${id}`, "max");
+        updateTag("projects");
+        updateTag(`project-${id}`);
         // skip revalidate featured because project can not be deleted if registered in featured project
+        revalidatePath(`/[locale]/projects/${id}`);
+        revalidatePath("/[locale]/projects");
       },
     ],
   },

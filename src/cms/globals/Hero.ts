@@ -1,4 +1,4 @@
-import { revalidateTag } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { GlobalConfig } from "payload";
 
 export const Hero: GlobalConfig = {
@@ -6,7 +6,8 @@ export const Hero: GlobalConfig = {
   hooks: {
     afterChange: [
       () => {
-        revalidateTag("hero", "max");
+        updateTag("hero");
+        revalidatePath("/[locale]");
       },
     ],
   },

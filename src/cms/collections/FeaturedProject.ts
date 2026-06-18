@@ -1,17 +1,22 @@
-import { revalidateTag } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { CollectionConfig } from "payload";
+
+export const revalidateFeaturedProject = () => {
+  updateTag("featured-project");
+  revalidatePath("/[locale]", "page");
+};
 
 export const FeaturedProject: CollectionConfig = {
   slug: "featured-project",
   hooks: {
     afterChange: [
       () => {
-        revalidateTag("featured-project", "max");
+        revalidateFeaturedProject();
       },
     ],
     afterDelete: [
       () => {
-        revalidateTag("featured-project", "max");
+        revalidateFeaturedProject();
       },
     ],
   },

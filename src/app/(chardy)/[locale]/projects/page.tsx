@@ -25,6 +25,12 @@ export const generateMetadata = async ({ params }: PageProps<"/[locale]/projects
   };
 };
 
+export const revalidate = 604800; // one week
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
 export default async function ProjectsPage() {
   const payload = await getPayload({ config });
   const projects = await getProjects(payload);

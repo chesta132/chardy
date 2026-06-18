@@ -1,5 +1,5 @@
 import { DEFAULT_AI_NAME, DEFAULT_GEMINI_MODEL } from "@/config";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { GlobalConfig } from "payload";
 
 export const AIConfig: GlobalConfig = {
@@ -8,7 +8,8 @@ export const AIConfig: GlobalConfig = {
   hooks: {
     afterChange: [
       () => {
-        revalidateTag("ai-config", "max");
+        updateTag("ai-config");
+        revalidatePath("/[locale]");
       },
     ],
   },

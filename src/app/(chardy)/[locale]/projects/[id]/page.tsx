@@ -3,7 +3,7 @@ import config from "@payload-config";
 import { ProjectDetail } from "@/components/projects/ProjectDetail";
 import { ErrorLayout, ErrorPageData } from "@/components/error";
 import { getTranslations } from "next-intl/server";
-import { getProject } from "@/cms/crud/read";
+import { getProject, getProjects } from "@/cms/crud/read";
 import { hasLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
 import { APP_NAME, OWNER_FULLNAME } from "@/config";
@@ -12,6 +12,17 @@ import { generateMetadata as generateNotFoundMetadata } from "../../[...notFound
 import { Metadata } from "next";
 
 type Props = PageProps<"/[locale]/projects/[id]">;
+
+export const revalidate = 604800; // one week
+
+export async function generateStaticParams() {
+  const payload = await getPayload({ config });
+  const projects = await getProjects(payload);
+
+  return routing.locales.flatMap((locale) => {
+    return projects.docs.map((p) => ({ locale, id: String(p.id) }));
+  });
+}
 
 export const generateMetadata = async ({ params }: Props): Promise<Metadata> => {
   let { locale, id } = await params;

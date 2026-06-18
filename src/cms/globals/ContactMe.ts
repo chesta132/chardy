@@ -1,4 +1,4 @@
-import { revalidateTag } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { GlobalConfig, TextFieldSingleValidation } from "payload";
 
 export const ContactMe: GlobalConfig = {
@@ -6,7 +6,8 @@ export const ContactMe: GlobalConfig = {
   hooks: {
     afterChange: [
       () => {
-        revalidateTag("contact-me", "max");
+        updateTag("contact-me");
+        revalidatePath("/[locale]");
       },
     ],
   },

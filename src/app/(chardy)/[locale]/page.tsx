@@ -6,6 +6,13 @@ import { getPayload } from "payload";
 import config from "@payload-config";
 import { getAboutMe, getContactMe, getFeaturedProjects, getHero } from "@/cms/crud/read";
 import { Main } from "@/components/layouts/Wrapper";
+import { routing } from "@/i18n/routing";
+
+export const revalidate = 604800; // one week
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
 
 export default async function Home() {
   const payload = await getPayload({ config });
