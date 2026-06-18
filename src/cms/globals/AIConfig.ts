@@ -1,15 +1,15 @@
 import { DEFAULT_AI_NAME, DEFAULT_GEMINI_MODEL } from "@/config";
-import { revalidatePath, updateTag } from "next/cache";
 import { GlobalConfig } from "payload";
+import { revalidatePaths, updateTags } from "../cache";
 
 export const AIConfig: GlobalConfig = {
   slug: "ai-config",
   label: "AI Config",
   hooks: {
     afterChange: [
-      () => {
-        updateTag("ai-config");
-        revalidatePath("/[locale]");
+      async () => {
+        await updateTags("ai-config");
+        await revalidatePaths(["/(chardy)/[locale]", "page"]);
       },
     ],
   },

@@ -1,13 +1,13 @@
-import { revalidatePath, updateTag } from "next/cache";
 import { GlobalConfig } from "payload";
+import { revalidatePaths, updateTags } from "../cache";
 
 export const AboutMe: GlobalConfig = {
   slug: "about-me",
   hooks: {
     afterChange: [
-      () => {
-        updateTag("about-me");
-        revalidatePath("/[locale]");
+      async () => {
+        await updateTags("about-me");
+        await revalidatePaths(["/(chardy)/[locale]", "page"]);
       },
     ],
   },

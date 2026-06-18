@@ -1,13 +1,13 @@
-import { revalidatePath, updateTag } from "next/cache";
 import { GlobalConfig, TextFieldSingleValidation } from "payload";
+import { revalidatePaths, updateTags } from "../cache";
 
 export const ContactMe: GlobalConfig = {
   slug: "contact-me",
   hooks: {
     afterChange: [
-      () => {
-        updateTag("contact-me");
-        revalidatePath("/[locale]");
+      async () => {
+        await updateTags("contact-me");
+        await revalidatePaths(["/(chardy)/[locale]", "page"]);
       },
     ],
   },
