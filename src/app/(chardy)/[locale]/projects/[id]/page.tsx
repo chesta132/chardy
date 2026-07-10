@@ -14,6 +14,7 @@ import { Metadata } from "next";
 type Props = PageProps<"/[locale]/projects/[id]">;
 
 export const revalidate = 604800; // one week
+export const dynamic = "force-static";
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config });

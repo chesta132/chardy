@@ -9,6 +9,7 @@ import { Main } from "@/components/layouts/Wrapper";
 import { routing } from "@/i18n/routing";
 
 export const revalidate = 604800; // one week
+export const dynamic = "force-static";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));

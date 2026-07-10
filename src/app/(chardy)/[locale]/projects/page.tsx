@@ -26,6 +26,7 @@ export const generateMetadata = async ({ params }: PageProps<"/[locale]/projects
 };
 
 export const revalidate = 604800; // one week
+export const dynamic = "force-static";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
