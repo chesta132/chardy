@@ -1,13 +1,10 @@
 allowBuilds:
-  '@google/genai': false
-  '@parcel/watcher': set this to true or false
-  '@sentry/cli': set this to true or false
-  '@swc/core': set this to true or false
-  bufferutil: set this to true or false
-  esbuild: set this to true or false
+  "@google/genai": false
+  "@parcel/watcher": false
+  "@sentry/cli": true
+  "@swc/core": false
+  bufferutil: false
+  esbuild: true
   protobufjs: false
-  sharp: set this to true or false
-  unrs-resolver: set this to true or false
-ignoredBuiltDependencies:
-  - sharp
-  - unrs-resolver
+  sharp: true
+  unrs-resolver: false
