@@ -1,10 +1,14 @@
 "use server";
 
 import { createNectAction } from "nectic/actions";
-import { updateTag, revalidatePath } from "next/cache";
+import { updateTag, revalidatePath, revalidateTag } from "next/cache";
 
 export const updateTagsAction = createNectAction().handle(({ outcome }, ...tags: string[]) => {
-  tags.forEach((t) => updateTag(t));
+  tags.forEach((t) => {
+    // idk why updateTag won't work
+    // updateTag(t);
+    revalidateTag(t, { expire: 0 });
+  });
   return outcome.success(undefined as void).ok();
 });
 
