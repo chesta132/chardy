@@ -21,7 +21,7 @@ export const Project: CollectionConfig = {
         if (doc.id) {
           await updateTags("projects", `project-${doc.id}`);
           if (operation === "update") await revalidateFeatured(doc.id, payload);
-          await revalidatePaths([`/(chardy)/[locale]/projects/${doc.id}`, "page"]);
+          await revalidatePaths([`/(chardy)/[locale]/projects/${doc.id}`, "page"], ["/(chardy)/[locale]/projects", "page"]);
         } else {
           await updateTags("projects");
           await revalidatePaths(["/(chardy)/[locale]/projects", "page"]);
