@@ -1,5 +1,5 @@
 import "@/assets/styles/main.css";
-import { isProdEnv, UMAMI_URL, UMAMI_WEBSITE_ID } from "@/config";
+import { isProdEnv, TELEMETRY_PATH, UMAMI_URL, UMAMI_WEBSITE_ID } from "@/config";
 import { inter } from "@/fonts/inter";
 import { neueMontreal } from "@/fonts/neueMontreal";
 import { PPSuplyMono, PPSuplySans } from "@/fonts/ppSupply";
@@ -17,7 +17,9 @@ export default function RootLayout({
       className={cn("h-full", "antialiased", inter.variable, neueMontreal.variable, PPSuplySans.variable, PPSuplyMono.variable)}
       suppressHydrationWarning
     >
-      <head>{isProdEnv() && <Script defer src={UMAMI_URL} data-website-id={UMAMI_WEBSITE_ID} />}</head>
+      <head>
+        {isProdEnv() && UMAMI_URL && UMAMI_WEBSITE_ID && <Script defer src={TELEMETRY_PATH} data-website-id={UMAMI_WEBSITE_ID} />}
+      </head>
       <body className="min-h-full flex flex-col bg-background" suppressHydrationWarning>
         <a
           href="#main-content"
