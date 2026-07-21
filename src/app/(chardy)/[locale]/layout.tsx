@@ -16,6 +16,7 @@ import { getAIConfig, getSocials } from "@/cms/crud/read";
 import { defaultMetadata } from "@/libs/metadata";
 import { AIChatProvider } from "@/contexts/AIChat";
 import { AIChatButton, AIChatPanel } from "@/components/ai";
+import { PreferenceProvider } from "@/contexts/Preference";
 
 type MetadataProps = {
   params: Promise<{ locale?: string }>;
@@ -67,19 +68,21 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
-      <GlobalErrorProvider>
-        <AIChatProvider aiConfig={aiConfig}>
-          <SmoothScroll>
-            <Topbar socials={socials} />
-            {children}
-            <Footer hideOnHomeWithXL socials={socials} />
-          </SmoothScroll>
-          <AIChatButton />
-          <AIChatPanel />
-          <ViewGlobalError />
-          <Toaster />
-        </AIChatProvider>
-      </GlobalErrorProvider>
+      <PreferenceProvider>
+        <GlobalErrorProvider>
+          <AIChatProvider aiConfig={aiConfig}>
+            <SmoothScroll>
+              <Topbar socials={socials} />
+              {children}
+              <Footer hideOnHomeWithXL socials={socials} />
+            </SmoothScroll>
+            <AIChatButton />
+            <AIChatPanel />
+            <ViewGlobalError />
+            <Toaster />
+          </AIChatProvider>
+        </GlobalErrorProvider>
+      </PreferenceProvider>
     </NextIntlClientProvider>
   );
 }
