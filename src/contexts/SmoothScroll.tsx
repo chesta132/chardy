@@ -2,17 +2,21 @@
 
 import { createContext, useContext, useLayoutEffect, useState } from "react";
 import Lenis from "lenis";
+import { usePreference } from "./Preference";
 
 const smoothScrollContext = createContext<Lenis | null | undefined>(null);
 
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
   const [lenis, setLenis] = useState<Lenis | undefined>();
+  const { motion } = usePreference();
 
   useLayoutEffect(() => {
+    const smooth = motion === "full";
     const lenisInstance = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      duration: smooth ? 1.2 : 0,
+      easing: smooth ? (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) : undefined,
       autoRaf: true,
+      smoothWheel: smooth,
     });
 
     setLenis(lenisInstance);
@@ -24,7 +28,7 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
       lenisInstance.destroy();
       ro.disconnect();
     };
-  }, []);
+  }, [motion]);
 
   return <smoothScrollContext.Provider value={lenis}>{children}</smoothScrollContext.Provider>;
 }
