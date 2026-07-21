@@ -2,7 +2,7 @@
 
 import { cn } from "@/libs/utils";
 import { Arrow } from "../ui/Arrow";
-import { Globe } from "../ui/Globe";
+import { Globe } from "../about-me/Globe";
 import { ChardyLogo } from "../ui/Logo";
 import { Button } from "../ui/Button";
 import { GithubCalendar } from "../about-me/GithubCalendar";

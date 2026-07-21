@@ -5,9 +5,30 @@ import { useEffect, useRef, useCallback, useState } from "react";
 import Image from "next/image";
 import FallbackGlobe from "@/assets/images/globe.webp";
 import { useDragRotation } from "@/hooks/useDragRotation";
-import { ROTATION_SPEED, VELOCITY_DAMPING, DEFAULT_GLOBE_SIZE, INITIAL_PHI, INITIAL_THETA, isWebGLSupported, clampTheta } from "@/libs/globe";
+import {
+  ROTATION_SPEED,
+  VELOCITY_DAMPING,
+  DEFAULT_GLOBE_SIZE,
+  INITIAL_PHI,
+  INITIAL_THETA,
+  isWebGLSupported,
+  clampTheta,
+} from "@/libs/globe";
+import { usePreference } from "@/contexts/Preference";
+import { cn } from "@/libs/utils";
 
 export const Globe = (options: Partial<COBEOptions>) => {
+  const { motion } = usePreference();
+  if (motion === "full") return <FullGlobe {...options} />;
+
+  return (
+    <div className="w-full max-w-2xl aspect-square">
+      <Image src={FallbackGlobe} alt="" role="presentation" />
+    </div>
+  );
+};
+
+export const FullGlobe = (options: Partial<COBEOptions>) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const globeRef = useRef<ReturnType<typeof createGlobe> | null>(null);
@@ -94,7 +115,7 @@ export const Globe = (options: Partial<COBEOptions>) => {
       ref={containerRef}
       onMouseDown={onPointerDown}
       onTouchStart={onPointerDown}
-      className="w-full max-w-2xl aspect-square cursor-grab active:cursor-grabbing"
+      className={cn("w-full max-w-2xl aspect-square", webglSupported && "cursor-grab active:cursor-grabbing")}
     >
       {webglSupported ? <canvas ref={canvasRef} className="size-full" /> : <Image src={FallbackGlobe} alt="" role="presentation" />}
     </div>
