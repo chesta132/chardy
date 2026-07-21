@@ -2,7 +2,13 @@ import { cn } from "@/libs/utils";
 import { Arrow } from "./Arrow";
 import { RollingLabel } from "./Label";
 
-export const Button = ({ children, className, withoutArrow, ...props }: React.ComponentProps<"button"> & { withoutArrow?: boolean }) => {
+export const Button = ({
+  children,
+  className,
+  withoutArrow,
+  placeholder,
+  ...props
+}: React.ComponentProps<"button"> & { withoutArrow?: boolean; placeholder?: React.ReactNode }) => {
   return (
     <button
       className={cn(
@@ -12,7 +18,7 @@ export const Button = ({ children, className, withoutArrow, ...props }: React.Co
       )}
       {...props}
     >
-      <RollingLabel>{children}</RollingLabel>
+      <RollingLabel placeholder={placeholder}>{children}</RollingLabel>
       {!withoutArrow && (
         <Arrow className="group-hover:-rotate-45 group-hover:fill-text-light transition-all duration-700 ease-[cubic-bezier(0.87,0,0.13,1)]" />
       )}

@@ -5,7 +5,8 @@ import { ChardyLogo } from "../ui/Logo";
 import { useSmoothScroll } from "@/contexts/SmoothScroll";
 import { useState, useRef } from "react";
 import { gsap } from "@/libs/gsap/register";
-import { FaGithub, FaGlobe, FaLinkedin, FaRegEnvelope } from "react-icons/fa";
+import { MdAnimation } from "react-icons/md";
+import { FaGlobe } from "react-icons/fa";
 import { useGSAP } from "@gsap/react";
 import { useScrollDirection } from "@/hooks/useScrollDirection";
 import { RollingLabel, rollingLabelGroupClass } from "../ui/Label";
@@ -36,6 +37,7 @@ export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
+  const { motion, setMotion } = usePreference();
 
   const setLocale = (locale: Locale) => {
     router.replace(pathname, { locale });
@@ -47,7 +49,12 @@ export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
     setLocale(next);
   };
 
-  const { motion, setMotion } = usePreference();
+  const handleNextMotion = () => {
+    const current = motionPreference.indexOf(motion);
+    const next = current === motionPreference.length - 1 ? 0 : current + 1;
+    setMotion(motionPreference[next]);
+  };
+
   const lenis = useSmoothScroll();
   const direction = useScrollDirection({ threshold: 10 });
   const [open, setOpen] = useState(false);
@@ -173,12 +180,21 @@ export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
       </div>
 
       <div className="hidden lg:flex gap-2">
-        {/* DEBUG */}
-        {motionPreference.map((pref) => (
-          <Button key={pref} onClick={() => setMotion(pref)}>
-            {pref}
-          </Button>
-        ))}
+        <Button
+          placeholder={
+            <div className="flex gap-2 items-center justify-center" aria-hidden="true">
+              <MdAnimation />
+              ANIMATION
+            </div>
+          }
+          withoutArrow
+          onClick={() => handleNextMotion()}
+        >
+          <div className="flex gap-2 items-center justify-center" aria-hidden="true">
+            <MdAnimation />
+            {motion.toUpperCase()}
+          </div>
+        </Button>
         <Button withoutArrow onClick={handleNextLocale} aria-label={`Switch language, current: ${LANG_MAP[locale as Locale]}`}>
           <div className="flex gap-2 items-center" aria-hidden="true">
             <FaGlobe />
@@ -200,6 +216,7 @@ export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
       >
         <div className="mt-10 space-y-10">
           <div className="flex flex-col space-y-2">
+            <span className="text-xs leading-4 cursor-pointer text-primary/80 uppercase text-left">Language</span>
             {LANG_MAP_ENTRIES.map(([l, label], i) => (
               <button
                 key={l}
@@ -221,12 +238,33 @@ export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
             ))}
           </div>
           <div className="flex flex-col space-y-2">
+            <span className="text-xs leading-4 cursor-pointer text-primary/80 uppercase text-left">Animation</span>
+            {motionPreference.map((m, i) => (
+              <button
+                key={m}
+                aria-label={`Switch animation to ${m}`}
+                aria-pressed={m === motion}
+                className={cn(
+                  "text-xs leading-4 cursor-pointer text-primary hover:text-secondary uppercase text-left",
+                  rollingLabelGroupClass,
+                  m === motion && "text-secondary",
+                )}
+                ref={(el) => {
+                  if (el) itemsRef.current[LANG_MAP_ENTRIES.length + i] = el;
+                }}
+              >
+                <RollingLabel>{m}</RollingLabel>
+              </button>
+            ))}
+          </div>
+          <div className="flex flex-col space-y-2">
+            <span className="text-xs leading-4 cursor-pointer text-primary/80 uppercase text-left">Pages</span>
             {NAV_ITEMS.map((item, i) => (
               <Link
                 key={item.href}
                 href={item.href}
                 ref={(el) => {
-                  if (el) itemsRef.current[LANG_MAP_ENTRIES.length + i] = el;
+                  if (el) itemsRef.current[motionPreference.length + LANG_MAP_ENTRIES.length + i] = el;
                 }}
                 className={cn("uppercase leading-4 text-xs cursor-pointer text-primary hover:text-secondary", rollingLabelGroupClass)}
                 onClick={(e) => {
@@ -239,6 +277,7 @@ export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
             ))}
           </div>
           <div className="flex flex-col space-y-2">
+            <span className="text-xs leading-4 cursor-pointer text-primary/80 uppercase text-left">Social Media</span>
             {getSocialItems(socials).map((item, i) => (
               <a
                 key={item.href}
@@ -247,7 +286,7 @@ export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
                 rel="noreferrer"
                 aria-label={`${item.label}${item.href.startsWith("mailto:") ? "" : " (opens in new tab)"}`}
                 ref={(el) => {
-                  if (el) itemsRef.current[LANG_MAP_ENTRIES.length + NAV_ITEMS.length + i] = el;
+                  if (el) itemsRef.current[motionPreference.length + LANG_MAP_ENTRIES.length + NAV_ITEMS.length + i] = el;
                 }}
                 className={cn(
                   "flex gap-2 uppercase leading-4 text-xs cursor-pointer text-primary hover:text-secondary",

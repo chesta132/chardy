@@ -6,8 +6,13 @@ export const RollingLabel = ({
   className,
   idleSpan,
   activeSpan,
+  placeholder,
   ...props
-}: React.ComponentProps<"span"> & { idleSpan?: React.ComponentProps<"span">; activeSpan?: React.ComponentProps<"span"> }) => {
+}: React.ComponentProps<"span"> & {
+  idleSpan?: React.ComponentProps<"span">;
+  activeSpan?: React.ComponentProps<"span">;
+  placeholder?: React.ReactNode;
+}) => {
   return (
     <span className={cn("relative overflow-hidden flex", className)} {...props}>
       <span
@@ -17,7 +22,7 @@ export const RollingLabel = ({
           idleSpan?.className,
         )}
       >
-        {children}
+        {placeholder || children}
       </span>
       <span
         {...activeSpan}
