@@ -35,15 +35,24 @@ const getMotionPreference = (): MotionPreference => {
 export const PreferenceContext = createContext<PreferenceValue | null>(null);
 
 export const PreferenceProvider = ({ children }: { children: React.ReactNode }) => {
-  const [motion, setMotion] = useState<MotionPreference>(() => getLocalPreference()?.motion || getMotionPreference());
+  // default is full (can't initialize with local preference cz ssr)
+  // mount manually with useEffect that runs on client
+  const [motion, setMotion] = useState<MotionPreference>("full");
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMotion(getLocalPreference()?.motion || getMotionPreference());
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
     try {
       localStorage.setItem(preferenceLocalKey, JSON.stringify({ motion }));
     } catch (e) {
       console.error("Failed to save preference to localStorage", e);
     }
-  }, [motion]);
+  }, [motion, mounted]);
 
   return <PreferenceContext.Provider value={{ motion, setMotion }}>{children}</PreferenceContext.Provider>;
 };
