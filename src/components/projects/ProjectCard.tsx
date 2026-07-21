@@ -120,18 +120,12 @@ const FullProjectCard = ({ span, project }: FeaturedProject) => {
   };
 
   const handleMouseLeave = () => {
-    const imageWrap = imageRef.current;
-    if (!imageWrap) return;
-
-    gsap.to(imageWrap, {
-      x: 0,
-      y: 0,
-      rotationX: 0,
-      rotationY: 0,
-      scale: 1,
-      duration: 0.7,
-      ease: "power3.out",
-    });
+    xTo.current?.(0);
+    yTo.current?.(0);
+    rotateXTo.current?.(0);
+    rotateYTo.current?.(0);
+    scaleXTo.current?.(1);
+    scaleYTo.current?.(1);
   };
 
   return (
