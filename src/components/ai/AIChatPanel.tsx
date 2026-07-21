@@ -10,6 +10,7 @@ import { ChatHeader } from "./chat/ChatHeader";
 import { EmptyState } from "./chat/EmptyState";
 import { MessageBubble } from "./chat/MessageBubble";
 import { ChatInput } from "./chat/ChatInput";
+import { usePreference } from "@/contexts/Preference";
 
 // ─── Sizes ────────────────────────────────────────────────────────────────────
 
@@ -26,6 +27,7 @@ export const AIChatPanel = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const isDesktop = useIsDesktop(); // reactive — drives GSAP dependency
   const [isExpanded, setIsExpanded] = useState(false);
+  const { motion } = usePreference();
 
   const sheetHeight = useRef(55); // svh
 
@@ -88,7 +90,11 @@ export const AIChatPanel = () => {
             top: "auto",
             y: 0,
           });
-          gsap.fromTo(panel, { opacity: 0, x: 40, scale: 0.95 }, { opacity: 1, x: 0, scale: 1, duration: 0.5, ease: "power3.out" });
+          if (motion === "no-motion") {
+            gsap.set(panel, { opacity: 1, x: 0, scale: 1 });
+          } else {
+            gsap.fromTo(panel, { opacity: 0, x: 40, scale: 0.95 }, { opacity: 1, x: 0, scale: 1, duration: 0.5, ease: "power3.out" });
+          }
         } else {
           gsap.set(panel, {
             width: "100%",
@@ -100,7 +106,15 @@ export const AIChatPanel = () => {
             x: 0,
             scale: 1,
           });
-          gsap.fromTo(panel, { opacity: 0, y: "100%" }, { opacity: 1, y: "0%", duration: 0.5, ease: "power3.out" });
+          if (motion === "no-motion") {
+            gsap.set(panel, { opacity: 1, y: "0%" });
+          } else {
+            gsap.fromTo(
+              panel,
+              { opacity: motion === "reduce" ? 1 : 0, y: "100%" },
+              { opacity: 1, y: "0%", duration: 0.5, ease: "power3.out" },
+            );
+          }
         }
       } else {
         if (isDesktop) {
@@ -108,15 +122,15 @@ export const AIChatPanel = () => {
             opacity: 0,
             x: 40,
             scale: 0.95,
-            duration: 0.35,
+            duration: motion === "no-motion" ? 0 : 0.35,
             ease: "power3.inOut",
             onComplete: () => gsap.set(panel, { display: "none" }),
           });
         } else {
           gsap.to(panel, {
-            opacity: 0,
+            opacity: motion === "reduce" ? 1 : 0,
             y: "100%",
-            duration: 0.4,
+            duration: motion === "no-motion" ? 0 : 0.4,
             ease: "power3.inOut",
             onComplete: () => gsap.set(panel, { display: "none" }),
           });
@@ -133,13 +147,15 @@ export const AIChatPanel = () => {
     const next = !isExpanded;
     setIsExpanded(next);
     const size = next ? DESKTOP_SIZES.expanded : DESKTOP_SIZES.normal;
-    gsap.to(panel, { width: size.width, height: size.height, duration: 0.4, ease: "power3.out" });
+    gsap.to(panel, { width: size.width, height: size.height, duration: motion === "no-motion" ? 0 : 0.4, ease: "power3.out" });
   }, [isExpanded]);
 
   return (
     <>
       {/* Mobile backdrop */}
-      {open && <div className="fixed inset-0 z-40 bg-foreground/20 backdrop-blur-xs lg:hidden" onClick={() => setOpen(false)} aria-hidden />}
+      {open && (
+        <div className="fixed inset-0 z-40 bg-foreground/20 backdrop-blur-xs lg:hidden" onClick={() => setOpen(false)} aria-hidden />
+      )}
 
       <div
         ref={panelRef}

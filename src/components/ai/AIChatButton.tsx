@@ -9,6 +9,7 @@ import { RiRobot2Line } from "react-icons/ri";
 import { cn } from "@/libs/utils";
 import { RollingLabel } from "@/components/ui/Label";
 import { useTranslations } from "next-intl";
+import { usePreference } from "@/contexts/Preference";
 
 export const AIChatButton = () => {
   const t = useTranslations("AIChat.button");
@@ -16,6 +17,7 @@ export const AIChatButton = () => {
   const direction = useScrollDirection({ threshold: 10 });
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [initialed, setInitialed] = useState(false);
+  const { motion } = usePreference();
 
   // Initial entrance animation
   useGSAP(
@@ -39,7 +41,7 @@ export const AIChatButton = () => {
   useGSAP(
     () => {
       const btn = buttonRef.current;
-      if (!btn || !initialed || open) return;
+      if (!btn || !initialed || open || motion === "no-motion") return;
 
       if (direction === "down") {
         gsap.to(btn, { y: "150%", opacity: 0, duration: 0.5, ease: "power3.inOut" });
@@ -54,7 +56,7 @@ export const AIChatButton = () => {
   useGSAP(
     () => {
       const btn = buttonRef.current;
-      if (!btn || !initialed) return;
+      if (!btn || !initialed || motion === "no-motion") return;
 
       if (open) {
         gsap.to(btn, { y: "150%", opacity: 0, duration: 0.4, ease: "power3.inOut" });
