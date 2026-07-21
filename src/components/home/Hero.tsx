@@ -28,7 +28,7 @@ export const Hero = ({ data }: Props) => {
   useTextReveal(containerRef);
   useGSAP(
     () => {
-      if (motion === "no-motion") return;
+      if (motion === "lite") return;
 
       gsap.to(heroRef.current, {
         yPercent: 15, // down
@@ -45,8 +45,8 @@ export const Hero = ({ data }: Props) => {
   );
   useGSAP(
     () => {
-      // impossible to get no-motion if no dependencies (on load only)
-      // if (motion === "no-motion") return;
+      // impossible to get lite if no dependencies (on load only)
+      // if (motion === "lite") return;
       gsap.fromTo(
         heroRef.current,
         {

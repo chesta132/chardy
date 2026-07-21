@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import z from "zod";
 
-export const motionPreference = ["full", "no-motion", "reduce"] as const;
+export const motionPreference = ["full", "lite", "reduce"] as const;
 
 type MotionPreference = (typeof motionPreference)[number];
 type PreferenceValue = {

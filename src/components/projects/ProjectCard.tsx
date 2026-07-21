@@ -17,7 +17,7 @@ export const ProjectCard = (props: FeaturedProject) => {
   if (typeof project === "number") return null;
   if (typeof project.thumbnail === "number" || !project.thumbnail.cloudinary) return null;
 
-  if (motion === "no-motion") {
+  if (motion === "lite") {
     return <SimpleProjectCard {...props} />;
   }
   return <FullProjectCard {...props} />;

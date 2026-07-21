@@ -90,7 +90,7 @@ export const AIChatPanel = () => {
             top: "auto",
             y: 0,
           });
-          if (motion === "no-motion") {
+          if (motion === "lite") {
             gsap.set(panel, { opacity: 1, x: 0, scale: 1 });
           } else {
             gsap.fromTo(panel, { opacity: 0, x: 40, scale: 0.95 }, { opacity: 1, x: 0, scale: 1, duration: 0.5, ease: "power3.out" });
@@ -106,7 +106,7 @@ export const AIChatPanel = () => {
             x: 0,
             scale: 1,
           });
-          if (motion === "no-motion") {
+          if (motion === "lite") {
             gsap.set(panel, { opacity: 1, y: "0%" });
           } else {
             gsap.fromTo(
@@ -122,7 +122,7 @@ export const AIChatPanel = () => {
             opacity: 0,
             x: 40,
             scale: 0.95,
-            duration: motion === "no-motion" ? 0 : 0.35,
+            duration: motion === "lite" ? 0 : 0.35,
             ease: "power3.inOut",
             onComplete: () => gsap.set(panel, { display: "none" }),
           });
@@ -130,7 +130,7 @@ export const AIChatPanel = () => {
           gsap.to(panel, {
             opacity: motion === "reduce" ? 1 : 0,
             y: "100%",
-            duration: motion === "no-motion" ? 0 : 0.4,
+            duration: motion === "lite" ? 0 : 0.4,
             ease: "power3.inOut",
             onComplete: () => gsap.set(panel, { display: "none" }),
           });
@@ -147,7 +147,7 @@ export const AIChatPanel = () => {
     const next = !isExpanded;
     setIsExpanded(next);
     const size = next ? DESKTOP_SIZES.expanded : DESKTOP_SIZES.normal;
-    gsap.to(panel, { width: size.width, height: size.height, duration: motion === "no-motion" ? 0 : 0.4, ease: "power3.out" });
+    gsap.to(panel, { width: size.width, height: size.height, duration: motion === "lite" ? 0 : 0.4, ease: "power3.out" });
   }, [isExpanded]);
 
   return (

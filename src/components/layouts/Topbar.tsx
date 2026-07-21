@@ -63,7 +63,7 @@ export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
       const nav = navRef.current;
       if (!nav) return;
       // quite impossible
-      // if (motion === "no-motion") return;
+      // if (motion === "lite") return;
 
       gsap.set(nav, { y: "-150%" });
       gsap.to(nav, { y: "0%", duration: 1.3, ease: "power3.inOut", onComplete: () => setInitialed(true) });
@@ -77,7 +77,7 @@ export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
       const menu = menuRef.current;
       if (!menu) return;
 
-      if (motion === "no-motion") {
+      if (motion === "lite") {
         if (open) {
           gsap.set(menu, { display: "block", height: "auto", opacity: 1 });
         } else {
@@ -108,7 +108,7 @@ export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
       const nav = navRef.current;
       if (!nav) return;
       if (!initialed) return;
-      if (motion === "no-motion") return;
+      if (motion === "lite") return;
 
       if (direction === "down") {
         gsap.to(nav, { y: "-150%", duration: 0.6, ease: "power3.inOut" });
@@ -273,8 +273,8 @@ const Hamburger = ({ open }: { open: boolean }) => {
   const { motion } = usePreference();
   return (
     <div className="space-y-2 w-5 cursor-pointer" aria-hidden="true">
-      <Line className={cn(open && "rotate-45 translate-y-1.25", motion === "no-motion" && "duration-0!")} />
-      <Line className={cn(open && "-rotate-45 -translate-y-1.25", motion === "no-motion" && "duration-0!")} />
+      <Line className={cn(open && "rotate-45 translate-y-1.25", motion === "lite" && "duration-0!")} />
+      <Line className={cn(open && "-rotate-45 -translate-y-1.25", motion === "lite" && "duration-0!")} />
     </div>
   );
 };

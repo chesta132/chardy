@@ -26,7 +26,7 @@ export const useTextReveal = (scope: React.RefObject<HTMLElement | null>, option
     () => {
       const textElements = scope.current?.querySelectorAll(".reveal-text");
       if (!textElements) return;
-      if (motion === "no-motion") {
+      if (motion === "lite") {
         gsap.set(textElements, {
           "--cover-bg": "transparent",
         });

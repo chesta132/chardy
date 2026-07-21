@@ -28,7 +28,7 @@ export const FormFieldError = ({ field, className, ignoreError, ...props }: Form
 
     if (isVisible) {
       setDisplayErr(fieldErr);
-      if (motion === "no-motion") gsap.set(ref.current, { opacity: 1, y: 0, height: "auto" });
+      if (motion === "lite") gsap.set(ref.current, { opacity: 1, y: 0, height: "auto" });
       else
         gsap.fromTo(
           ref.current,
@@ -40,7 +40,7 @@ export const FormFieldError = ({ field, className, ignoreError, ...props }: Form
         opacity: 0,
         y: -4,
         height: 0,
-        duration: motion === "no-motion" ? 0 : 0.2,
+        duration: motion === "lite" ? 0 : 0.2,
         ease: "power2.in",
         onComplete: () => setDisplayErr(undefined),
       });
