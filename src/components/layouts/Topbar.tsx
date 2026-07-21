@@ -62,6 +62,8 @@ export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
     () => {
       const nav = navRef.current;
       if (!nav) return;
+      // quite impossible
+      // if (motion === "no-motion") return;
 
       gsap.set(nav, { y: "-150%" });
       gsap.to(nav, { y: "0%", duration: 1.3, ease: "power3.inOut", onComplete: () => setInitialed(true) });
@@ -75,18 +77,26 @@ export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
       const menu = menuRef.current;
       if (!menu) return;
 
-      if (open) {
-        gsap.set(menu, { display: "block" });
-        gsap.fromTo(menu, { height: 0, opacity: 0 }, { height: "auto", opacity: 1, duration: 0.5, ease: "power3.out" });
-        gsap.fromTo(itemsRef.current, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, stagger: 0.06, ease: "power3.out" });
+      if (motion === "no-motion") {
+        if (open) {
+          gsap.set(menu, { display: "block", height: "auto", opacity: 1 });
+        } else {
+          gsap.set(menu, { height: 0, opacity: 0, onComplete: () => gsap.set(menu, { display: "none" }) });
+        }
       } else {
-        gsap.to(menu, {
-          height: 0,
-          opacity: 0,
-          duration: 0.4,
-          ease: "power3.inOut",
-          onComplete: () => gsap.set(menu, { display: "none" }),
-        });
+        if (open) {
+          gsap.set(menu, { display: "block" });
+          gsap.fromTo(menu, { height: 0, opacity: 0 }, { height: "auto", opacity: 1, duration: 0.5, ease: "power3.out" });
+          gsap.fromTo(itemsRef.current, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, stagger: 0.06, ease: "power3.out" });
+        } else {
+          gsap.to(menu, {
+            height: 0,
+            opacity: 0,
+            duration: 0.4,
+            ease: "power3.inOut",
+            onComplete: () => gsap.set(menu, { display: "none" }),
+          });
+        }
       }
     },
     { dependencies: [open], scope: menuRef },
@@ -98,6 +108,7 @@ export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
       const nav = navRef.current;
       if (!nav) return;
       if (!initialed) return;
+      if (motion === "no-motion") return;
 
       if (direction === "down") {
         gsap.to(nav, { y: "-150%", duration: 0.6, ease: "power3.inOut" });
@@ -164,7 +175,9 @@ export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
       <div className="hidden lg:flex gap-2">
         {/* DEBUG */}
         {motionPreference.map((pref) => (
-          <Button key={pref} onClick={() => setMotion(pref)}>{pref}</Button>
+          <Button key={pref} onClick={() => setMotion(pref)}>
+            {pref}
+          </Button>
         ))}
         <Button withoutArrow onClick={handleNextLocale} aria-label={`Switch language, current: ${LANG_MAP[locale as Locale]}`}>
           <div className="flex gap-2 items-center" aria-hidden="true">
@@ -256,9 +269,12 @@ const Line = ({ className }: { className?: string }) => (
   <div className={`w-full h-0.5 bg-background rounded-full transition-all duration-300 ${className}`} />
 );
 
-const Hamburger = ({ open }: { open: boolean }) => (
-  <div className="space-y-2 w-5 cursor-pointer" aria-hidden="true">
-    <Line className={open ? "rotate-45 translate-y-1.25" : ""} />
-    <Line className={open ? "-rotate-45 -translate-y-1.25" : ""} />
-  </div>
-);
+const Hamburger = ({ open }: { open: boolean }) => {
+  const { motion } = usePreference();
+  return (
+    <div className="space-y-2 w-5 cursor-pointer" aria-hidden="true">
+      <Line className={cn(open && "rotate-45 translate-y-1.25", motion === "no-motion" && "duration-0!")} />
+      <Line className={cn(open && "-rotate-45 -translate-y-1.25", motion === "no-motion" && "duration-0!")} />
+    </div>
+  );
+};
