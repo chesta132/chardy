@@ -13,6 +13,7 @@ import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { OWNER_FIRSTNAME } from "@/config";
 import { type Hero as HeroPayload } from "@/types/payload";
+import { usePreference } from "@/contexts/Preference";
 
 type Props = { data: HeroPayload };
 
@@ -21,11 +22,14 @@ export const Hero = ({ data }: Props) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
   const lenis = useSmoothScroll();
+  const { motion } = usePreference();
 
   // gsap
   useTextReveal(containerRef);
   useGSAP(
     () => {
+      if (motion === "no-motion") return;
+
       gsap.to(heroRef.current, {
         yPercent: 15, // down
         ease: "none",
@@ -37,10 +41,12 @@ export const Hero = ({ data }: Props) => {
         },
       });
     },
-    { scope: containerRef },
+    { scope: containerRef, dependencies: [motion], revertOnUpdate: true },
   );
   useGSAP(
     () => {
+      // impossible to get no-motion if no dependencies (on load only)
+      // if (motion === "no-motion") return;
       gsap.fromTo(
         heroRef.current,
         {
@@ -56,7 +62,7 @@ export const Hero = ({ data }: Props) => {
         },
       );
     },
-    { scope: containerRef, dependencies: [] },
+    { scope: containerRef },
   );
 
   return (
