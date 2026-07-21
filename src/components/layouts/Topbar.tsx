@@ -252,6 +252,7 @@ export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
                 ref={(el) => {
                   if (el) itemsRef.current[LANG_MAP_ENTRIES.length + i] = el;
                 }}
+                onClick={() => setMotion(m)}
               >
                 <RollingLabel>{m}</RollingLabel>
               </button>
