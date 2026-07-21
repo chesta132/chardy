@@ -7,12 +7,14 @@ import { useRef, useState, useEffect } from "react";
 import { Arrow } from "../ui/Arrow";
 import { cn } from "@/libs/utils";
 import { gsap } from "@/libs/gsap/register";
+import { usePreference } from "@/contexts/Preference";
 
 const MAX_TAGS = 5;
 
 export function ProjectList({ projects }: { projects: Project[] }) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const cursorImgRef = useRef<HTMLDivElement>(null);
+  const { motion } = usePreference();
 
   // quickTo reuses a single tween instead of creating new ones every mousemove
   const xTo = useRef<gsap.QuickToFunc | null>(null);
@@ -25,28 +27,34 @@ export function ProjectList({ projects }: { projects: Project[] }) {
   }, []);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLUListElement>) => {
-    xTo.current?.(e.clientX);
-    yTo.current?.(e.clientY);
+    if (motion === "full") {
+      xTo.current?.(e.clientX);
+      yTo.current?.(e.clientY);
+    }
   };
 
   const handleItemEnter = (i: number) => {
     setHoveredIndex(i);
-    gsap.to(cursorImgRef.current, {
-      opacity: 1,
-      scale: 1,
-      duration: 0.4,
-      ease: "power3.out",
-    });
+    if (motion === "full") {
+      gsap.to(cursorImgRef.current, {
+        opacity: 1,
+        scale: 1,
+        duration: 0.4,
+        ease: "power3.out",
+      });
+    }
   };
 
   const handleItemLeave = () => {
     setHoveredIndex(null);
-    gsap.to(cursorImgRef.current, {
-      opacity: 0,
-      scale: 0.85,
-      duration: 0.35,
-      ease: "power3.in",
-    });
+    if (motion === "full") {
+      gsap.to(cursorImgRef.current, {
+        opacity: 0,
+        scale: 0.85,
+        duration: 0.35,
+        ease: "power3.in",
+      });
+    }
   };
 
   return (
@@ -58,7 +66,7 @@ export function ProjectList({ projects }: { projects: Project[] }) {
         style={{ top: 0, left: 0 }}
       >
         <div className="relative w-52 h-36 rounded-xl overflow-hidden">
-          {hoveredIndex !== null && (
+          {hoveredIndex !== null && motion === "full" && (
             <Image
               key={hoveredIndex}
               src={(projects[hoveredIndex].thumbnail as Media).cloudinary?.secure_url!}
@@ -105,6 +113,17 @@ export function ProjectList({ projects }: { projects: Project[] }) {
 
               {/* Year + Arrow */}
               <div className="flex items-center gap-4">
+                {hoveredIndex === i && motion === "reduce" && (
+                  <div className="relative w-24 h-13.5 hidden md:block overflow-hidden rounded-lg animate-fade-in-right">
+                    <Image
+                      key={hoveredIndex}
+                      src={(projects[hoveredIndex].thumbnail as Media).cloudinary?.secure_url!}
+                      alt={(projects[hoveredIndex].thumbnail as Media).alt}
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                )}
                 <span className="font-supply-mono text-[11px] text-foreground/35 hidden sm:block">{project.year}</span>
                 <Arrow
                   className={cn(
