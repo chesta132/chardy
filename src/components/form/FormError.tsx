@@ -5,6 +5,7 @@ import { gsap } from "@/libs/gsap/register";
 import { cn } from "@/libs/utils";
 import { FormChildProps, useFormLayout } from "./FormLayout";
 import { useGSAP } from "@gsap/react";
+import { usePreference } from "@/contexts/Preference";
 
 export const FormFieldError = ({ field, className, ignoreError, ...props }: FormChildProps<React.ComponentProps<"p">>) => {
   const {
@@ -12,6 +13,7 @@ export const FormFieldError = ({ field, className, ignoreError, ...props }: Form
       error: [err],
     },
   } = useFormLayout();
+  const { motion } = usePreference();
 
   const fieldErr = err[field as keyof typeof err];
   const ref = useRef<HTMLParagraphElement>(null);
@@ -26,13 +28,19 @@ export const FormFieldError = ({ field, className, ignoreError, ...props }: Form
 
     if (isVisible) {
       setDisplayErr(fieldErr);
-      gsap.fromTo(ref.current, { opacity: 0, y: -4, height: 0 }, { opacity: 1, y: 0, height: "auto", duration: 0.25, ease: "power2.out" });
+      if (motion === "no-motion") gsap.set(ref.current, { opacity: 1, y: 0, height: "auto" });
+      else
+        gsap.fromTo(
+          ref.current,
+          { opacity: 0, y: -4, height: 0 },
+          { opacity: 1, y: 0, height: "auto", duration: 0.25, ease: "power2.out" },
+        );
     } else {
       gsap.to(ref.current, {
         opacity: 0,
         y: -4,
         height: 0,
-        duration: 0.2,
+        duration: motion === "no-motion" ? 0 : 0.2,
         ease: "power2.in",
         onComplete: () => setDisplayErr(undefined),
       });
