@@ -2,20 +2,87 @@
 
 import { gsap } from "@/libs/gsap/register";
 import { cn } from "@/libs/utils";
-import Image, { type StaticImageData } from "next/image";
+import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { useRef, useEffect } from "react";
 import { FeaturedProject } from "@/types/payload";
+import { usePreference } from "@/contexts/Preference";
 
 const MAX_TAGS = 3;
 
-export const ProjectCard = ({ span, project }: FeaturedProject) => {
+export const ProjectCard = (props: FeaturedProject) => {
+  const { project } = props;
+  const { motion } = usePreference();
+
   if (typeof project === "number") return null;
   if (typeof project.thumbnail === "number" || !project.thumbnail.cloudinary) return null;
+
+  if (motion === "no-motion") {
+    return <SimpleProjectCard {...props} />;
+  }
+  return <FullProjectCard {...props} />;
+};
+
+/** no motion, fixed */
+const SimpleProjectCard = ({ span, project }: FeaturedProject) => {
+  // already checked on ProjectCard but have to rewrite to shut ts
+  if (typeof project === "number") return null;
+  if (typeof project.thumbnail === "number" || !project.thumbnail.cloudinary) return null;
+
+  return (
+    <Link
+      href={`/projects/${project.id}`}
+      aria-label={`View project: ${project.title}`}
+      className={cn(
+        "group relative flex flex-col justify-end overflow-hidden rounded-[10px]",
+        "col-span-1 h-full min-h-65",
+        span === "wide" && "md:col-span-2",
+        span === "full" && "md:col-span-3 md:min-h-80",
+      )}
+    >
+      <div className="absolute inset-0 z-0" aria-hidden="true">
+        <Image
+          src={project.thumbnail.cloudinary.secure_url!}
+          alt=""
+          fill
+          className="object-contain"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        />
+        <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/10 to-transparent" aria-hidden="true" />
+      </div>
+
+      <div className="relative z-10 flex flex-col gap-2 p-5">
+        <h3 className="text-text-light font-medium text-lg leading-tight">{project.title}</h3>
+        <div
+          className="flex flex-wrap gap-1.5"
+          aria-label={`Tags: ${project.tags
+            .slice(0, MAX_TAGS)
+            .map((t) => t.tag)
+            .join(", ")}`}
+        >
+          {project.tags.slice(0, MAX_TAGS).map(({ tag }) => (
+            <span
+              key={tag}
+              className="text-[11px] text-text-light/90 bg-background/15 backdrop-blur-sm border border-background/10 rounded-md px-2.5 py-0.5"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+      </div>
+    </Link>
+  );
+};
+
+const FullProjectCard = ({ span, project }: FeaturedProject) => {
+  // already checked on ProjectCard but have to rewrite to shut ts
+  if (typeof project === "number") return null;
+  if (typeof project.thumbnail === "number" || !project.thumbnail.cloudinary) return null;
+
   const cardRef = useRef<HTMLAnchorElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
 
-  // quickTo refs — created once, reused on every mousemove
+  // quickTo refs, reused on every mousemove
   const xTo = useRef<gsap.QuickToFunc | null>(null);
   const yTo = useRef<gsap.QuickToFunc | null>(null);
   const rotateXTo = useRef<gsap.QuickToFunc | null>(null);
@@ -91,7 +158,6 @@ export const ProjectCard = ({ span, project }: FeaturedProject) => {
           className="object-contain"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
-        {/* Gradient overlay */}
         <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/10 to-transparent" aria-hidden="true" />
       </div>
 
