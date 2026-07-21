@@ -16,6 +16,7 @@ import { Locale } from "@/i18n/types";
 import { cn } from "@/libs/utils";
 import { ContactMe } from "@/types/payload";
 import { getSocialItems } from "../home/ContactMe";
+import { motionPreference, usePreference } from "@/contexts/Preference";
 
 const NAV_ITEMS = [
   { t: "home", href: "/#" },
@@ -46,6 +47,7 @@ export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
     setLocale(next);
   };
 
+  const { motion, setMotion } = usePreference();
   const lenis = useSmoothScroll();
   const direction = useScrollDirection({ threshold: 10 });
   const [open, setOpen] = useState(false);
@@ -160,6 +162,10 @@ export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
       </div>
 
       <div className="hidden lg:flex gap-2">
+        {/* DEBUG */}
+        {motionPreference.map((pref) => (
+          <Button key={pref} onClick={() => setMotion(pref)}>{pref}</Button>
+        ))}
         <Button withoutArrow onClick={handleNextLocale} aria-label={`Switch language, current: ${LANG_MAP[locale as Locale]}`}>
           <div className="flex gap-2 items-center" aria-hidden="true">
             <FaGlobe />
@@ -172,7 +178,13 @@ export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
       </div>
 
       {/* mobile menu */}
-      <div ref={menuRef} id="mobile-menu" style={{ display: "none" }} className="overflow-hidden lg:hidden!" aria-label="Mobile navigation menu">
+      <div
+        ref={menuRef}
+        id="mobile-menu"
+        style={{ display: "none" }}
+        className="overflow-hidden lg:hidden!"
+        aria-label="Mobile navigation menu"
+      >
         <div className="mt-10 space-y-10">
           <div className="flex flex-col space-y-2">
             {LANG_MAP_ENTRIES.map(([l, label], i) => (
@@ -224,7 +236,10 @@ export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
                 ref={(el) => {
                   if (el) itemsRef.current[LANG_MAP_ENTRIES.length + NAV_ITEMS.length + i] = el;
                 }}
-                className={cn("flex gap-2 uppercase leading-4 text-xs cursor-pointer text-primary hover:text-secondary", rollingLabelGroupClass)}
+                className={cn(
+                  "flex gap-2 uppercase leading-4 text-xs cursor-pointer text-primary hover:text-secondary",
+                  rollingLabelGroupClass,
+                )}
               >
                 <item.icon className="text-primary!" aria-hidden="true" />
                 <RollingLabel>{item.label}</RollingLabel>
