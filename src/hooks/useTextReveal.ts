@@ -1,5 +1,6 @@
 "use client";
 
+import { usePreference } from "@/contexts/Preference";
 import { gsap } from "@/libs/gsap/register";
 import { useGSAP } from "@gsap/react";
 
@@ -11,6 +12,8 @@ type UseTextRevealOptions = {
 
 /** use `reveal-text` class to trigger text reveal animation in scope */
 export const useTextReveal = (scope: React.RefObject<HTMLElement | null>, options: UseTextRevealOptions = {}) => {
+  const { motion } = usePreference();
+
   const { dependencies = [], direction = "left", on = "load" } = options;
   const toMap = {
     left: { "--cover-x": "-101%" },
@@ -23,6 +26,12 @@ export const useTextReveal = (scope: React.RefObject<HTMLElement | null>, option
     () => {
       const textElements = scope.current?.querySelectorAll(".reveal-text");
       if (!textElements) return;
+      if (motion === "no-motion") {
+        gsap.set(textElements, {
+          "--cover-bg": "transparent",
+        });
+        return;
+      }
 
       switch (on) {
         case "load":
@@ -57,6 +66,6 @@ export const useTextReveal = (scope: React.RefObject<HTMLElement | null>, option
           break;
       }
     },
-    { scope, dependencies },
+    { scope, dependencies: [motion, ...dependencies] },
   );
 };
