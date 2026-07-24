@@ -101,6 +101,9 @@ export const Hero = ({ data }: Props) => {
               src={HeroFigure}
               alt=""
               role="presentation"
+              width={2048}
+              height={2048}
+              priority
             />
           </div>
         </div>
