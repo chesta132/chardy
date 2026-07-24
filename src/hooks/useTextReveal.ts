@@ -35,28 +35,17 @@ export const useTextReveal = (scope: React.RefObject<HTMLElement | null>, option
 
       switch (on) {
         case "load":
-          gsap.to(textElements, {
-            ...toMap[direction],
-            duration: 1,
-            ease: "power3.inOut",
-            stagger: 0.15,
-            onComplete: () => {
-              gsap.set(textElements, {
-                "--cover-bg": "transparent",
-              });
-            },
-          });
-          break;
         case "enter-view":
+          const scrollTrigger = on === "enter-view" && {
+            trigger: scope.current,
+            start: "top 85%",
+          };
           gsap.to(textElements, {
             ...toMap[direction],
             duration: 1,
             ease: "power3.inOut",
             stagger: 0.15,
-            scrollTrigger: {
-              trigger: scope.current,
-              start: "top 85%",
-            },
+            scrollTrigger: scrollTrigger || undefined,
             onComplete: () => {
               gsap.set(textElements, {
                 "--cover-bg": "transparent",
