@@ -1,9 +1,8 @@
-import { useState, useRef, useEffect, useId, type KeyboardEvent } from "react";
 import { cn } from "@/libs/utils";
 import { FaX } from "react-icons/fa6";
 import { FaCheck, FaChevronDown } from "react-icons/fa";
-import { gsap } from "@/libs/gsap/register";
 import { useTranslations } from "next-intl";
+import { useTagInputController } from "@/hooks/useTagInputController";
 
 export interface TagInputProps {
   value: string[];
@@ -18,203 +17,19 @@ export interface TagInputProps {
 export function TagInput({ value, onChange, options, placeholder = "Select...", className, error, label }: TagInputProps) {
   const t = useTranslations("Form.components.TagInput");
 
-  const [open, setOpen] = useState(false);
-  const [search, setSearch] = useState("");
-
-  const containerRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const listRef = useRef<HTMLUListElement>(null);
-  const announceRef = useRef<HTMLDivElement>(null);
-  const isAnimatingRef = useRef(false);
-
-  const uid = useId();
-  const listboxId = `${uid}-listbox`;
-  const labelId = `${uid}-label`;
-  const errorId = `${uid}-error`;
-
-  const filtered = options.filter((opt) => !value.includes(opt) && opt.toLowerCase().includes(search.toLowerCase()));
-
-  const getOptions = () => (listRef.current ? Array.from(listRef.current.querySelectorAll<HTMLElement>("[role='option']")) : []);
-
-  const announce = (msg: string) => {
-    if (!announceRef.current) return;
-    announceRef.current.textContent = "";
-    setTimeout(() => {
-      if (announceRef.current) announceRef.current.textContent = msg;
-    }, 10);
-  };
-
-  // GSAP open animation
-  const animateOpen = () => {
-    const list = listRef.current;
-    if (!list) return;
-
-    list.hidden = false;
-    isAnimatingRef.current = true;
-
-    const items = list.querySelectorAll("[role='option']");
-
-    gsap.fromTo(
-      list,
-      { opacity: 0, scaleY: 0.85, transformOrigin: "top center" },
-      {
-        opacity: 1,
-        scaleY: 1,
-        duration: 0.2,
-        ease: "power2.out",
-        onComplete: () => {
-          isAnimatingRef.current = false;
-        },
-      },
-    );
-
-    gsap.fromTo(
-      items,
-      { opacity: 0, y: -6 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 0.18,
-        ease: "power2.out",
-        stagger: 0.03,
-        delay: 0.04,
-      },
-    );
-  };
-
-  // GSAP close animation
-  const animateClose = (onComplete: () => void) => {
-    const list = listRef.current;
-    if (!list) {
-      onComplete();
-      return;
-    }
-
-    isAnimatingRef.current = true;
-
-    gsap.to(list, {
-      opacity: 0,
-      scaleY: 0.85,
-      transformOrigin: "top center",
-      duration: 0.15,
-      ease: "power2.in",
-      onComplete: () => {
-        list.hidden = true;
-        isAnimatingRef.current = false;
-        onComplete();
-      },
-    });
-  };
-
-  // Sync open state → GSAP
-  useEffect(() => {
-    if (open) {
-      animateOpen();
-    } else {
-      animateClose(() => {});
-    }
-  }, [open, filtered.length]); // re-run on filtered so stagger refreshes on search
-
-  const openDropdown = () => {
-    if (!open) setOpen(true);
-  };
-
-  const closeDropdown = () => {
-    if (open) {
-      animateClose(() => setOpen(false));
-    }
-  };
-
-  const addTag = (tag: string) => {
-    if (!value.includes(tag)) {
-      onChange([...value, tag]);
-      announce(`${tag} added`);
-    }
-    setSearch("");
-    inputRef.current?.focus();
-  };
-
-  const removeTag = (tag: string) => {
-    onChange(value.filter((t) => t !== tag));
-    announce(`${tag} removed`);
-    inputRef.current?.focus();
-  };
-
-  const handleInputKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Escape") {
-      closeDropdown();
-      return;
-    }
-    if (e.key === "ArrowDown") {
-      e.preventDefault();
-      if (!open) {
-        setOpen(true);
-        setTimeout(() => getOptions()[0]?.focus(), 50);
-      } else {
-        getOptions()[0]?.focus();
-      }
-      return;
-    }
-    if (e.key === "Enter") {
-      e.preventDefault();
-      if (filtered.length === 1) addTag(filtered[0]);
-      return;
-    }
-    if (e.key === "Backspace" && search === "" && value.length > 0) {
-      removeTag(value[value.length - 1]);
-    }
-  };
-
-  const handleOptionKeyDown = (e: KeyboardEvent<HTMLLIElement>, opt: string, index: number) => {
-    if (e.key === " " || e.key === "Enter") {
-      e.preventDefault();
-      addTag(opt);
-      return;
-    }
-    if (e.key === "Escape") {
-      closeDropdown();
-      inputRef.current?.focus();
-      return;
-    }
-    if (e.key === "ArrowDown") {
-      e.preventDefault();
-      getOptions()[index + 1]?.focus();
-      return;
-    }
-    if (e.key === "ArrowUp") {
-      e.preventDefault();
-      if (index === 0) inputRef.current?.focus();
-      else getOptions()[index - 1]?.focus();
-      return;
-    }
-    if (e.key === "Tab") {
-      const opts = getOptions();
-      if (!e.shiftKey) {
-        if (index < opts.length - 1) {
-          e.preventDefault();
-          opts[index + 1]?.focus();
-        } else {
-          closeDropdown();
-        }
-      } else {
-        e.preventDefault();
-        if (index === 0) inputRef.current?.focus();
-        else opts[index - 1]?.focus();
-      }
-    }
-  };
-
-  // Close on outside click
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-        closeDropdown();
-        setSearch("");
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [open]);
+  const {
+    open,
+    search,
+    setSearch,
+    filtered,
+    ids: { listboxId, labelId, errorId },
+    refs: { containerRef, inputRef, listRef, announceRef },
+    openDropdown,
+    addTag,
+    removeTag,
+    handleInputKeyDown,
+    handleOptionKeyDown,
+  } = useTagInputController({ value, onChange, options });
 
   return (
     <div ref={containerRef} className={cn("w-full relative", className)}>
