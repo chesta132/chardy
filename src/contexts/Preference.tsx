@@ -5,7 +5,7 @@ import z from "zod";
 
 export const motionPreference = ["full", "reduce", "lite"] as const;
 
-type MotionPreference = (typeof motionPreference)[number];
+export type MotionPreference = (typeof motionPreference)[number];
 type PreferenceValue = {
   motion: MotionPreference;
   setMotion: React.Dispatch<React.SetStateAction<MotionPreference>>;

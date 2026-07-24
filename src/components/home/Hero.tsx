@@ -3,17 +3,15 @@ import { useRef } from "react";
 import Image from "next/image";
 import HeroBg from "@/assets/images/hero-bg.webp";
 import HeroFigure from "@/assets/images/hero.webp";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/libs/gsap/register";
 import { Arrow } from "../ui/Arrow";
 import { Button } from "../ui/Button";
-import { useTextReveal } from "@/hooks/useTextReveal";
 import { useSmoothScroll } from "@/contexts/SmoothScroll";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { OWNER_FIRSTNAME } from "@/config";
 import { type Hero as HeroPayload } from "@/types/payload";
-import { usePreference } from "@/contexts/Preference";
+import { useHeroGSAP } from "@/libs/gsap/home/hero";
+import { useTextReveal } from "@/hooks/useTextReveal";
 
 type Props = { data: HeroPayload };
 
@@ -22,48 +20,9 @@ export const Hero = ({ data }: Props) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
   const lenis = useSmoothScroll();
-  const { motion } = usePreference();
 
-  // gsap
   useTextReveal(containerRef);
-  useGSAP(
-    () => {
-      if (motion === "lite") return;
-
-      gsap.to(heroRef.current, {
-        yPercent: 15, // down
-        ease: "none",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: 1.5,
-        },
-      });
-    },
-    { scope: containerRef, dependencies: [motion], revertOnUpdate: true },
-  );
-  useGSAP(
-    () => {
-      // impossible to get lite if no dependencies (on load only)
-      // if (motion === "lite") return;
-      gsap.fromTo(
-        heroRef.current,
-        {
-          yPercent: 10,
-          xPercent: 5,
-          ease: "none",
-        },
-        {
-          yPercent: 0,
-          xPercent: 0,
-          ease: "power1.inOut",
-          duration: 1.3,
-        },
-      );
-    },
-    { scope: containerRef },
-  );
+  useHeroGSAP({ containerRef, heroRef });
 
   return (
     <section className="flex flex-col flex-1 items-center justify-center overflow-x-hidden" aria-label="Hero">

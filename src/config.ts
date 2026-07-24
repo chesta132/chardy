@@ -39,6 +39,10 @@ export const OWNER_FULLNAME = OWNER_FIRSTNAME + " " + OWNER_LASTNAME;
 // ai
 export const DEFAULT_GEMINI_MODEL = "gemini-2.5-flash-lite";
 export const DEFAULT_AI_NAME = "Fyuna";
+export const DESKTOP_AI_PANEL_SIZES = {
+  normal: { width: 320, height: 480 },
+  expanded: { width: 480, height: 600 },
+} as const;
 
 // payload cms
 export const INTERNAL_ADMIN_PATH = "/admin"; // following src/app/(payload)/admin

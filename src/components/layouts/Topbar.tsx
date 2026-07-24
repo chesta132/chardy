@@ -4,11 +4,8 @@ import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { ChardyLogo } from "../ui/Logo";
 import { useSmoothScroll } from "@/contexts/SmoothScroll";
 import { useState, useRef } from "react";
-import { gsap } from "@/libs/gsap/register";
 import { MdAnimation } from "react-icons/md";
 import { FaGlobe } from "react-icons/fa";
-import { useGSAP } from "@gsap/react";
-import { useScrollDirection } from "@/hooks/useScrollDirection";
 import { RollingLabel, rollingLabelGroupClass } from "../ui/Label";
 import { Button } from "../ui/Button";
 import { useLocale, useTranslations } from "next-intl";
@@ -18,6 +15,7 @@ import { cn } from "@/libs/utils";
 import { ContactMe } from "@/types/payload";
 import { getSocialItems } from "../home/ContactMe";
 import { motionPreference, usePreference } from "@/contexts/Preference";
+import { useTopbarGSAP } from "@/libs/gsap/layout/topbar";
 
 const NAV_ITEMS = [
   { t: "home", href: "/#" },
@@ -38,9 +36,26 @@ export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
   const router = useRouter();
   const pathname = usePathname();
   const { motion, setMotion } = usePreference();
+  const lenis = useSmoothScroll();
+
+  const [open, setOpen] = useState(false);
+
+  const navRef = useRef<HTMLElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const itemsRef = useRef<HTMLElement[]>([]);
+
+  useTopbarGSAP({ itemsRef, menuRef, navRef, open, setOpen });
 
   const setLocale = (locale: Locale) => {
     router.replace(pathname, { locale });
+  };
+
+  const handleNavClick = (item: (typeof NAV_ITEMS)[number], e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (item.href.startsWith("/#") && pathname === "/") {
+      lenis?.scrollTo(item.href.substring(1), { duration: 1.2 });
+    } else if (item.href === pathname) {
+      lenis?.scrollTo(0, { duration: 1.2 });
+    }
   };
 
   const handleNextLocale = () => {
@@ -53,86 +68,6 @@ export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
     const current = motionPreference.indexOf(motion);
     const next = current === motionPreference.length - 1 ? 0 : current + 1;
     setMotion(motionPreference[next]);
-  };
-
-  const lenis = useSmoothScroll();
-  const direction = useScrollDirection({ threshold: 10 });
-  const [open, setOpen] = useState(false);
-  const [initialed, setInitialed] = useState(false);
-
-  const navRef = useRef<HTMLElement>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
-  const itemsRef = useRef<HTMLElement[]>([]);
-
-  // gsap for initial load animation
-  useGSAP(
-    () => {
-      const nav = navRef.current;
-      if (!nav) return;
-      // quite impossible
-      // if (motion === "lite") return;
-
-      gsap.set(nav, { y: "-150%" });
-      gsap.to(nav, { y: "0%", duration: 1.3, ease: "power3.inOut", onComplete: () => setInitialed(true) });
-    },
-    { scope: navRef, dependencies: [] },
-  );
-
-  // gsap for menu animation
-  useGSAP(
-    () => {
-      const menu = menuRef.current;
-      if (!menu) return;
-
-      if (motion === "lite") {
-        if (open) {
-          gsap.set(menu, { display: "block", height: "auto", opacity: 1 });
-        } else {
-          gsap.set(menu, { height: 0, opacity: 0, onComplete: () => gsap.set(menu, { display: "none" }) });
-        }
-      } else {
-        if (open) {
-          gsap.set(menu, { display: "block" });
-          gsap.fromTo(menu, { height: 0, opacity: 0 }, { height: "auto", opacity: 1, duration: 0.5, ease: "power3.out" });
-          gsap.fromTo(itemsRef.current, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, stagger: 0.06, ease: "power3.out" });
-        } else {
-          gsap.to(menu, {
-            height: 0,
-            opacity: 0,
-            duration: 0.4,
-            ease: "power3.inOut",
-            onComplete: () => gsap.set(menu, { display: "none" }),
-          });
-        }
-      }
-    },
-    { dependencies: [open], scope: menuRef },
-  );
-
-  // gsap for hide/show on scroll
-  useGSAP(
-    () => {
-      const nav = navRef.current;
-      if (!nav) return;
-      if (!initialed) return;
-      if (motion === "lite") return;
-
-      if (direction === "down") {
-        gsap.to(nav, { y: "-150%", duration: 0.6, ease: "power3.inOut" });
-        setOpen(false);
-      } else {
-        gsap.to(nav, { y: "0%", duration: 0.6, ease: "power3.inOut" });
-      }
-    },
-    { dependencies: [direction, initialed], scope: navRef },
-  );
-
-  const handleNavClick = (item: (typeof NAV_ITEMS)[number], e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (item.href.startsWith("/#") && pathname === "/") {
-      lenis?.scrollTo(item.href.substring(1), { duration: 1.2 });
-    } else if (item.href === pathname) {
-      lenis?.scrollTo(0, { duration: 1.2 });
-    }
   };
 
   return (

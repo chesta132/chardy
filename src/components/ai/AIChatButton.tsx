@@ -1,71 +1,19 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { gsap } from "@/libs/gsap/register";
-import { useGSAP } from "@gsap/react";
-import { useScrollDirection } from "@/hooks/useScrollDirection";
+import { useRef } from "react";
 import { useAIChat } from "@/contexts/AIChat";
 import { RiRobot2Line } from "react-icons/ri";
 import { cn } from "@/libs/utils";
 import { RollingLabel } from "@/components/ui/Label";
 import { useTranslations } from "next-intl";
-import { usePreference } from "@/contexts/Preference";
+import { useAIChatButtonGSAP } from "@/libs/gsap/ai/chat-button";
 
 export const AIChatButton = () => {
   const t = useTranslations("AIChat.button");
-  const { open, setOpen, aiConfig } = useAIChat();
-  const direction = useScrollDirection({ threshold: 10 });
+  const { setOpen, aiConfig } = useAIChat();
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const [initialed, setInitialed] = useState(false);
-  const { motion } = usePreference();
 
-  // Initial entrance animation
-  useGSAP(
-    () => {
-      const btn = buttonRef.current;
-      if (!btn) return;
-      gsap.set(btn, { y: "150%", opacity: 0 });
-      gsap.to(btn, {
-        y: "0%",
-        opacity: 1,
-        duration: 1.3,
-        ease: "power3.inOut",
-        delay: 0.3,
-        onComplete: () => setInitialed(true),
-      });
-    },
-    { scope: buttonRef, dependencies: [] },
-  );
-
-  // Hide/show on scroll direction
-  useGSAP(
-    () => {
-      const btn = buttonRef.current;
-      if (!btn || !initialed || open || motion === "lite") return;
-
-      if (direction === "down") {
-        gsap.to(btn, { y: "150%", opacity: 0, duration: 0.5, ease: "power3.inOut" });
-      } else if (direction === "up") {
-        gsap.to(btn, { y: "0%", opacity: 1, duration: 0.5, ease: "power3.inOut" });
-      }
-    },
-    { dependencies: [direction, initialed, open] },
-  );
-
-  // Also hide the button when panel is open
-  useGSAP(
-    () => {
-      const btn = buttonRef.current;
-      if (!btn || !initialed || motion === "lite") return;
-
-      if (open) {
-        gsap.to(btn, { y: "150%", opacity: 0, duration: 0.4, ease: "power3.inOut" });
-      } else if (direction !== "down") {
-        gsap.to(btn, { y: "0%", opacity: 1, duration: 0.5, ease: "power3.out", delay: 0.15 });
-      }
-    },
-    { dependencies: [open, initialed] },
-  );
+  useAIChatButtonGSAP({ buttonRef });
 
   return (
     <button
