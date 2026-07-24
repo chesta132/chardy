@@ -5,7 +5,8 @@
  * Two glitch layers: red/cyan chromatic aberration + clip-path slice shifting.
  */
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
+import { useGSAP } from "@gsap/react";
 import { gsap } from "@/libs/gsap/register";
 import { cn } from "@/libs/utils";
 
@@ -14,107 +15,88 @@ interface ErrorCodeProps {
   className?: string;
 }
 
+const GLITCH_SLICES = [
+  "polygon(0 0%, 100% 0%, 100% 15%, 0 15%)",
+  "polygon(0 20%, 100% 20%, 100% 38%, 0 38%)",
+  "polygon(0 50%, 100% 50%, 100% 65%, 0 65%)",
+  "polygon(0 70%, 100% 70%, 100% 85%, 0 85%)",
+  "polygon(0 88%, 100% 88%, 100% 100%, 0 100%)",
+];
+
+const FULL_CLIP_PATH = "polygon(0 0%, 100% 0%, 100% 100%, 0 100%)";
+
+const GLITCH_CONFIG = {
+  burstCountRange: [3, 7] as const,
+  sliceDurationRange: [0.04, 0.1] as const,
+  redXRange: [-8, -2] as const,
+  cyanXRange: [2, 8] as const,
+  fadeOutDuration: 0.03,
+  initialDelay: 0.8,
+  nextBurstDelayRange: [1.5, 4] as const, // seconds
+};
+
+const baseGlitchClass = "font-supply-mono text-[clamp(7rem,20vw,16rem)] font-bold leading-none tracking-tighter absolute inset-0";
+
 export const ErrorCode = ({ code, className }: ErrorCodeProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const layerRedRef = useRef<HTMLSpanElement>(null);
   const layerCyanRef = useRef<HTMLSpanElement>(null);
 
-  useEffect(() => {
-    const container = containerRef.current;
-    const layerRed = layerRedRef.current;
-    const layerCyan = layerCyanRef.current;
-    if (!container || !layerRed || !layerCyan) return;
+  useGSAP(
+    () => {
+      const layerRed = layerRedRef.current;
+      const layerCyan = layerCyanRef.current;
+      if (!layerRed || !layerCyan) return;
 
-    // Random glitch burst — shifts layers + swaps clip-path slices
-    const glitchSlices = [
-      "polygon(0 0%, 100% 0%, 100% 15%, 0 15%)",
-      "polygon(0 20%, 100% 20%, 100% 38%, 0 38%)",
-      "polygon(0 50%, 100% 50%, 100% 65%, 0 65%)",
-      "polygon(0 70%, 100% 70%, 100% 85%, 0 85%)",
-      "polygon(0 88%, 100% 88%, 100% 100%, 0 100%)",
-    ];
+      let pendingCall: gsap.core.Tween | null = null;
 
-    const runGlitch = () => {
-      const tl = gsap.timeline({
-        onComplete: () => {
-          // Reset both layers cleanly after burst
-          gsap.set([layerRed, layerCyan], {
-            x: 0,
-            clipPath: "polygon(0 0%, 100% 0%, 100% 100%, 0 100%)",
-            opacity: 0,
-          });
-        },
-      });
-
-      const burstCount = gsap.utils.random(3, 7, 1) as number;
-
-      for (let i = 0; i < burstCount; i++) {
-        const slice = glitchSlices[Math.floor(Math.random() * glitchSlices.length)];
-        const xRed = gsap.utils.random(-8, -2) as number;
-        const xCyan = gsap.utils.random(2, 8) as number;
-        const duration = gsap.utils.random(0.04, 0.1) as number;
-
-        tl.to(
-          layerRed,
-          {
-            x: xRed,
-            clipPath: slice,
-            opacity: 1,
-            duration,
-            ease: "steps(1)",
+      const runGlitchBurst = () => {
+        const tl = gsap.timeline({
+          onComplete: () => {
+            gsap.set([layerRed, layerCyan], { x: 0, clipPath: FULL_CLIP_PATH, opacity: 0 });
           },
-          i === 0 ? 0 : "+=0",
-        )
-          .to(
-            layerCyan,
-            {
-              x: xCyan,
-              clipPath: slice,
-              opacity: 1,
-              duration,
-              ease: "steps(1)",
-            },
-            "<",
-          )
-          .to(
-            [layerRed, layerCyan],
-            {
-              opacity: 0,
-              duration: 0.03,
-              ease: "steps(1)",
-            },
-            `+=${duration}`,
-          );
-      }
+        });
 
-      // Schedule next glitch burst randomly between 1.5s – 4s
-      const nextDelay = gsap.utils.random(1500, 4000) as number;
-      gsap.delayedCall(nextDelay / 1000, runGlitch);
-    };
+        const burstCount = gsap.utils.random(...GLITCH_CONFIG.burstCountRange, 1);
 
-    // Kick off with a small initial delay
-    const initialTimer = gsap.delayedCall(0.8, runGlitch);
+        for (let i = 0; i < burstCount; i++) {
+          const slice = gsap.utils.random(GLITCH_SLICES);
+          const xRed = gsap.utils.random(...GLITCH_CONFIG.redXRange);
+          const xCyan = gsap.utils.random(...GLITCH_CONFIG.cyanXRange);
+          const duration = gsap.utils.random(...GLITCH_CONFIG.sliceDurationRange);
 
-    return () => {
-      initialTimer.kill();
-      gsap.killTweensOf([layerRed, layerCyan]);
-    };
-  }, [code]);
+          tl.to(layerRed, { x: xRed, clipPath: slice, opacity: 1, duration, ease: "steps(1)" }, i === 0 ? 0 : "+=0")
+            .to(layerCyan, { x: xCyan, clipPath: slice, opacity: 1, duration, ease: "steps(1)" }, "<")
+            .to([layerRed, layerCyan], { opacity: 0, duration: GLITCH_CONFIG.fadeOutDuration, ease: "steps(1)" }, `+=${duration}`);
+        }
 
-  const baseClass = "font-supply-mono text-[clamp(7rem,20vw,16rem)] font-bold leading-none tracking-tighter absolute inset-0";
+        const nextDelay = gsap.utils.random(...GLITCH_CONFIG.nextBurstDelayRange);
+        pendingCall = gsap.delayedCall(nextDelay, runGlitchBurst);
+      };
+
+      pendingCall = gsap.delayedCall(GLITCH_CONFIG.initialDelay, runGlitchBurst);
+
+      return () => {
+        pendingCall?.kill();
+      };
+    },
+    { scope: containerRef, dependencies: [code], revertOnUpdate: true },
+  );
 
   return (
     <div ref={containerRef} className={cn("relative select-none", className)} aria-hidden="true">
       {/* Main visible code */}
-      <span className="font-supply-mono text-[clamp(7rem,20vw,16rem)] font-bold leading-none text-foreground/8 tracking-tighter">{code}</span>
-
-      {/* Glitch layer — red channel (shifts left) */}
-      <span ref={layerRedRef} className={cn(baseClass, "text-red-500/30 opacity-0")} style={{ mixBlendMode: "screen" }}>
+      <span className="font-supply-mono text-[clamp(7rem,20vw,16rem)] font-bold leading-none text-foreground/8 tracking-tighter">
         {code}
       </span>
 
-      {/* Glitch layer — cyan channel (shifts right) */}
-      <span ref={layerCyanRef} className={cn(baseClass, "text-cyan-400/30 opacity-0")} style={{ mixBlendMode: "screen" }}>
+      {/* Glitch layer, red channel (shifts left) */}
+      <span ref={layerRedRef} className={cn(baseGlitchClass, "text-red-500/30 opacity-0")} style={{ mixBlendMode: "screen" }}>
+        {code}
+      </span>
+
+      {/* Glitch layer, cyan channel (shifts right) */}
+      <span ref={layerCyanRef} className={cn(baseGlitchClass, "text-cyan-400/30 opacity-0")} style={{ mixBlendMode: "screen" }}>
         {code}
       </span>
     </div>
