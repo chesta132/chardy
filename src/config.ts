@@ -36,9 +36,6 @@ export const OWNER_FIRSTNAME = "Chesta";
 export const OWNER_LASTNAME = "Ardiona";
 export const OWNER_FULLNAME = OWNER_FIRSTNAME + " " + OWNER_LASTNAME;
 
-// telemetry
-export const TELEMETRY_PATH = "/assets/js/telemetry.js";
-
 // ai
 export const DEFAULT_GEMINI_MODEL = "gemini-2.5-flash-lite";
 export const DEFAULT_AI_NAME = "Fyuna";
@@ -49,4 +46,3 @@ export const INTERNAL_ADMIN_PATH = "/admin"; // following src/app/(payload)/admi
 // helpers
 export const isDevEnv = () => process.env.NODE_ENV === "development";
 export const isProdEnv = () => process.env.NODE_ENV === "production";
-

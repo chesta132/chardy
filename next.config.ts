@@ -2,7 +2,6 @@ import { SentryBuildOptions, withSentryConfig } from "@sentry/nextjs";
 import { withPayload } from "@payloadcms/next/withPayload";
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
-import { isDevEnv, TELEMETRY_PATH, UMAMI_URL } from "@/config";
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -14,15 +13,6 @@ const nextConfig: NextConfig = {
         hostname: "res.cloudinary.com",
       },
     ],
-  },
-  rewrites() {
-    if (isDevEnv() || !UMAMI_URL) return [];
-    return [
-      {
-        source: TELEMETRY_PATH,
-        destination: UMAMI_URL,
-      },
-    ];
   },
 };
 
