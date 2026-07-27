@@ -8,7 +8,7 @@ import { hasLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
 import { APP_NAME, OWNER_FULLNAME } from "@/config";
 import { defaultMetadata } from "@/libs/metadata";
-import { generateMetadata as generateNotFoundMetadata } from "../../[...notFound]/page";
+import { generateMetadata as generateNotFoundMetadata } from "@/app/(chardy)/[locale]/not-found";
 import { Metadata } from "next";
 import { Locale } from "@/i18n/types";
 
