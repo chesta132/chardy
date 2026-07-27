@@ -60,7 +60,7 @@ export abstract class AIService {
     const gemini = await this.getGemini(conversationId);
 
     const payload = await getPayload({ config });
-    const aiConfig = await getAIConfig(payload);
+    const aiConfig = await getAIConfig({ payload, locale: lang });
 
     const contents: Content[] = [...gemini, { role: "user", parts: [{ text: message }] }];
     const { generator, finalContents } = await runAgentLoop(contents, aiConfig.systemPrompt, aiConfig.model).catch((err) => {

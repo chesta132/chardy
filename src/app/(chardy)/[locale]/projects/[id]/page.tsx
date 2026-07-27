@@ -10,6 +10,7 @@ import { APP_NAME, OWNER_FULLNAME } from "@/config";
 import { defaultMetadata } from "@/libs/metadata";
 import { generateMetadata as generateNotFoundMetadata } from "../../[...notFound]/page";
 import { Metadata } from "next";
+import { Locale } from "@/i18n/types";
 
 type Props = PageProps<"/[locale]/projects/[id]">;
 
@@ -17,8 +18,8 @@ export const revalidate = 604800; // one week
 export const dynamic = "force-static";
 
 export async function generateStaticParams() {
-  const payload = await getPayload({ config });
-  const projects = await getProjects(payload);
+  // id only
+  const projects = await getProjects();
 
   return routing.locales.flatMap((locale) => {
     return projects.docs.map((p) => ({ locale, id: String(p.id) }));
@@ -30,19 +31,19 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
   if (!hasLocale(routing.locales, locale)) locale = "en";
   const t = await getTranslations({ locale, namespace: "Metadata.ProjectDetail" });
 
-  const createNotoFound = async () => ({
+  const createNotFound = async () => ({
     ...(await generateNotFoundMetadata()),
     description: t("notFoundDescription"),
   });
 
   if (Number.isNaN(Number(id))) {
-    return await createNotoFound();
+    return await createNotFound();
   }
 
   const payload = await getPayload({ config });
-  const project = await getProject(payload, Number(id));
+  const project = await getProject({ locale: locale as Locale, payload }, Number(id));
   if (!project) {
-    return await createNotoFound();
+    return await createNotFound();
   }
 
   return {
@@ -57,7 +58,7 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
 };
 
 export default async function ProjectDetailPage({ params }: Props) {
-  const { id } = await params;
+  const { id, locale } = await params;
   const t = await getTranslations("ProjectDetail");
 
   const notFound: ErrorPageData = {
@@ -71,7 +72,7 @@ export default async function ProjectDetailPage({ params }: Props) {
 
   if (Number.isNaN(Number(id))) return <ErrorLayout data={notFound} />;
   const payload = await getPayload({ config });
-  const project = await getProject(payload, Number(id));
+  const project = await getProject({ locale: locale as Locale, payload }, Number(id));
 
   if (!project) return <ErrorLayout data={notFound} />;
 

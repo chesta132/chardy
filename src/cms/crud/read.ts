@@ -1,20 +1,21 @@
-import { BasePayload } from "payload";
+import { BasePayload, getPayload } from "payload";
 import { withCache } from "../cache";
-import { getLocale as getLocaleServer } from "next-intl/server";
 import { Locale } from "@/i18n/types";
 import { timeInSec } from "@/libs/manipulate/number";
-import { routing } from "@/i18n/routing";
+import config from "@/payload.config";
 
-const getLocale = async (): Promise<Locale> => {
-  try {
-    return (await getLocaleServer()) as Locale;
-  } catch {
-    return routing.defaultLocale;
-  }
+export type ReadPayloadOptions = {
+  /** @default "en" */
+  locale?: Locale;
+  /**
+   * if empty: call getPayload in func, that instance already cached by payload so it's safe to call it many times
+   * @default await getPayload({ config })
+   */
+  payload?: BasePayload;
 };
 
-export const getHero = async (payload: BasePayload) => {
-  const locale = await getLocale();
+export const getHero = async ({ locale = "en", payload }: ReadPayloadOptions = {}) => {
+  payload ||= await getPayload({ config });
   const cache = withCache(() => payload.findGlobal({ slug: "hero", locale }), ["hero", locale], {
     revalidate: timeInSec({ day: 1 }),
     tags: ["hero"],
@@ -22,8 +23,8 @@ export const getHero = async (payload: BasePayload) => {
   return cache();
 };
 
-export const getAboutMe = async (payload: BasePayload) => {
-  const locale = await getLocale();
+export const getAboutMe = async ({ locale = "en", payload }: ReadPayloadOptions = {}) => {
+  payload ||= await getPayload({ config });
   const cache = withCache(() => payload.findGlobal({ slug: "about-me", locale }), ["about-me", locale], {
     revalidate: timeInSec({ day: 1 }),
     tags: ["about-me"],
@@ -31,8 +32,8 @@ export const getAboutMe = async (payload: BasePayload) => {
   return cache();
 };
 
-export const getContactMe = async (payload: BasePayload) => {
-  const locale = await getLocale();
+export const getContactMe = async ({ locale = "en", payload }: ReadPayloadOptions = {}) => {
+  payload ||= await getPayload({ config });
   const cache = withCache(() => payload.findGlobal({ slug: "contact-me", locale }), ["contact-me", locale], {
     revalidate: timeInSec({ day: 1 }),
     tags: ["contact-me"],
@@ -42,8 +43,8 @@ export const getContactMe = async (payload: BasePayload) => {
 
 const getProjectsSort = ["-year", "-id"];
 
-export const getProjects = async (payload: BasePayload) => {
-  const locale = await getLocale();
+export const getProjects = async ({ locale = "en", payload }: ReadPayloadOptions = {}) => {
+  payload ||= await getPayload({ config });
   const cache = withCache(() => payload.find({ collection: "project", locale, sort: getProjectsSort }), ["projects", locale], {
     revalidate: timeInSec({ day: 1 }),
     tags: ["projects"],
@@ -51,8 +52,8 @@ export const getProjects = async (payload: BasePayload) => {
   return cache();
 };
 
-export const getProject = async (payload: BasePayload, id: number) => {
-  const locale = await getLocale();
+export const getProject = async ({ locale = "en", payload }: ReadPayloadOptions = {}, id: number) => {
+  payload ||= await getPayload({ config });
   const cache = withCache(
     () =>
       payload.find({
@@ -74,17 +75,21 @@ export const getProject = async (payload: BasePayload, id: number) => {
   return projects[0] ? projects[0] : null;
 };
 
-export const getSocials = async (payload: BasePayload) => {
-  const locale = await getLocale();
-  const cache = withCache(() => payload.findGlobal({ slug: "contact-me", locale, select: { socials: true } }), ["contact-me", locale, "socials"], {
-    revalidate: timeInSec({ day: 1 }),
-    tags: ["contact-me", "socials"],
-  });
+export const getSocials = async ({ locale = "en", payload }: ReadPayloadOptions = {}) => {
+  payload ||= await getPayload({ config });
+  const cache = withCache(
+    () => payload.findGlobal({ slug: "contact-me", locale, select: { socials: true } }),
+    ["contact-me", locale, "socials"],
+    {
+      revalidate: timeInSec({ day: 1 }),
+      tags: ["contact-me", "socials"],
+    },
+  );
   return (await cache()).socials;
 };
 
-export const getFeaturedProjects = async (payload: BasePayload) => {
-  const locale = await getLocale();
+export const getFeaturedProjects = async ({ locale = "en", payload }: ReadPayloadOptions = {}) => {
+  payload ||= await getPayload({ config });
   const cache = withCache(() => payload.find({ collection: "featured-project", locale, sort: ["order"] }), ["featured-project", locale], {
     revalidate: timeInSec({ day: 1 }),
     tags: ["featured-project"],
@@ -92,8 +97,8 @@ export const getFeaturedProjects = async (payload: BasePayload) => {
   return cache();
 };
 
-export const getAIConfig = async (payload: BasePayload) => {
-  const locale = await getLocale();
+export const getAIConfig = async ({ locale = "en", payload }: ReadPayloadOptions = {}) => {
+  payload ||= await getPayload({ config });
   const cache = withCache(() => payload.findGlobal({ slug: "ai-config", locale }), ["ai-config", locale], {
     revalidate: timeInSec({ day: 1 }),
     tags: ["ai-config"],

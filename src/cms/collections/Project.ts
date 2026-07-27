@@ -4,7 +4,8 @@ import { revalidateFeaturedProject } from "./FeaturedProject";
 import { revalidatePaths, updateTags } from "../cache";
 
 const revalidateFeatured = async (id: string | number, payload: BasePayload) => {
-  const featured = await getFeaturedProjects(payload);
+  // id only
+  const featured = await getFeaturedProjects({ payload });
   if (featured.docs.some((item) => (typeof item.project === "number" ? item.project === id : item.project.id === id))) {
     revalidateFeaturedProject();
   }

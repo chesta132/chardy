@@ -8,8 +8,11 @@ import { APP_NAME, OWNER_FULLNAME } from "@/config";
 import { defaultMetadata } from "@/libs/metadata";
 import { routing } from "@/i18n/routing";
 import { Metadata } from "next";
+import { Locale } from "@/i18n/types";
 
-export const generateMetadata = async ({ params }: PageProps<"/[locale]/projects">): Promise<Metadata> => {
+type Props = PageProps<"/[locale]/projects">;
+
+export const generateMetadata = async ({ params }: Props): Promise<Metadata> => {
   let { locale } = await params;
   if (!hasLocale(routing.locales, locale)) locale = "en";
   const t = await getTranslations({ locale, namespace: "Metadata.ProjectList" });
@@ -32,9 +35,10 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
-export default async function ProjectsPage() {
+export default async function ProjectsPage({ params }: Props) {
+  const locale = (await params).locale as Locale;
   const payload = await getPayload({ config });
-  const projects = await getProjects(payload);
+  const projects = await getProjects({ payload, locale });
 
   return <ProjectListPage projects={projects.docs} />;
 }

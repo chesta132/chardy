@@ -1,6 +1,4 @@
 import { FunctionDeclaration } from "@google/genai";
-import { getPayload } from "payload";
-import config from "@payload-config";
 import { getAboutMe, getContactMe, getHero, getProjects } from "@/cms/crud/read";
 
 export const portfolioToolDeclarations: FunctionDeclaration[] = [
@@ -23,20 +21,8 @@ export const portfolioToolDeclarations: FunctionDeclaration[] = [
 ];
 
 export const portfolioToolHandlers = {
-  getAboutMe: async () => {
-    const payload = await getPayload({ config });
-    return getAboutMe(payload);
-  },
-  getHero: async () => {
-    const payload = await getPayload({ config });
-    return getHero(payload);
-  },
-  getContact: async () => {
-    const payload = await getPayload({ config });
-    return getContactMe(payload);
-  },
-  getProjects: async () => {
-    const payload = await getPayload({ config });
-    return getProjects(payload);
-  },
+  getAboutMe: getAboutMe,
+  getHero: getHero,
+  getContact: getContactMe,
+  getProjects: getProjects,
 };

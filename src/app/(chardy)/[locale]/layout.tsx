@@ -7,7 +7,7 @@ import SmoothScroll from "@/contexts/SmoothScroll";
 import { Topbar } from "@/components/layouts/Topbar";
 import { Footer } from "@/components/layouts/Footer";
 import { Toaster } from "@/components/ui/Toaster";
-import { getMessages, getTranslations } from "next-intl/server";
+import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { APP_NAME, LOCATION, OWNER_FULLNAME } from "@/config";
 import { Metadata } from "next";
 import { getPayload } from "payload";
@@ -58,13 +58,13 @@ type LayoutProps = {
 export default async function LocaleLayout({ children, params }: LayoutProps) {
   // Ensure that the incoming `locale` is valid
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) notFound();
+
+  setRequestLocale(locale);
   const messages = await getMessages();
-  if (!hasLocale(routing.locales, locale)) {
-    notFound();
-  }
 
   const payload = await getPayload({ config });
-  const [socials, aiConfig] = await Promise.all([getSocials(payload), getAIConfig(payload)]);
+  const [socials, aiConfig] = await Promise.all([getSocials({ locale, payload }), getAIConfig({ locale, payload })]);
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
