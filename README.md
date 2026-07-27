@@ -130,33 +130,33 @@ NEXT_PUBLIC_ADMIN_URL=http://admin.localhost:3000 # tanpa trailing path
 # Mailer (Resend SMTP)
 MAILER_FROM="Chardy Notification <notif@chardy.dev>"
 MAILER_HOST=smtp.resend.com
-MAILER_PASS=re_xxx
+MAILER_PASS=re_xxx      # Resend API key
 MAILER_USER=resend
 OWNER_EMAIL=youremail@email.com     # Email tujuan notif contact form
 
 # Payload CMS
-PAYLOAD_SECRET=dHnKBouHfV2HMPdsETXVG34Nx9TpCQarifWxPKJ85Lc=     # base64 secrets
+PAYLOAD_SECRET=<base64_random_string>
 DATABASE_URL=postgresql://postgres:postgres@localhost:5432/chardy
 
 # Cloudinary
-CLOUDINARY_KEY=xxx
-CLOUDINARY_SECRET=xxx
-CLOUDINARY_CLOUD_NAME=xxx
-CLOUDINARY_FOLDER=path/to/assets    # Folder di Cloudinary buat media
+CLOUDINARY_KEY=<cloudinary_api_key>
+CLOUDINARY_SECRET=<cloudinary_api_secret>
+CLOUDINARY_CLOUD_NAME=<cloudinary_cloud_name>
+CLOUDINARY_FOLDER=/path/to/assets    # Folder di Cloudinary buat media
 
 # Upstash Redis (lokal pakai upstash-proxy dari docker compose)
 UPSTASH_REDIS_REST_URL=http://localhost:8080
 UPSTASH_REDIS_REST_TOKEN=example_token
 
 # AI (Gemini)
-GEMINI_API_KEY=xxx                  # API key dari Google AI Studio
+GEMINI_API_KEY=<aistudio_api_key>                  # API key dari Google AI Studio
 
-# Analytics (Umami) — opsional
+# Analytics (Umami). Opsional
 NEXT_PUBLIC_UMAMI_URL=https://your_umami_url.com/script.js
-NEXT_PUBLIC_UMAMI_WEBSITE_ID=umami_id
+NEXT_PUBLIC_UMAMI_WEBSITE_ID=<umami_id>
 
-# Error monitoring (Sentry) — opsional, dipakai pas build/upload sourcemap
-SENTRY_AUTH_TOKEN=xxx
+# Error monitoring (Sentry). Opsional, dipakai pas build/upload sourcemap
+SENTRY_AUTH_TOKEN=<sentry_organization_token>
 ```
 
 ---
