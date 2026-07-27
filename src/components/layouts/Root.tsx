@@ -6,14 +6,10 @@ import { PPSuplyMono, PPSuplySans } from "@/fonts/ppSupply";
 import { cn } from "@/libs/utils";
 import Script from "next/script";
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export function RootLayout({ children, locale }: { children: React.ReactNode; locale: string }) {
   return (
     <html
-      lang="en"
+      lang={locale}
       className={cn("h-full", "antialiased", inter.variable, neueMontreal.variable, PPSuplySans.variable, PPSuplyMono.variable)}
       suppressHydrationWarning
     >
