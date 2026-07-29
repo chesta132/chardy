@@ -45,37 +45,43 @@ export const AboutMe = ({ data, githubUrl }: { data: AboutMePayload; githubUrl: 
             ( {t("aboutMe")} ) <Arrow className="rotate-90 fill-background/60" />
           </h2>
         </div>
-        <div className="flex flex-col-reverse lg:flex-row justify-between gap-8">
-          <div className="flex lg:flex-col gap-3 justify-between lg:justify-start items-stretch overflow-x-auto">
-            {stats.map((stat, idx) => (
-              <div
-                key={stat.t}
-                className={cn(
-                  "flex-1 lg:flex-none lg:w-full min-w-0 p-px from-background/0 to-primary/60 rounded-lg",
-                  idx % 2 === 0 ? "bg-linear-to-tr" : "bg-linear-to-tl",
-                )}
-                style={{ aspectRatio: "1 / 1" }}
-              >
-                <div className="p-8 text-center size-full items-center flex flex-col justify-center border border-background/10 rounded-lg bg-foreground">
+
+        <div className="flex flex-col-reverse xl:flex-col gap-8">
+          <div className="flex flex-col-reverse xl:flex-row gap-8 xl:items-stretch">
+            <div className="relative flex xl:flex-row gap-px justify-between xl:justify-start items-stretch overflow-x-auto xl:w-fit xl:shrink-0 rounded-lg bg-linear-to-bl from-primary/60 to-transparent p-px">
+              {stats.map((stat, idx) => (
+                <div
+                  key={stat.t}
+                  className={cn(
+                    "flex-1 xl:flex-none xl:w-40 min-w-0 aspect-square p-8 text-center flex flex-col justify-center items-center border border-background/10 bg-foreground",
+                    idx === 0 && "rounded-l-lg",
+                    idx === stats.length - 1 && "rounded-r-lg",
+                  )}
+                >
                   <h3 className="text-[clamp(1rem,5vw,2.25rem)] font-neue-montreal">{stat.value}</h3>
                   <p className="text-[clamp(0.2rem,3vw,0.6rem)] text-background/50 font-inter">{t(stat.t)}</p>
                 </div>
-              </div>
-            ))}
-          </div>
-          <div className="flex flex-col-reverse lg:flex-col gap-5 justify-start items-center lg:items-start w-full">
-            <GithubCalendar username={extractUsername(githubUrl)} />
-            <div className="flex justify-center flex-col lg:flex-row-reverse gap-2 w-full items-center">
-              <div className="text-center lg:text-start">
-                <h2 className="font-neue-montreal text-[clamp(1rem,5vw,2.25rem)] lg:leading-10 leading-6.5">
-                  {t("basedIn", { location: LOCATION })}
-                </h2>
-                <h3 className="uppercase font-supply-mono text-text-light/50 text-[clamp(0.2rem,3vw,0.75rem)] mt-2">{t("availableForWorldwide")}</h3>
-              </div>
-              <Globe markers={[{ location: WEST_JAVA_GLOBE_COOR, size: 0.08 }]} aria-hidden="true" />
+              ))}
+            </div>
+
+            <div className="flex-1 min-w-0 flex justify-center xl:items-center xl:justify-end">
+              <GithubCalendar username={extractUsername(githubUrl)} />
             </div>
           </div>
+
+          <div className="flex justify-center flex-col xl:flex-row-reverse gap-2 w-full items-center">
+            <div className="text-center xl:text-start">
+              <h2 className="font-neue-montreal text-[clamp(1rem,5vw,2.25rem)] xl:leading-10 leading-6.5">
+                {t("basedIn", { location: LOCATION })}
+              </h2>
+              <h3 className="uppercase font-supply-mono text-text-light/50 text-[clamp(0.2rem,3vw,0.75rem)] mt-2">
+                {t("availableForWorldwide")}
+              </h3>
+            </div>
+            <Globe markers={[{ location: WEST_JAVA_GLOBE_COOR, size: 0.08 }]} aria-hidden="true" />
+          </div>
         </div>
+
         <div className="p-px rounded-xl overflow-hidden bg-linear-to-tl from-background/0 to-background/70">
           <div className="flex flex-col lg:flex-row gap-10 p-4 border border-background/10 rounded-xl bg-foreground">
             <div className="aspect-square w-full h-auto max-w-125 lg:size-125 bg-linear-to-tr from-[#f8a271] to-[#FF652F] rounded-lg">
