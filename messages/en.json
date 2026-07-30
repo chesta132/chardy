@@ -3,7 +3,8 @@
     "home": "Home",
     "projects": "Projects",
     "about": "About",
-    "contact": "Contact Me"
+    "contact": "Contact Me",
+    "guestbook": "Guestbook"
   },
 
   "Footer": {
@@ -249,6 +250,19 @@
     },
     "button": {
       "askAI": "Ask {aiName}"
+    }
+  },
+
+  "Guestbook": {
+    "guestbook": "Guestbook",
+    "title": "Leave a permanent mark.\nShare your thoughts.",
+    "signIn": {
+      "title": "Sign in to write",
+      "subtitle": "Authenticate via GitHub to prevent spam."
+    },
+    "form": {
+      "send": "Post comment",
+      "loading": "Posting..."
     }
   }
 }

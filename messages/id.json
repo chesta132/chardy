@@ -3,7 +3,8 @@
     "home": "Beranda",
     "projects": "Karya",
     "about": "Tentang Saya",
-    "contact": "Hubungi Saya"
+    "contact": "Hubungi Saya",
+    "guestbook": "Guestbook"
   },
 
   "Footer": {
@@ -248,6 +249,19 @@
     },
     "button": {
       "askAI": "Tanya {aiName}"
+    }
+  },
+
+  "Guestbook": {
+    "guestbook": "Guestbook",
+    "title": "Tinggalkan jejakmu.\nTulis kesanmu di sini.",
+    "signIn": {
+      "title": "Masuk untuk menulis",
+      "subtitle": "Autentikasi via GitHub untuk mencegah spam."
+    },
+    "form": {
+      "send": "Post komentar",
+      "loading": "Posting..."
     }
   }
 }

@@ -1,6 +1,8 @@
 import { cn } from "@/libs/utils";
 import { Arrow } from "./Arrow";
 import { RollingLabel } from "./Label";
+import { FiSend } from "react-icons/fi";
+import { Loading } from "./Loading";
 
 export const Button = ({
   children,
@@ -22,6 +24,20 @@ export const Button = ({
       {!withoutArrow && (
         <Arrow className="group-hover:-rotate-45 group-hover:fill-text-light transition-all duration-700 ease-[cubic-bezier(0.87,0,0.13,1)]" />
       )}
+    </button>
+  );
+};
+
+export const SendButton = ({ loading, className, ...props }: React.ComponentProps<"button"> & { loading: boolean }) => {
+  return (
+    <button
+      className={cn(
+        "shrink-0 cursor-pointer w-7 h-7 rounded-lg bg-foreground text-background flex items-center justify-center hover:bg-secondary transition-colors duration-300 disabled:opacity-30 disabled:cursor-not-allowed",
+        className,
+      )}
+      {...props}
+    >
+      {loading ? <Loading /> : <FiSend className="w-3.5 h-3.5" />}
     </button>
   );
 };

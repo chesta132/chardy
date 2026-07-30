@@ -1,4 +1,5 @@
 import { FormLayout } from "@/components/form/FormLayout";
+import { SendButton } from "@/components/ui/Button";
 import { Loading } from "@/components/ui/Loading";
 import { useAIChat } from "@/contexts/AIChat";
 import { useAutosizeTextarea } from "@/hooks/useAutosizeTextarea";
@@ -42,13 +43,7 @@ export const ChatInput = () => {
           ignoreError
         />
       </div>
-      <button
-        disabled={busy || !message.trim()}
-        aria-label={busy ? t("waitingResponse") : t("send")}
-        className="shrink-0 cursor-pointer w-7 h-7 rounded-lg bg-foreground text-background flex items-center justify-center hover:bg-secondary transition-colors duration-300 disabled:opacity-30 disabled:cursor-not-allowed"
-      >
-        {busy ? <Loading /> : <FiSend className="w-3.5 h-3.5" />}
-      </button>
+      <SendButton loading={busy} disabled={busy || !message.trim()} aria-label={busy ? t("waitingResponse") : t("send")} />
     </FormLayout>
   );
 };

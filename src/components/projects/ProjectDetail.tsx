@@ -41,7 +41,9 @@ export function ProjectDetail({ project }: { project: Project }) {
         {/* ── Header ── */}
         <header className="flex flex-col gap-6 mb-14">
           {/* Name */}
-          <h1 className="font-neue-montreal text-[clamp(2rem,6vw,4rem)] font-medium uppercase leading-[1.05] tracking-tight">{project.title}</h1>
+          <h1 className="font-neue-montreal text-[clamp(2rem,6vw,4rem)] font-medium uppercase leading-[1.05] tracking-tight">
+            {project.title}
+          </h1>
 
           {/* Meta row */}
           <div className="flex items-start justify-between gap-x-8 gap-y-3 border-t border-b border-foreground/10 py-4">

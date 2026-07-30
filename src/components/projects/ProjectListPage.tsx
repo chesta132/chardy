@@ -1,13 +1,12 @@
 "use client";
 
-import { Arrow } from "@/components/ui/Arrow";
-import { cn } from "@/libs/utils";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { ProjectList } from "./ProjectList";
 import { Project } from "@/types/payload";
 import { Main } from "../layouts/Wrapper";
 import { TagInput } from "../ui/TagInput";
+import { PageTitle } from "../layouts/Title";
 
 export function ProjectListPage({ projects }: { projects: Project[] }) {
   const t = useTranslations("Projects");
@@ -38,15 +37,7 @@ export function ProjectListPage({ projects }: { projects: Project[] }) {
   return (
     <Main className="flex flex-col min-h-svh px-5 pt-32 pb-16">
       {/* Header */}
-      <div className="flex flex-col items-center gap-3 mb-12">
-        <h2 className="font-supply-mono text-text-dark/60 flex items-center gap-2 uppercase text-xs tracking-widest">
-          <Arrow className="rotate-90 fill-text-dark/60" />( {t("projects")} )
-          <Arrow className="rotate-90 fill-text-dark/60" />
-        </h2>
-        <h1 className="font-neue-montreal text-[clamp(1.8rem,5vw,3.75rem)] font-medium uppercase text-center leading-[1.1] tracking-tight whitespace-pre-wrap">
-          {t("title")}
-        </h1>
-      </div>
+      <PageTitle title={t("title")} subtitle={t("projects")} />
 
       {/* Filters */}
       <div className="flex gap-2 flex-wrap mb-6" role="group" aria-label={"Filter projects by tag"}>
