@@ -1,7 +1,20 @@
 import { CollectionConfig } from "payload";
+import { updateTags } from "../cache";
 
 export const GuestbookEntry: CollectionConfig = {
   slug: "guestbook-entry",
+  hooks: {
+    afterChange: [
+      async () => {
+        await updateTags("guestbook-entries");
+      },
+    ],
+    afterDelete: [
+      async () => {
+        await updateTags("guestbook-entries");
+      },
+    ],
+  },
   fields: [
     {
       name: "userId",
