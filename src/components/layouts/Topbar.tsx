@@ -21,6 +21,7 @@ const NAV_ITEMS = [
   { t: "home", href: "/#" },
   { t: "projects", href: "/projects" },
   { t: "about", href: "/#about-me" },
+  { t: "guestbook", href: "/guestbook" },
 ] as const;
 
 const LANG_MAP: Record<Locale, string> = {
@@ -73,7 +74,7 @@ export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
   return (
     <nav
       ref={navRef}
-      className="m-4 md:m-6 lg:m-8 p-4 lg:py-5 lg:px-7 lg:justify-between lg:flex lg:items-center fixed top-0 left-0 right-0 z-50 backdrop-blur-sm bg-foreground/35 rounded-xl border border-background/20"
+      className="m-4 md:m-6 xl:m-8 p-4 xl:py-5 xl:px-7 xl:justify-between xl:flex xl:items-center fixed top-0 left-0 right-0 z-50 backdrop-blur-sm bg-foreground/35 rounded-xl border border-background/20"
       aria-label="Main navigation"
     >
       <div className="flex items-center justify-between">
@@ -88,7 +89,7 @@ export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
           <ChardyLogo className="h-10" animateOnHover />
         </Link>
         <button
-          className="mr-2 lg:hidden"
+          className="mr-2 xl:hidden"
           onClick={() => setOpen((prev) => !prev)}
           aria-label={open ? "Close navigation menu" : "Open navigation menu"}
           aria-expanded={open}
@@ -99,7 +100,7 @@ export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
       </div>
 
       {/* desktop menu */}
-      <div className="space-x-10 hidden lg:flex absolute left-1/2 -translate-x-1/2">
+      <div className="space-x-10 hidden xl:flex absolute left-1/2 -translate-x-1/2">
         {NAV_ITEMS.map((item) => (
           <Link
             key={item.href}
@@ -114,7 +115,7 @@ export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
         ))}
       </div>
 
-      <div className="hidden lg:flex gap-2">
+      <div className="hidden xl:flex gap-2">
         <Button
           placeholder={
             <div className="flex gap-2 items-center justify-center" aria-hidden="true">
@@ -146,7 +147,7 @@ export const Topbar = ({ socials }: { socials: ContactMe["socials"] }) => {
         ref={menuRef}
         id="mobile-menu"
         style={{ display: "none" }}
-        className="overflow-hidden lg:hidden!"
+        className="overflow-hidden xl:hidden!"
         aria-label="Mobile navigation menu"
       >
         <div className="mt-10 space-y-10">
