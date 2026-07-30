@@ -118,5 +118,5 @@ export const getUser = async ({
     revalidate: timeInSec({ day: 1 }),
     tags: ["users", email ? `user-${email}` : `user-${id}`],
   });
-  return ((await cache()).docs[1] || null) as User | null;
+  return ((await cache()).docs[0] || null) as User | null;
 };
