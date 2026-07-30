@@ -71,6 +71,7 @@ export interface Config {
     media: Media;
     project: Project;
     'featured-project': FeaturedProject;
+    'guestbook-entry': GuestbookEntry;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -82,6 +83,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     project: ProjectSelect<false> | ProjectSelect<true>;
     'featured-project': FeaturedProjectSelect<false> | FeaturedProjectSelect<true>;
+    'guestbook-entry': GuestbookEntrySelect<false> | GuestbookEntrySelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -291,6 +293,19 @@ export interface FeaturedProject {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "guestbook-entry".
+ */
+export interface GuestbookEntry {
+  id: number;
+  userId: string;
+  message: string;
+  pinned: boolean;
+  isAdmin: boolean;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -328,6 +343,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'featured-project';
         value: number | FeaturedProject;
+      } | null)
+    | ({
+        relationTo: 'guestbook-entry';
+        value: number | GuestbookEntry;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -467,6 +486,18 @@ export interface FeaturedProjectSelect<T extends boolean = true> {
   project?: T;
   order?: T;
   span?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "guestbook-entry_select".
+ */
+export interface GuestbookEntrySelect<T extends boolean = true> {
+  userId?: T;
+  message?: T;
+  pinned?: T;
+  isAdmin?: T;
   updatedAt?: T;
   createdAt?: T;
 }

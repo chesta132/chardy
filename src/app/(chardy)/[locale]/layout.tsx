@@ -18,6 +18,7 @@ import { AIChatProvider } from "@/contexts/AIChat";
 import { AIChatButton, AIChatPanel } from "@/components/ai";
 import { PreferenceProvider } from "@/contexts/Preference";
 import { RootLayout } from "@/components/layouts/Root";
+import { GuestbookProvider } from "@/contexts/Guestbook";
 
 type MetadataProps = {
   params: Promise<{ locale?: string }>;
@@ -72,17 +73,19 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
       <NextIntlClientProvider locale={locale} messages={messages}>
         <PreferenceProvider>
           <GlobalErrorProvider>
-            <AIChatProvider aiConfig={aiConfig}>
-              <SmoothScroll>
-                <Topbar socials={socials} />
-                {children}
-                <Footer hideOnHomeWithXL socials={socials} />
-              </SmoothScroll>
-              <AIChatButton />
-              <AIChatPanel />
-              <ViewGlobalError />
-              <Toaster />
-            </AIChatProvider>
+            <GuestbookProvider>
+              <AIChatProvider aiConfig={aiConfig}>
+                <SmoothScroll>
+                  <Topbar socials={socials} />
+                  {children}
+                  <Footer hideOnHomeWithXL socials={socials} />
+                </SmoothScroll>
+                <AIChatButton />
+                <AIChatPanel />
+                <ViewGlobalError />
+                <Toaster />
+              </AIChatProvider>
+            </GuestbookProvider>
           </GlobalErrorProvider>
         </PreferenceProvider>
       </NextIntlClientProvider>

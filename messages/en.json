@@ -263,6 +263,19 @@
     "form": {
       "send": "Post comment",
       "loading": "Posting..."
+    },
+    "list": {
+      "empty": "No entries yet. Be the first to sign the guestbook.",
+      "author": "Author",
+      "loadMore": "Load more",
+      "loading": "Loading...",
+      "aria": {
+        "edit": "Edit post",
+        "save": "Save changes",
+        "delete": "Delete post",
+        "confirmDelete": "Double click to delete post",
+        "cancel": "Click esc to cancel"
+      }
     }
   }
 }

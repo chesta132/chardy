@@ -29,6 +29,7 @@ import { ContactMe } from "./cms/globals/ContactMe";
 import { Project } from "./cms/collections/Project";
 import { FeaturedProject } from "./cms/collections/FeaturedProject";
 import { AIConfig } from "./cms/globals/AIConfig";
+import { GuestbookEntry } from "./cms/collections/GuestbookEntry";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -45,7 +46,7 @@ export default buildConfig({
     admin: ADMIN_URL === APP_URL ? INTERNAL_ADMIN_PATH : "/",
   },
   csrf: [ADMIN_URL, APP_URL],
-  collections: [Users, Media, Project, FeaturedProject],
+  collections: [Users, Media, Project, FeaturedProject, GuestbookEntry],
   globals: [Hero, AboutMe, ContactMe, AIConfig],
   editor: lexicalEditor(),
   secret: PAYLOAD_SECRET || "",

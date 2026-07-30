@@ -3,6 +3,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "./libs/db";
 import { APP_URL, GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET } from "./config";
 import { getUser } from "./cms/crud/read";
+import { admin } from "better-auth/plugins";
 import * as schema from "../auth-schema";
 
 export const auth = betterAuth({
@@ -12,6 +13,7 @@ export const auth = betterAuth({
     schema,
   }),
   baseURL: APP_URL,
+  plugins: [admin()],
 
   socialProviders: {
     github: {

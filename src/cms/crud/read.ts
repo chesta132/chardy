@@ -120,3 +120,20 @@ export const getUser = async ({
   });
   return ((await cache()).docs[0] || null) as User | null;
 };
+
+export const getGuestbookEntries = async ({
+  payload,
+  limit = 10,
+  page = 1,
+}: Omit<ReadPayloadOptions, "locale"> & { page?: number; limit?: number }) => {
+  payload ||= await getPayload({ config });
+  const cache = withCache(
+    () => payload?.find({ collection: "guestbook-entry", limit, page }),
+    ["guestbook-entries", `guestbook-entry-${limit}-${page}`],
+    {
+      revalidate: timeInSec({ day: 1 }),
+      tags: ["guestbook-entries", `guestbook-entry-${limit}-${page}`],
+    },
+  );
+  return cache();
+};

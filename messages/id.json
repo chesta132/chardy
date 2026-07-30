@@ -262,6 +262,19 @@
     "form": {
       "send": "Post komentar",
       "loading": "Posting..."
+    },
+    "list": {
+      "empty": "Belum ada komentar. Jadilah yang pertama mengisi guestbook.",
+      "author": "Author",
+      "loadMore": "Muat lebih banyak",
+      "loading": "Memuat...",
+      "aria": {
+        "edit": "Edit komentar",
+        "save": "Simpan perubahan",
+        "delete": "Hapus komentar",
+        "confirmDelete": "Klik lagi untuk menghapus komentar",
+        "cancel": "Klik esc untuk membatalkan edit"
+      }
     }
   }
 }
