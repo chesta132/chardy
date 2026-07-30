@@ -17,7 +17,7 @@ export default function GuestbookPage() {
       <PageTitle title={t("title")} subtitle={t("guestbook")} />
 
       <div className="flex flex-col flex-1 px-5 md:px-10 lg:px-20 pb-0 max-w-4xl mx-auto w-full gap-8">
-        {!isPending && data ? <CommentColumn /> : <SignIn />}
+        {isPending ? null : data ? <CommentColumn /> : <SignIn />}
         <CommentList />
       </div>
     </Main>
