@@ -101,7 +101,7 @@ export const GuestbookProvider = ({ children }: { children: ReactNode }) => {
   const deleteEntry: typeof deleteGuestbookEntry = async (...args) => {
     const deleted = await deleteGuestbookEntry(...args);
     if (deleted.data) {
-      setGuestbook((prev) => prev.filter((entry) => entry.id === deleted.data!.id));
+      setGuestbook((prev) => prev.filter((entry) => entry.id !== deleted.data!.id));
     }
     return deleted;
   };
