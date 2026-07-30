@@ -1,8 +1,49 @@
+import { db as drizzle } from "@/libs/db";
 import { MigrateUpArgs, MigrateDownArgs, sql } from "@payloadcms/db-vercel-postgres";
+import { execSync } from "child_process";
 
 export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
+  // payload check "payload"."payload_migrations" on migrate
+  // my current db is using "public" schema, so "payload"."payload_migrations" will empty
+  // payload migration will thought that db is fresh
+
+  // so i add this validation that will
+  // automatically inject fix and re-exec command
+  // to make payload realize new "payload_migrations" in "payload" schema
+
+  const checkResult = await db.execute(sql`
+    SELECT 1 
+    FROM information_schema.tables 
+    WHERE table_schema = 'public' 
+    AND table_name = 'payload_migrations'
+    `);
+
+  if (checkResult.rows && checkResult.rows.length > 0) {
+    if (process.env.__SCHEMA_MIGRATION_RETRY__) {
+      console.error("Schema migration retry loop detected");
+      console.error("Autofix did not resolve the legacy public.payload_migrations table. Manual intervention needed.");
+      // exit with node to avoid down()
+      process.exit(1);
+    }
+
+    console.log("[MIGRATION] Legacy public.payload_migrations detected, fixing...");
+    await drizzle.execute(`CREATE SCHEMA IF NOT EXISTS "payload";`);
+    await drizzle.execute(`ALTER TABLE "public"."payload_migrations" SET SCHEMA "payload";`);
+    await drizzle.execute(`SELECT setval('payload.payload_migrations_id_seq', (SELECT MAX(id) FROM payload.payload_migrations));`);
+
+    console.log("[MIGRATION] Fixed, re-running migrate command...");
+    execSync("npx payload migrate", {
+      stdio: "inherit",
+      env: { ...process.env, __SCHEMA_MIGRATION_RETRY__: "1" },
+    });
+
+    process.exit(0);
+  }
+
   await db.execute(sql`
-   CREATE TYPE "public"."_locales" AS ENUM('en', 'id');
+   CREATE SCHEMA IF NOT EXISTS "payload";
+
+  CREATE TYPE "public"."_locales" AS ENUM('en', 'id');
   CREATE TYPE "public"."enum_featured_project_span" AS ENUM('full', 'wide', 'normal');
   CREATE TABLE "users_sessions" (
   	"_order" integer NOT NULL,
@@ -127,7 +168,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
   
-  CREATE TABLE "payload_preferences_rels" (
+  CREATE TABLE "payload"."payload_preferences_rels" (
   	"id" serial PRIMARY KEY NOT NULL,
   	"order" integer,
   	"parent_id" integer NOT NULL,
@@ -245,8 +286,8 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "payload_preferences_rels_parent_idx" ON "payload_preferences_rels" USING btree ("parent_id");
   CREATE INDEX "payload_preferences_rels_path_idx" ON "payload_preferences_rels" USING btree ("path");
   CREATE INDEX "payload_preferences_rels_users_id_idx" ON "payload_preferences_rels" USING btree ("users_id");
-  CREATE INDEX "payload_migrations_updated_at_idx" ON "payload_migrations" USING btree ("updated_at");
-  CREATE INDEX "payload_migrations_created_at_idx" ON "payload_migrations" USING btree ("created_at");
+  CREATE INDEX "payload_migrations_updated_at_idx" ON "payload"."payload_migrations" USING btree ("updated_at");
+  CREATE INDEX "payload_migrations_created_at_idx" ON "payload"."payload_migrations" USING btree ("created_at");
   CREATE UNIQUE INDEX "hero_locales_locale_parent_id_unique" ON "hero_locales" USING btree ("_locale","_parent_id");
   CREATE INDEX "about_me_tools_order_idx" ON "about_me_tools" USING btree ("_order");
   CREATE INDEX "about_me_tools_parent_id_idx" ON "about_me_tools" USING btree ("_parent_id");
@@ -269,7 +310,7 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "payload_locked_documents_rels" CASCADE;
   DROP TABLE "payload_preferences" CASCADE;
   DROP TABLE "payload_preferences_rels" CASCADE;
-  DROP TABLE "payload_migrations" CASCADE;
+  DROP TABLE "payload"."payload_migrations" CASCADE;
   DROP TABLE "hero" CASCADE;
   DROP TABLE "hero_locales" CASCADE;
   DROP TABLE "about_me_tools" CASCADE;
@@ -277,5 +318,6 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "about_me_locales" CASCADE;
   DROP TABLE "contact_me" CASCADE;
   DROP TYPE "public"."_locales";
-  DROP TYPE "public"."enum_featured_project_span";`);
+  DROP TYPE "public"."enum_featured_project_span";
+  DROP SCHEMA IF EXISTS "payload"`);
 }

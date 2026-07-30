@@ -56,6 +56,7 @@ export default buildConfig({
     pool: {
       connectionString: DATABASE_URL || "",
     },
+    schemaName: "payload",
   }),
   sharp,
   plugins: [
