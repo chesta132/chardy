@@ -1,8 +1,9 @@
-import { BasePayload, getPayload } from "payload";
+import { BasePayload, getPayload, Where } from "payload";
 import { withCache } from "../cache";
 import { Locale } from "@/i18n/types";
 import { timeInSec } from "@/libs/manipulate/number";
 import config from "@/payload.config";
+import { User } from "@/types/payload";
 
 export type ReadPayloadOptions = {
   /** @default "en" */
@@ -104,4 +105,18 @@ export const getAIConfig = async ({ locale = "en", payload }: ReadPayloadOptions
     tags: ["ai-config"],
   });
   return cache();
+};
+
+export const getUser = async ({
+  payload,
+  email,
+  id,
+}: Omit<ReadPayloadOptions, "locale"> & RequireAtLeastOne<{ email: string; id: number }>) => {
+  payload ||= await getPayload({ config });
+  const where: Where = email ? { email: { equals: email } } : { id: { equals: id } };
+  const cache = withCache(() => payload.find({ collection: "users", where, limit: 1 }), ["users", `user-${email}-${id}`], {
+    revalidate: timeInSec({ day: 1 }),
+    tags: ["users", email ? `user-${email}` : `user-${id}`],
+  });
+  return ((await cache()).docs[1] || null) as User | null;
 };

@@ -23,7 +23,12 @@ export const {
   CLOUDINARY_CLOUD_NAME,
   CLOUDINARY_FOLDER,
 
+  // ai
   GEMINI_API_KEY,
+
+  // oauth
+  GITHUB_CLIENT_ID,
+  GITHUB_CLIENT_SECRET,
 } = process.env;
 
 // general
