@@ -15,7 +15,7 @@ export const SignIn = () => {
 
   return (
     <div className="border border-dashed rounded-lg p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div className="flex items-center gap-4 text-center sm:text-left">
+      <div className="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
         <div className="p-3 border rounded-full shrink-0">
           <FaTerminal />
         </div>
