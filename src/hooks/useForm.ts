@@ -12,6 +12,7 @@ export type FormGroup<T extends ZodObject> = {
   readonly validateForm: () => boolean;
   readonly resetForm: () => void;
   readonly updateField: <K extends keyof ZodInfer<T>>(field: K, value: ZodInfer<T>[K]) => void;
+  readonly isDefault: () => boolean;
 };
 type FormErrorTranslations = ReturnType<typeof useTranslations<"Form.error">>;
 
@@ -58,12 +59,20 @@ export const useForm = <T extends ZodObject>(defaultVal: ZodInfer<T>, validator:
     }
   };
 
+  const isDefault = () => {
+    for (const key in form) {
+      if (form[key] !== defaultVal[key]) return false;
+    }
+    return true;
+  };
+
   return {
     form: [form, setForm],
     error: [error, setFormError],
     validateForm,
     resetForm,
     updateField,
+    isDefault,
   } as FormGroup<T>;
 };
 
