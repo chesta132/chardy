@@ -129,7 +129,7 @@ export const CommentEntry = ({ entry, isSkeleton }: { entry: Guestbook[number]; 
             </div>
 
             <span className={cn("text-[clamp(0.6rem,2vw,0.7rem)] text-text-dark/50 shrink-0", isSkeleton && "skeleton")}>
-              {format.relativeTime(new Date(entry.createdAt), new Date())}
+              {format.relativeTime(new Date(entry.updatedAt), new Date())}
             </span>
           </div>
 
