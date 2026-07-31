@@ -148,7 +148,7 @@ OWNER_EMAIL=youremail@email.com     # Destination email for contact form notific
 PAYLOAD_SECRET=<base64_random_string>
 
 # DB
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/chardy
+DATABASE_URL=<neon_pool_connection_string>
 
 # Cloudinary
 CLOUDINARY_KEY=<cloudinary_api_key>
