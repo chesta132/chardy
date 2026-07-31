@@ -10,6 +10,9 @@ import { getGuestbookEntries } from "@/cms/crud/read";
 import { AuthPublicUser } from "@/types/auth";
 import { captureException } from "@sentry/nextjs";
 import { GuestbookEntry } from "@/types/payload";
+import { getLocale, getTranslations } from "next-intl/server";
+import { ServerError } from "@/libs/error/server";
+import { Locale } from "@/i18n/types";
 
 const authMw: ActionMiddlewareFunc<[unknown]> = async ({ next, outcome, ...ctx }) => {
   const session = await auth.api.getSession({
@@ -59,7 +62,10 @@ export const updateGuestbookEntryAction = createNectAction()
 
     if (entry.errors.length) {
       captureException(entry.errors);
-      return outcome.error({ code: "NOT_FOUND", message: "Comment not found" }).fail() as OutcomeSendResult<GuestbookEntry | null>;
+      const t = await getTranslations("Guestbook");
+      const locale = (await getLocale()) as Locale;
+      const err = await new ServerError("NOT_FOUND", { item: t("comment") }).withLocale(locale).flatten();
+      return outcome.error(err).fail() as OutcomeSendResult<GuestbookEntry | null>;
     }
 
     return outcome.success<GuestbookEntry | null>(entry.docs[0] || null).ok();
@@ -84,7 +90,10 @@ export const deleteGuestbookEntryAction = createNectAction()
 
     if (entry.errors.length) {
       captureException(entry.errors);
-      return outcome.error({ code: "NOT_FOUND", message: "Comment not found" }).fail() as OutcomeSendResult<GuestbookEntry | null>;
+      const t = await getTranslations("Guestbook");
+      const locale = (await getLocale()) as Locale;
+      const err = await new ServerError("NOT_FOUND", { item: t("comment") }).withLocale(locale).flatten();
+      return outcome.error(err).fail() as OutcomeSendResult<GuestbookEntry | null>;
     }
 
     return outcome.success<GuestbookEntry | null>(entry.docs[0] || null).ok();

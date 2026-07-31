@@ -51,7 +51,7 @@ export const CommentColumn = () => {
               ref={textAreaRef}
               field="message"
               className="w-full min-h-15 outline-none p-2 text-[clamp(0.3rem,3vw,0.9rem)]"
-              placeholder="Leave a comment!"
+              placeholder={t("placeholder")}
               ignoreError
             />
           </div>

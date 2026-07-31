@@ -254,6 +254,7 @@
 
   "Guestbook": {
     "guestbook": "Guestbook",
+    "comment": "Komentar",
     "title": "Tinggalkan jejakmu.\nTulis kesanmu di sini.",
     "signIn": {
       "title": "Masuk untuk menulis",
@@ -261,7 +262,8 @@
     },
     "form": {
       "send": "Post komentar",
-      "loading": "Posting..."
+      "loading": "Posting...",
+      "placeholder": "Komen di sini..."
     },
     "list": {
       "empty": "Belum ada komentar. Jadilah yang pertama mengisi guestbook.",
