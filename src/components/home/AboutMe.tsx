@@ -1,21 +1,21 @@
 "use client";
 
-import { cn } from "@/libs/utils";
-import { Arrow } from "../ui/Arrow";
-import { Globe } from "../about-me/Globe";
-import { ChardyLogo } from "../ui/Logo";
-import { Button } from "../ui/Button";
-import { GithubCalendar } from "../about-me/GithubCalendar";
-import { Marquee } from "../about-me/ToolsMarquee";
-import Image from "next/image";
-import { Link } from "@/i18n/navigation";
-import { useSmoothScroll } from "@/contexts/SmoothScroll";
-import { useTranslations } from "next-intl";
 import { LOCATION, OWNER_FULLNAME } from "@/config";
-import { Media, type AboutMe as AboutMePayload } from "@/types/payload";
+import { useSmoothScroll } from "@/contexts/SmoothScroll";
+import { Link } from "@/i18n/navigation";
 import { extractUsername } from "@/libs/github";
-import { RichText } from "@payloadcms/richtext-lexical/react";
 import { WEST_JAVA_GLOBE_COOR } from "@/libs/globe";
+import { cn } from "@/libs/utils";
+import { type AboutMe as AboutMePayload } from "@/types/payload";
+import { RichText } from "@payloadcms/richtext-lexical/react";
+import { useTranslations } from "next-intl";
+import Image from "next/image";
+import { GithubCalendar } from "../about-me/GithubCalendar";
+import { Globe } from "../about-me/Globe";
+import { Marquee } from "../about-me/ToolsMarquee";
+import { Arrow } from "../ui/Arrow";
+import { Button } from "../ui/Button";
+import { ChardyLogo } from "../ui/Logo";
 
 const getStats = (data: AboutMePayload["stats"]) =>
   [

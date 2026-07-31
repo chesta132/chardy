@@ -10,7 +10,6 @@
   },
   "type": "module",
   "dependencies": {
-    "@better-auth/drizzle-adapter": "^1.6.25",
     "@google/genai": "^2.3.0",
     "@gsap/react": "^2.1.2",
     "@lottiefiles/dotlottie-react": "^0.19.1",

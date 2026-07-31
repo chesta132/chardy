@@ -1,7 +1,7 @@
 "use server";
 
 import { createNectAction } from "nectic/actions";
-import { updateTag, revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export const updateTagsAction = createNectAction().handle(({ outcome }, ...tags: string[]) => {
   tags.forEach((t) => {

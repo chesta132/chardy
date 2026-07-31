@@ -1,8 +1,8 @@
-import { APP_DOMAIN, APP_NAME, APP_URL, REGION } from "@/config";
-import { ContactFormPayload, ContactFormReplyPayload, ErrorNotificationPayload } from "./types";
+import { APP_DOMAIN, APP_NAME, APP_URL } from "@/config";
+import { getMessages } from "@/i18n/request";
 import { Locale } from "@/i18n/types";
 import { createTranslator } from "next-intl";
-import { getMessages } from "@/i18n/request";
+import { ContactFormPayload, ContactFormReplyPayload, ErrorNotificationPayload } from "./types";
 
 const C = {
   shell: (content: string) => /* html */ `

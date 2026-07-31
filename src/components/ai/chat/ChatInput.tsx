@@ -1,12 +1,10 @@
 import { FormLayout } from "@/components/form/FormLayout";
 import { SendButton } from "@/components/ui/Button";
-import { Loading } from "@/components/ui/Loading";
 import { useAIChat } from "@/contexts/AIChat";
 import { useAutosizeTextarea } from "@/hooks/useAutosizeTextarea";
 import { useForm } from "@/hooks/useForm";
 import { AIPayload } from "@/payloads/ai";
 import { useTranslations } from "next-intl";
-import { FiSend } from "react-icons/fi";
 
 export const ChatInput = () => {
   const t = useTranslations("AIChat.panel.input");
