@@ -10,6 +10,7 @@ import { FaCheck, FaThumbtack, FaTrash } from "react-icons/fa";
 import { MdModeEdit } from "react-icons/md";
 import { Pfp } from "./Pfp";
 import { useIsDesktop } from "@/hooks/useIsDesktop";
+import { FaX } from "react-icons/fa6";
 
 export const CommentEntry = ({ entry }: { entry: Guestbook[number] }) => {
   const t = useTranslations("Guestbook.list");
@@ -57,7 +58,7 @@ export const CommentEntry = ({ entry }: { entry: Guestbook[number] }) => {
   }, []);
 
   const toggleEditMode = async () => {
-    if (editMode) {
+    if (editMode && form.message) {
       try {
         setLoading(true);
         if (!isDefault()) await updateEntry(form);
@@ -66,7 +67,7 @@ export const CommentEntry = ({ entry }: { entry: Guestbook[number] }) => {
         setLoading(false);
       }
     } else {
-      setEditMode(true);
+      setEditMode((prev) => !prev);
     }
   };
 
@@ -132,7 +133,7 @@ export const CommentEntry = ({ entry }: { entry: Guestbook[number] }) => {
                 onClick={toggleEditMode}
                 disabled={loading}
               >
-                {editMode ? <FaCheck /> : <MdModeEdit />}
+                {editMode ? form.message ? <FaCheck /> : <FaX size={14} /> : <MdModeEdit />}
               </button>
               <button
                 onClick={handleDeleteClick}
