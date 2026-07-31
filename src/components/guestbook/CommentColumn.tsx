@@ -34,9 +34,12 @@ export const CommentColumn = () => {
 
   return (
     <div className="flex justify-between gap-2 border border-foreground/30 rounded-lg p-4">
-      <Pfp user={data.user} classname="size-10.5 sm:size-11.5 md:size-12.5" />
+      <Pfp user={data.user} classname="sm:size-11.5 md:size-12.5 hidden sm:block" />
       <div className="w-full flex flex-col gap-2">
-        <span className="font-semibold">{data.user.name}</span>
+        <div className="flex items-center gap-2">
+          <Pfp user={data.user} classname="size-9.5 block sm:hidden" />
+          <span className="font-semibold flex flex-col gap-1.5 min-w-0 w-full">{data.user.name}</span>
+        </div>
         <FormLayout
           resetAfterSubmit
           form={formGroup}
@@ -47,7 +50,7 @@ export const CommentColumn = () => {
             <FormLayout.textarea
               ref={textAreaRef}
               field="message"
-              className="w-full min-h-25 outline-none p-2"
+              className="w-full min-h-15 outline-none p-2 text-[clamp(0.3rem,3vw,0.9rem)]"
               placeholder="Leave a comment!"
               ignoreError
             />

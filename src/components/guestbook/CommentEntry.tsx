@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import { FaCheck, FaThumbtack, FaTrash } from "react-icons/fa";
 import { MdModeEdit } from "react-icons/md";
 import { Pfp } from "./Pfp";
+import { useIsDesktop } from "@/hooks/useIsDesktop";
 
 export const CommentEntry = ({ entry }: { entry: Guestbook[number] }) => {
   const t = useTranslations("Guestbook.list");
@@ -26,6 +27,22 @@ export const CommentEntry = ({ entry }: { entry: Guestbook[number] }) => {
   const [loading, setLoading] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const deleteTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const editContainerRef = useRef<HTMLDivElement>(null);
+  const isDesktop = useIsDesktop();
+
+  // handle touch/click outside
+  useEffect(() => {
+    if (!editMode) return;
+
+    const handlePointerDown = (e: TouchEvent) => {
+      if (editContainerRef.current && !editContainerRef.current.contains(e.target as Node)) {
+        cancelEdit();
+      }
+    };
+
+    document.addEventListener("touchstart", handlePointerDown);
+    return () => document.removeEventListener("touchstart", handlePointerDown);
+  }, [editMode]);
 
   useEffect(() => {
     if (editMode) {
@@ -81,26 +98,28 @@ export const CommentEntry = ({ entry }: { entry: Guestbook[number] }) => {
 
   return (
     <div className="flex gap-3 group">
-      <Pfp user={{ ...entry.author }} classname="size-10.5 sm:size-11.5" />
+      <Pfp user={{ ...entry.author }} classname="size-9.5 sm:size-11.5" />
 
-      <div className="flex flex-col gap-1.5 min-w-0 w-full">
+      <div className="flex flex-col gap-1.5 min-w-0 w-full" ref={editContainerRef}>
         <div className="flex justify-between items-center w-full">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="font-semibold text-sm truncate">{entry.author.name}</span>
+          <div className="flex flex-wrap flex-col sm:flex-row sm:items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-[clamp(0.3rem,3vw,0.9rem)] font-semibold text-sm truncate">{entry.author.name}</span>
 
-            {entry.isAdmin && (
-              <span className="text-[11px] uppercase tracking-wide text-text-light bg-foreground rounded-md px-2 py-0.5 shrink-0">
-                {t("author")}
-              </span>
-            )}
+              {entry.isAdmin && (
+                <span className="text-[clamp(0.5rem,2vw,0.6rem)] uppercase tracking-wide text-text-light bg-foreground rounded-md px-2 py-0.5 shrink-0">
+                  {t("author")}
+                </span>
+              )}
 
-            {entry.pinned && (
-              <span className="flex items-center gap-1 text-[11px] uppercase tracking-wide text-secondary shrink-0">
-                <FaThumbtack size={9} />
-              </span>
-            )}
+              {entry.pinned && (
+                <span className="flex items-center gap-1 uppercase tracking-wide text-secondary shrink-0">
+                  <FaThumbtack size={9} />
+                </span>
+              )}
+            </div>
 
-            <span className="text-[11px] text-text-dark/50 ml-auto shrink-0">
+            <span className="text-[clamp(0.6rem,2vw,0.7rem)] text-text-dark/50 shrink-0">
               {format.relativeTime(new Date(entry.createdAt), new Date())}
             </span>
           </div>
@@ -133,7 +152,7 @@ export const CommentEntry = ({ entry }: { entry: Guestbook[number] }) => {
               ref={textAreaRef}
               field="message"
               onKeyDown={handleKeyDown}
-              placeholder={t("aria.cancel")}
+              placeholder={isDesktop ? t("aria.cancel") : t("aria.mobileCancel")}
             />
           </FormLayout>
         ) : (

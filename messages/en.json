@@ -274,7 +274,8 @@
         "save": "Save changes",
         "delete": "Delete post",
         "confirmDelete": "Double click to delete post",
-        "cancel": "Click esc to cancel"
+        "cancel": "Click esc to cancel",
+        "mobileCancel": "Click outside to cancel"
       }
     }
   }

@@ -273,7 +273,8 @@
         "save": "Simpan perubahan",
         "delete": "Hapus komentar",
         "confirmDelete": "Klik lagi untuk menghapus komentar",
-        "cancel": "Klik esc untuk membatalkan edit"
+        "cancel": "Klik esc untuk membatalkan edit",
+        "mobileCancel": "Klik di luar kolom untuk membatalkan edit"
       }
     }
   }
