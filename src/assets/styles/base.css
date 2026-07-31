@@ -198,4 +198,34 @@
     border-radius: 10px;
     margin-bottom: 1em;
   }
+
+  /* skeleton */
+  .skeleton {
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+    color: transparent !important;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .skeleton::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: #c7c7c7;
+    /* animation: skeleton-pulse 1.2s ease-in-out infinite alternate; */
+  }
+
+  /* @keyframes skeleton-pulse {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  } */
 }

@@ -11,8 +11,9 @@ import { MdModeEdit } from "react-icons/md";
 import { Pfp } from "./Pfp";
 import { useIsDesktop } from "@/hooks/useIsDesktop";
 import { FaX } from "react-icons/fa6";
+import { cn } from "@/libs/utils";
 
-export const CommentEntry = ({ entry }: { entry: Guestbook[number] }) => {
+export const CommentEntry = ({ entry, isSkeleton }: { entry: Guestbook[number]; isSkeleton?: boolean }) => {
   const t = useTranslations("Guestbook.list");
   const format = useFormatter();
   const { data } = useSession();
@@ -99,28 +100,35 @@ export const CommentEntry = ({ entry }: { entry: Guestbook[number] }) => {
 
   return (
     <div className="flex gap-3 group">
-      <Pfp user={{ ...entry.author }} classname="size-9.5 sm:size-11.5" />
+      <Pfp user={{ ...entry.author }} classname={cn("size-9.5 sm:size-11.5", isSkeleton && "skeleton")} />
 
       <div className="flex flex-col gap-1.5 min-w-0 w-full" ref={editContainerRef}>
         <div className="flex justify-between items-center w-full">
           <div className="flex flex-wrap flex-col sm:flex-row sm:items-center gap-2">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[clamp(0.3rem,3vw,0.9rem)] font-semibold text-sm truncate">{entry.author.name}</span>
+              <span className={cn("text-[clamp(0.3rem,3vw,0.9rem)] font-semibold text-sm truncate", isSkeleton && "skeleton")}>
+                {entry.author.name}
+              </span>
 
               {entry.isAdmin && (
-                <span className="text-[clamp(0.5rem,2vw,0.6rem)] uppercase tracking-wide text-text-light bg-foreground rounded-md px-2 py-0.5 shrink-0">
+                <span
+                  className={cn(
+                    "text-[clamp(0.5rem,2vw,0.6rem)] uppercase tracking-wide text-text-light bg-foreground rounded-md px-2 py-0.5 shrink-0",
+                    isSkeleton && "skeleton",
+                  )}
+                >
                   {t("author")}
                 </span>
               )}
 
               {entry.pinned && (
-                <span className="flex items-center gap-1 uppercase tracking-wide text-secondary shrink-0">
+                <span className={cn("flex items-center gap-1 uppercase tracking-wide text-secondary shrink-0", isSkeleton && "skeleton")}>
                   <FaThumbtack size={9} />
                 </span>
               )}
             </div>
 
-            <span className="text-[clamp(0.6rem,2vw,0.7rem)] text-text-dark/50 shrink-0">
+            <span className={cn("text-[clamp(0.6rem,2vw,0.7rem)] text-text-dark/50 shrink-0", isSkeleton && "skeleton")}>
               {format.relativeTime(new Date(entry.createdAt), new Date())}
             </span>
           </div>
@@ -157,7 +165,7 @@ export const CommentEntry = ({ entry }: { entry: Guestbook[number] }) => {
             />
           </FormLayout>
         ) : (
-          <p className="text-sm text-text-dark/80 whitespace-pre-wrap wrap-break-word">{entry.message}</p>
+          <p className={cn("text-sm text-text-dark/80 whitespace-pre-wrap wrap-break-word", isSkeleton && "skeleton w-fit")}>{entry.message}</p>
         )}
       </div>
     </div>

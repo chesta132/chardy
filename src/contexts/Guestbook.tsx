@@ -25,6 +25,7 @@ const GUESTBOOK_ENTRIES_PER_PAGE = 10;
 type GuestbookValue = {
   guestbook: Guestbook;
   nextPage: number | null;
+  isFetching: boolean;
   setGuestbook: SetGuestbook;
   moreEntries: () => Promise<void>;
   postEntry: typeof postGuestbookEntry;
@@ -36,24 +37,35 @@ const GuestbookContext = createContext<GuestbookValue | null>(null);
 
 export const GuestbookProvider = ({ children }: { children: ReactNode }) => {
   const { attachAuthors } = usePublicUserCache();
-  const [nextPage, setNextPage] = useState<number | null>(0);
+  const [nextPage, setNextPage] = useState<number | null>(null);
   const [guestbook, setGuestbook] = useState<Guestbook>([]);
+  const [isFetching, setIsFetching] = useState(true);
   const pathname = usePathname();
 
-  const postEntry: typeof postGuestbookEntry = async (...args) => {
+  const withFetching = <F extends (...args: any[]) => Promise<any>>(f: F): F =>
+    (async (...args) => {
+      try {
+        setIsFetching(true);
+        return await f(...args);
+      } finally {
+        setIsFetching(false);
+      }
+    }) as F;
+
+  const postEntry: typeof postGuestbookEntry = withFetching(async (...args) => {
     const entry = await postGuestbookEntry(...args);
     const withAuthor = await attachAuthors([entry.data]);
     setGuestbook((prev) => [...withAuthor, ...prev].sort((a, b) => Number(b.pinned) - Number(a.pinned)));
     return entry;
-  };
+  });
 
-  const moreEntries = async () => {
+  const moreEntries = withFetching(async () => {
     if (nextPage === null) return;
     const newEntries = await getGuestbookEntries({ limit: GUESTBOOK_ENTRIES_PER_PAGE, page: nextPage });
     const withAuthor = await attachAuthors(newEntries.data.docs);
     setNextPage(newEntries.data.nextPage || null);
     setGuestbook((prev) => [...prev, ...withAuthor]);
-  };
+  });
 
   const updateEntry: typeof updateGuestbookEntry = async (...args) => {
     const updated = await updateGuestbookEntry(...args);
@@ -74,19 +86,19 @@ export const GuestbookProvider = ({ children }: { children: ReactNode }) => {
 
   const fetchedRef = useRef(false);
   useEffect(() => {
-    const f = async () => {
+    const f = withFetching(async () => {
       if (pathname?.endsWith("/guestbook") && !fetchedRef.current) {
         const entries = await getGuestbookEntries({ limit: GUESTBOOK_ENTRIES_PER_PAGE });
         setGuestbook(await attachAuthors(entries.data.docs));
         setNextPage(entries.data.nextPage || null);
         fetchedRef.current = true;
       }
-    };
+    });
     f();
   }, [pathname]);
 
   return (
-    <GuestbookContext.Provider value={{ guestbook, setGuestbook, postEntry, moreEntries, updateEntry, deleteEntry, nextPage }}>
+    <GuestbookContext.Provider value={{ guestbook, setGuestbook, postEntry, moreEntries, updateEntry, deleteEntry, nextPage, isFetching }}>
       {children}
     </GuestbookContext.Provider>
   );
