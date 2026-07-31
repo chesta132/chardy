@@ -20,4 +20,5 @@ export namespace GuestbookPayload {
   export type PostEntry = z.output<typeof GuestbookPayload.postEntry>;
   export type EditEntry = z.output<typeof GuestbookPayload.editEntry>;
   export type DeleteEntry = z.output<typeof GuestbookPayload.deleteEntry>;
+  export type GetEntry = { limit?: number; page?: number };
 }

@@ -24,7 +24,9 @@ type PickByValueStrict<T, U> = {
 type ExtractArray<T> = T extends (infer U)[] ? U : T;
 
 /** Replaces all occurrences of substring `W` in string `S` with `R`. */
-type ReplaceString<S extends string, F extends string, R extends string> = S extends `${infer First}${F}${infer Last}` ? `${First}${R}${Last}` : S;
+type ReplaceString<S extends string, F extends string, R extends string> = S extends `${infer First}${F}${infer Last}`
+  ? `${First}${R}${Last}`
+  : S;
 
 /** Allows only one key of T to exist at a time. */
 type OneFieldOnly<T extends Record<string, unknown>> = {
@@ -53,3 +55,6 @@ interface ErrorPageProps {
   /** Next.js-provided reset function to retry rendering the segment */
   reset: () => void;
 }
+
+/** Rust-like Result */
+type Result<T, Err = Error> = { success: true; data: T } | { success: false; error: Err };
