@@ -222,7 +222,8 @@
     "error": {
       "INVALID_EMAIL": "Invalid email address.",
       "REQUIRED_FIELD": "This field is required.",
-      "INVALID_ENUM": "Invalid enum."
+      "INVALID_ENUM": "Invalid enum.",
+      "MAX_CHAR": "Maximum character exceeded."
     },
     "components": {
       "TagInput": {

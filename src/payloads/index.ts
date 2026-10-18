@@ -6,6 +6,7 @@ export abstract class Payload {
     INVALID_EMAIL: "INVALID_EMAIL",
     REQUIRED_FIELD: "REQUIRED_FIELD",
     INVALID_ENUM: "INVALID_ENUM",
+    MAX_CHAR: "MAX_CHAR",
   } as const;
 
   static readonly locale = z.enum(routing.locales, this.LOCALIZATION.INVALID_ENUM);

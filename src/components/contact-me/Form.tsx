@@ -113,6 +113,7 @@ export const ContactMeForm = () => {
           className="w-full outline-none border-b transition-all p-2 lg:pl-0 leading-5"
           required
           aria-required="true"
+          charLimit={ContactPayload.MAX_MESSAGE}
         />
       </div>
       <div className="flex flex-col lg:flex-row gap-2">
