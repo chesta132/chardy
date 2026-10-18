@@ -3,6 +3,7 @@ import { getMessages } from "@/i18n/request";
 import { Locale } from "@/i18n/types";
 import { createTranslator } from "next-intl";
 import { ContactFormPayload, ContactFormReplyPayload, ErrorNotificationPayload } from "./types";
+import escape from "escape-html";
 
 const C = {
   shell: (content: string) => /* html */ `
@@ -17,7 +18,7 @@ const C = {
           <tr>
             <td align="center">
               <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;">
-                ${content}
+                ${escape(content)}
               </table>
             </td>
           </tr>
@@ -36,7 +37,7 @@ const C = {
             </td>
             <td align="right">
               <span style="font-size:10px;color:#6b6560;letter-spacing:0.1em;text-transform:uppercase;">
-                ${badge}
+                ${escape(badge)}
               </span>
             </td>
           </tr>
@@ -60,7 +61,7 @@ const C = {
   subheaderBar: (text: string) => /* html */ `
     <tr>
       <td style="background-color:#ede7df;padding:10px 36px;border-left:0.5px solid #d4cfc8;border-right:0.5px solid #d4cfc8;">
-        <span style="font-size:11px;color:#6b6560;letter-spacing:0.05em;">${text}</span>
+        <span style="font-size:11px;color:#6b6560;letter-spacing:0.05em;">${escape(text)}</span>
       </td>
     </tr>
   `,
@@ -68,7 +69,7 @@ const C = {
   body: (content: string) => /* html */ `
     <tr>
       <td style="background-color:#ffffff;padding:40px 36px;border-left:0.5px solid #d4cfc8;border-right:0.5px solid #d4cfc8;">
-        ${content}
+        ${escape(content)}
       </td>
     </tr>
   `,
@@ -76,26 +77,26 @@ const C = {
   footer: (text: string) => /* html */ `
     <tr>
       <td style="background-color:#0a0a0a;padding:20px 36px;border-radius:0 0 12px 12px;">
-        <p style="margin:0;font-size:11px;color:#6b6560;line-height:1.6;">${text}</p>
+        <p style="margin:0;font-size:11px;color:#6b6560;line-height:1.6;">${escape(text)}</p>
       </td>
     </tr>
   `,
 
   label: (text: string) => /* html */ `
     <p style="margin:0 0 8px;font-size:10px;font-weight:500;color:#ff4d1d;letter-spacing:0.14em;text-transform:uppercase;">
-      ${text}
+      ${escape(text)}
     </p>
   `,
 
   dangerLabel: (text: string) => /* html */ `
     <p style="margin:0 0 8px;font-size:10px;font-weight:500;color:#dc2626;letter-spacing:0.14em;text-transform:uppercase;">
-      ${text}
+      ${escape(text)}
     </p>
   `,
 
   heading: (text: string) => /* html */ `
     <h1 style="margin:0 0 24px;font-size:24px;font-weight:500;color:#0a0a0a;text-transform:uppercase;letter-spacing:-0.01em;line-height:1.2;">
-      ${text}
+      ${escape(text)}
     </h1>
   `,
 
@@ -104,13 +105,13 @@ const C = {
   `,
 
   paragraph: (text: string) => /* html */ `
-    <p style="margin:0 0 16px;font-size:14px;color:#3a3630;line-height:1.75;">${text}</p>
+    <p style="margin:0 0 16px;font-size:14px;color:#3a3630;line-height:1.75;">${escape(text)}</p>
   `,
 
   infoBox: (title: string, text: string) => /* html */ `
     <div style="background-color:#f5f0e9;border-radius:8px;padding:20px 24px;margin-bottom:28px;">
-      <p style="margin:0 0 6px;font-size:11px;color:#6b6560;letter-spacing:0.06em;text-transform:uppercase;">${title}</p>
-      <p style="margin:0;font-size:13px;color:#3a3630;line-height:1.7;">${text}</p>
+      <p style="margin:0 0 6px;font-size:11px;color:#6b6560;letter-spacing:0.06em;text-transform:uppercase;">${escape(title)}</p>
+      <p style="margin:0;font-size:13px;color:#3a3630;line-height:1.7;">${escape(text)}</p>
     </div>
   `,
 
@@ -119,29 +120,36 @@ const C = {
     const color = variant === "primary" ? "#ffffff" : "#f5f0e9";
     return /* html */ `
       <a href="${href}" style="display:inline-block;background-color:${bg};color:${color};font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;padding:13px 28px;border-radius:8px;">
-        ${text}
+        ${escape(text)}
       </a>
     `;
   },
 
   metaTable: (rows: { label: string; value: string; isLink?: boolean }[]) => {
     const tds = rows
-      .map(
-        (row, i) => /* html */ `
+      .map((row, i) => {
+        if (row.isLink) {
+          try {
+            new URL(row.value);
+          } catch {
+            row.isLink = false;
+          }
+        }
+        return `
         <tr>
           <td style="padding:10px 0;${i < rows.length - 1 ? "border-bottom:0.5px solid #ede7df;" : ""}width:120px;">
-            <span style="font-size:11px;color:#6b6560;letter-spacing:0.06em;text-transform:uppercase;">${row.label}</span>
+            <span style="font-size:11px;color:#6b6560;letter-spacing:0.06em;text-transform:uppercase;">${escape(row.label)}</span>
           </td>
           <td style="padding:10px 0;${i < rows.length - 1 ? "border-bottom:0.5px solid #ede7df;" : ""}">
             ${
-              row.isLink
-                ? `<a href="${row.value}" style="font-size:13px;color:#ff4d1d;text-decoration:none;">${row.value}</a>`
-                : `<span style="font-size:13px;color:#0a0a0a;font-weight:500;">${row.value}</span>`
+              row.isLink && new URL(row.value)
+                ? `<a href="${row.value}" style="font-size:13px;color:#ff4d1d;text-decoration:none;">${escape(row.value)}</a>`
+                : `<span style="font-size:13px;color:#0a0a0a;font-weight:500;">${escape(row.value)}</span>`
             }
           </td>
         </tr>
-      `,
-      )
+      `;
+      })
       .join("");
 
     return /* html */ `
@@ -152,9 +160,9 @@ const C = {
   },
 
   messageBlock: (text: string, label: string) => /* html */ `
-    <p style="margin:0 0 10px;font-size:11px;color:#6b6560;letter-spacing:0.06em;text-transform:uppercase;">${label}</p>
+    <p style="margin:0 0 10px;font-size:11px;color:#6b6560;letter-spacing:0.06em;text-transform:uppercase;">${escape(label)}</p>
     <div style="background-color:#f5f0e9;border-radius:8px;padding:20px 24px;margin-bottom:28px;">
-      <p style="margin:0;font-size:14px;color:#3a3630;line-height:1.75;white-space:pre-wrap;">${text}</p>
+      <p style="margin:0;font-size:14px;color:#3a3630;line-height:1.75;white-space:pre-wrap;">${escape(text)}</p>
     </div>
   `,
 };
@@ -180,12 +188,12 @@ export class EmailTemplates {
         ${C.heading(t("heading"))}
         ${C.divider()}
         ${C.metaTable([
-          { label: t("meta.from"), value: fullName },
-          { label: t("meta.email"), value: email },
-          { label: t("meta.subject"), value: subject },
+          { label: t("meta.from"), value: escape(fullName) },
+          { label: t("meta.email"), value: escape(email) },
+          { label: t("meta.subject"), value: escape(subject) },
         ])}
-        ${C.messageBlock(message, t("messageBlock.label"))}
-        ${C.button(`mailto:${email}?subject=Re: ${encodeURIComponent(subject)}`, t("replyButton", { name: fullName }), "primary")}
+        ${C.messageBlock(escape(message), t("messageBlock.label"))}
+        ${C.button(`mailto:${email}?subject=Re: ${encodeURIComponent(escape(subject))}`, t("replyButton", { name: escape(fullName) }), "primary")}
       `)}
       ${C.footer(t("footer", { domain: APP_DOMAIN }))}
     `,
@@ -194,7 +202,7 @@ export class EmailTemplates {
 
   static async contactFormReply(payload: ContactFormReplyPayload, locale: Locale): Promise<string> {
     const { fullName, subject } = payload;
-    const firstName = fullName.trim().split(" ")[0];
+    const firstName = escape(fullName.trim().split(" ")[0]);
     const t = createTranslator({ locale, messages: await getMessages(locale), namespace: "Email.contactFormReply" });
 
     return C.shell(
@@ -205,7 +213,7 @@ export class EmailTemplates {
         ${C.label(t("label"))}
         ${C.heading(t("heading", { firstName }))}
         ${C.divider()}
-        ${C.paragraph(t("body.line1", { subject: `<strong style="color:#0a0a0a;font-weight:500;">&ldquo;${subject}&rdquo;</strong>` }))}
+        ${C.paragraph(t("body.line1", { subject: `<strong style="color:#0a0a0a;font-weight:500;">&ldquo;${escape(subject)}&rdquo;</strong>` }))}
         ${C.infoBox(t("infoBox.title"), t("infoBox.text"))}
         ${C.paragraph(t("body.line2"))}
         ${C.button(APP_URL, t("ctaButton"), "dark")}
@@ -222,10 +230,10 @@ export class EmailTemplates {
     const time = occurredAt.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", timeZoneName: "short" });
 
     const metaRows: { label: string; value: string; isLink?: boolean }[] = [
-      { label: "Error Type", value: errorType },
+      { label: "Error Type", value: escape(errorType) },
       { label: "Occurred At", value: `${date} · ${time}` },
-      ...(errorDigest ? [{ label: "Digest", value: errorDigest }] : []),
-      ...(url ? [{ label: "URL", value: url, isLink: true }] : []),
+      ...(errorDigest ? [{ label: "Digest", value: escape(errorDigest) }] : []),
+      ...(url ? [{ label: "URL", value: escape(url), isLink: true }] : []),
     ];
 
     return C.shell(
@@ -238,7 +246,7 @@ export class EmailTemplates {
         ${C.heading("Unhandled Error Detected")}
         ${C.divider()}
         ${C.metaTable(metaRows)}
-        ${C.messageBlock(errorMessage, "Error Message")}
+        ${C.messageBlock(escape(errorMessage), "Error Message")}
         ${C.button(`${APP_URL}`, "Open App", "dark")}
       `)}
       ${C.footer(`This is an automated alert from ${APP_DOMAIN}. Do not reply to this email.`)}
