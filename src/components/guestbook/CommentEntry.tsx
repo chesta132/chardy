@@ -157,7 +157,7 @@ export const CommentEntry = ({ entry, isSkeleton }: { entry: Guestbook[number]; 
         {editMode ? (
           <FormLayout form={formGroup}>
             <FormLayout.textarea
-              className="text-sm text-text-dark/80 whitespace-pre-wrap wrap-break-word outline-none"
+              className="text-sm text-text-dark/80 whitespace-pre-wrap wrap-break-word outline-none w-full"
               ref={textAreaRef}
               field="message"
               onKeyDown={handleKeyDown}
