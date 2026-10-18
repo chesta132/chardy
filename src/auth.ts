@@ -34,6 +34,7 @@ export const auth = betterAuth({
       isAdmin: {
         type: "boolean",
         required: true,
+        input: false,
       },
     },
   },
