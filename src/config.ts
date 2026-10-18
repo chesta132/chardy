@@ -2,6 +2,7 @@ export const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://chardy.dev";
 export const ADMIN_URL = process.env.NEXT_PUBLIC_ADMIN_URL || APP_URL;
 export const UMAMI_URL = process.env.NEXT_PUBLIC_UMAMI_URL;
 export const UMAMI_WEBSITE_ID = process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID;
+export const TURNSTILE_SITE = process.env.NEXT_PUBLIC_TURNSTILE_SITE;
 
 export const {
   // mailer
@@ -29,6 +30,8 @@ export const {
   // oauth
   GITHUB_CLIENT_ID,
   GITHUB_CLIENT_SECRET,
+
+  TURNSTILE_SECRET,
 } = process.env;
 
 // general

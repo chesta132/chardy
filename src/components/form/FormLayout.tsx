@@ -2,15 +2,17 @@ import { useGlobalError } from "@/contexts/GlobalError";
 import { FormGroup } from "@/hooks/useForm";
 import { handleFormError } from "@/libs/error/client/handler";
 import { cn } from "@/libs/utils";
-import { createContext, useContext } from "react";
+import { createContext, useContext, useState } from "react";
 import type { z, ZodObject } from "zod";
 import { FormInput, FormTextarea } from "./FormInput";
+import { Turnstile } from "next-turnstile";
+import { TURNSTILE_SITE } from "@/config";
 
 type FormValues<F extends ZodObject = any> = { form: FormGroup<F> };
 
 const FormContext = createContext<FormValues | null>(null);
 
-export type FormSubmitFunc<F> = (event: React.SubmitEvent<HTMLFormElement>, formValue: z.infer<F>) => any;
+export type FormSubmitFunc<F> = (event: React.SubmitEvent<HTMLFormElement>, formValue: z.infer<F>, turnstileToken?: string) => any;
 export type FormChildProps<T> = T & { field?: string; ignoreError?: boolean };
 
 type FormLayoutProps<F extends ZodObject, C extends boolean> = {
@@ -18,6 +20,7 @@ type FormLayoutProps<F extends ZodObject, C extends boolean> = {
   onFormSubmit?: C extends true ? never : FormSubmitFunc<F>;
   enableValidateForm?: boolean;
   resetAfterSubmit?: boolean;
+  withTurnstile?: boolean;
 } & (C extends true ? React.ComponentProps<"div"> : React.ComponentProps<"form">) &
   FormValues<F>;
 
@@ -29,6 +32,7 @@ export const FormLayout = <F extends ZodObject, C extends boolean = false>({
   children,
   enableValidateForm = true,
   resetAfterSubmit = false,
+  withTurnstile,
   ...rest
 }: FormLayoutProps<F, C>) => {
   const {
@@ -37,18 +41,19 @@ export const FormLayout = <F extends ZodObject, C extends boolean = false>({
     validateForm,
     resetForm,
   } = form;
-
+  const [token, setToken] = useState<string>();
   const { setError } = useGlobalError();
 
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     e.stopPropagation();
     if (enableValidateForm && !validateForm()) return;
+    if (withTurnstile && !token) return;
     try {
-      await onFormSubmit?.(e, formVal);
+      await onFormSubmit?.(e, formVal, token);
       if (resetAfterSubmit) resetForm();
     } catch (err) {
-      await handleFormError(err, setFormError, setError);
+      handleFormError(err, setFormError, setError);
     }
   };
 
@@ -58,6 +63,7 @@ export const FormLayout = <F extends ZodObject, C extends boolean = false>({
     <FormContext value={{ form }}>
       <Wrapper className={cn("flex flex-col gap-2", className)} onSubmit={handleSubmit} {...(rest as any)}>
         {children}
+        {withTurnstile && <Turnstile siteKey={TURNSTILE_SITE!} onVerify={setToken} />}
       </Wrapper>
     </FormContext>
   );

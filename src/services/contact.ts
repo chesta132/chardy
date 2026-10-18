@@ -9,14 +9,16 @@ import { createTranslator } from "next-intl";
 import { getMessages } from "@/i18n/request";
 import { redis } from "@/libs/redis";
 import { ActionFunc } from "nectic/actions";
+import { TurnstilePayload } from "@/payloads/turnstile";
 
 export abstract class ContactService {
   static readonly MAX_SEND_MESSAGE = 3; // per hour
 
-  static readonly sendMessage: ActionFunc<[ContactPayload.SendMessage, Locale], [ContactPayload.SendMessage, Locale], void> = async ({
-    outcome,
-    validated: [{ email, fullName, message, subject }, lang],
-  }) => {
+  static readonly sendMessage: ActionFunc<
+    [TurnstilePayload.Validator, ContactPayload.SendMessage, Locale],
+    [TurnstilePayload.Validator, ContactPayload.SendMessage, Locale],
+    void
+  > = async ({ outcome, validated: [{}, { email, fullName, message, subject }, lang] }) => {
     const submitTime = new Date();
 
     let totalSend = await redis.get<number>(`contact:cta:${email}`);
@@ -28,7 +30,9 @@ export abstract class ContactService {
       return outcome.error(err).fail();
     }
 
-    await sendMail(await EmailTemplates.contactForm({ email, fullName, message, subject, submittedAt: submitTime }, lang), { to: OWNER_EMAIL! });
+    await sendMail(await EmailTemplates.contactForm({ email, fullName, message, subject, submittedAt: submitTime }, lang), {
+      to: OWNER_EMAIL!,
+    });
 
     // ignorable
     redis

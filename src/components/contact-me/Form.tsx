@@ -26,11 +26,11 @@ export const ContactMeForm = () => {
 
   const { textAreaRef } = useAutosizeTextarea(form.message);
 
-  const handleSendMessage = async (_: unknown, form: ContactPayload.SendMessage) => {
+  const handleSendMessage = async (_: unknown, form: ContactPayload.SendMessage, token?: string) => {
     try {
       setLoading(true);
       // unsafe but handled in form layout
-      await nectAction({ action: sendMessageAction, unsafe: true }, form, locale as Locale);
+      await nectAction({ action: sendMessageAction, unsafe: true }, { token: token! }, form, locale as Locale);
       toast.info(t("messageSent"));
     } finally {
       setLoading(false);
@@ -38,7 +38,13 @@ export const ContactMeForm = () => {
   };
 
   return (
-    <FormLayout form={formGroup} onFormSubmit={handleSendMessage} className="space-y-4 w-full lg:w-2xl p-5 font-neue-montreal" noValidate>
+    <FormLayout
+      form={formGroup}
+      onFormSubmit={handleSendMessage}
+      className="space-y-4 w-full lg:w-2xl p-5 font-neue-montreal"
+      noValidate
+      withTurnstile
+    >
       <div className="flex flex-col">
         <label htmlFor="fullName" className="font-neue-montreal reveal-text">
           {t("fullName")}{" "}
