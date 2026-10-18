@@ -53,6 +53,7 @@ export const CommentColumn = () => {
               className="w-full min-h-15 outline-none p-2 text-[clamp(0.3rem,3vw,0.9rem)]"
               placeholder={t("placeholder")}
               ignoreError
+              charLimit={GuestbookPayload.MAX_CHAR_MESSAGE}
             />
           </div>
           <SendButton loading={loading} disabled={loading || !form.message.trim()} aria-label={loading ? t("loading") : t("send")} />
