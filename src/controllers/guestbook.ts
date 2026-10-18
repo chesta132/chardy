@@ -1,4 +1,5 @@
 import { getGuestbookEntries } from "@/cms/crud/read";
+import { omit } from "@/libs/manipulate/object";
 import { AuthMiddleware } from "@/middlewares/auth";
 import { GuestbookPayload } from "@/payloads/guestbook";
 import { GuestbookService } from "@/services/guestbook";
@@ -18,7 +19,9 @@ export abstract class GuestbookController {
   };
 
   static getComment: ActionFunc<[GuestbookPayload.GetEntry], [], PaginatedDocs<GuestbookEntry>> = async ({ outcome }, arg) => {
-    const entries = await getGuestbookEntries(arg);
+    if (arg.page && arg.page < 1) arg.page = 1;
+    // make sure limit isnt modified
+    const entries = await getGuestbookEntries(omit(arg, ["limit" as any]));
     return outcome.success(entries).ok();
   };
 

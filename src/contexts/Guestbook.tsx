@@ -20,7 +20,6 @@ const postGuestbookEntry = nectAction(postGuestbookEntryAction, { fromCSR: true,
 const getGuestbookEntries = nectAction(getGuestbookEntriesAction, { fromCSR: true, unsafe: true });
 const updateGuestbookEntry = nectAction(updateGuestbookEntryAction, { fromCSR: true, unsafe: true });
 const deleteGuestbookEntry = nectAction(deleteGuestbookEntryAction, { fromCSR: true, unsafe: true });
-const GUESTBOOK_ENTRIES_PER_PAGE = 10;
 
 type GuestbookValue = {
   guestbook: Guestbook;
@@ -61,7 +60,7 @@ export const GuestbookProvider = ({ children }: { children: ReactNode }) => {
 
   const moreEntries = withFetching(async () => {
     if (nextPage === null) return;
-    const newEntries = await getGuestbookEntries({ limit: GUESTBOOK_ENTRIES_PER_PAGE, page: nextPage });
+    const newEntries = await getGuestbookEntries({ page: nextPage });
     const withAuthor = await attachAuthors(newEntries.data.docs);
     setNextPage(newEntries.data.nextPage || null);
     setGuestbook((prev) => [...prev, ...withAuthor]);
@@ -88,7 +87,7 @@ export const GuestbookProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const f = withFetching(async () => {
       if (pathname?.endsWith("/guestbook") && !fetchedRef.current) {
-        const entries = await getGuestbookEntries({ limit: GUESTBOOK_ENTRIES_PER_PAGE });
+        const entries = await getGuestbookEntries({});
         setGuestbook(await attachAuthors(entries.data.docs));
         setNextPage(entries.data.nextPage || null);
         fetchedRef.current = true;
