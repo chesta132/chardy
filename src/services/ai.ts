@@ -32,6 +32,7 @@ type AppendGeminiPayload = {
 };
 
 export abstract class AIService {
+  static readonly MAX_MESSAGE = 10; // per hour
   static readonly CONVERSATION_EXP_SEC = timeInSec({ day: 3 });
 
   private static async appendMessages({ messages, conversationId }: AppendMessagesPayload) {
