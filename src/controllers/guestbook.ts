@@ -18,7 +18,10 @@ export abstract class GuestbookController {
     return outcome.success(entry).ok();
   };
 
-  static getComment: ActionFunc<[GuestbookPayload.GetEntry], [], PaginatedDocs<GuestbookEntry>> = async ({ outcome }, arg) => {
+  static getComment: ActionFunc<[GuestbookPayload.GetEntry], [GuestbookPayload.GetEntry], PaginatedDocs<GuestbookEntry>> = async (
+    { outcome },
+    arg,
+  ) => {
     if (arg.page && arg.page < 1) arg.page = 1;
     // make sure limit isnt modified
     const entries = await getGuestbookEntries(omit(arg, ["limit" as any]));

@@ -10,7 +10,7 @@ export const postGuestbookEntryAction = createNectAction()
   .use(AuthMiddleware.protectPublicUser)
   .handle(GuestbookController.postComment);
 
-export const getGuestbookEntriesAction = createNectAction().handle(GuestbookController.getComment);
+export const getGuestbookEntriesAction = createNectAction().validate([GuestbookPayload.getEntry]).handle(GuestbookController.getComment);
 
 export const updateGuestbookEntryAction = createNectAction()
   .validate([GuestbookPayload.editEntry])
