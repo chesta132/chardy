@@ -1,4 +1,4 @@
-import { SentryBuildOptions, withSentryConfig } from "@sentry/nextjs";
+import { SentryBuildOptions, withSentryConfig } from "@sentry/nextjs/config";
 import { withPayload } from "@payloadcms/next/withPayload";
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
