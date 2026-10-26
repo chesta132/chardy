@@ -5,8 +5,8 @@ import SMTPTransport from "nodemailer/lib/smtp-transport";
 
 export const transporter = nodemailer.createTransport({
   host: MAILER_HOST,
-  port: 587,
-  secure: false, // true for port 465, false for other ports
+  port: 465,
+  secure: true, // true for port 465, false for other ports
   auth: {
     user: MAILER_USER,
     pass: MAILER_PASS,
