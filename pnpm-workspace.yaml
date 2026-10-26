@@ -8,3 +8,6 @@ allowBuilds:
   protobufjs: false
   sharp: true
   unrs-resolver: false
+overrides:
+  happy-dom: 21.0.4
+  dompurify: 3.4.17
