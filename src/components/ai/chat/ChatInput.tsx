@@ -36,8 +36,7 @@ export const ChatInput = () => {
           disabled={busy}
           placeholder={busy ? t("waitingResponse") : t("askMe")}
           rows={2}
-          style={{ maxHeight: 120, resize: "none", minHeight: 40 }}
-          className="flex-1 text-xs font-neue-montreal bg-transparent outline-none placeholder:text-foreground/30 text-foreground leading-relaxed disabled:opacity-50 py-1"
+          className="w-full max-h-30 resize-none min-h-10 flex-1 text-xs font-neue-montreal bg-transparent outline-none placeholder:text-foreground/30 text-foreground leading-relaxed disabled:opacity-50 py-1"
           ignoreError
         />
       </div>
